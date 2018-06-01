@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<record_update sys_domain="global" table="kb_article_template">
+    <kb_article_template action="INSERT_OR_UPDATE">
+        <active>true</active>
+        <answer_ref display_value="Collaboration Report">6dc8467b4fd213007221e321a310c7fa</answer_ref>
+        <article_template>Collaboration Report</article_template>
+        <child_table>u_kb_template_collaboration_report</child_table>
+        <description>CRS Knowledge Base Collaboration Report template</description>
+        <sys_class_name>kb_article_template</sys_class_name>
+        <sys_created_by>admin</sys_created_by>
+        <sys_created_on>2018-06-01 20:21:03</sys_created_on>
+        <sys_domain>global</sys_domain>
+        <sys_id>20b8867b4fd213007221e321a310c718</sys_id>
+        <sys_mod_count>0</sys_mod_count>
+        <sys_name>Collaboration Report</sys_name>
+        <sys_package display_value="CRS Knowledge Database" source="x_26385_crs_kd">404e613b4f9213007221e321a310c738</sys_package>
+        <sys_policy/>
+        <sys_scope display_value="CRS Knowledge Database">404e613b4f9213007221e321a310c738</sys_scope>
+        <sys_update_name>kb_article_template_20b8867b4fd213007221e321a310c718</sys_update_name>
+        <sys_updated_by>admin</sys_updated_by>
+        <sys_updated_on>2018-06-01 20:21:03</sys_updated_on>
+    </kb_article_template>
+</record_update>

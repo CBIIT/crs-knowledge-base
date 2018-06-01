@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<record_update table="sp_angular_provider">
+    <sp_angular_provider action="INSERT_OR_UPDATE">
+        <name>crskdHref</name>
+        <script><![CDATA[function crskdHref() {
+  return({
+    link: link,
+    restrict: "A"
+  });
+
+  function link( scope, element, attributes ) {
+    attributes.$observe("crskdHref", configureHref);
+    function configureHref() {
+      var href = (attributes.crskdHref || "");
+      if (href && href.indexOf('#') < 0) {
+        var parts = href.split('/');
+        var keys = ['xpage', 'xid', 'xview'];
+        var search = [];
+        if (parts[0] === '') parts.shift();
+        for (var i = 0; i < parts.length; i++) {
+          search.push(keys[i] + '=' + parts[i]);
+        }
+        search.push('spa=1');
+        attributes.$set( "href", '?' + search.join('&') );
+      }
+    }
+  }
+}]]></script>
+        <sys_class_name>sp_angular_provider</sys_class_name>
+        <sys_created_by>admin</sys_created_by>
+        <sys_created_on>2018-06-01 18:37:29</sys_created_on>
+        <sys_id>11f03dbb4f9213007221e321a310c7e8</sys_id>
+        <sys_mod_count>0</sys_mod_count>
+        <sys_name>crskdHref</sys_name>
+        <sys_package display_value="CRS Knowledge Database" source="x_26385_crs_kd">404e613b4f9213007221e321a310c738</sys_package>
+        <sys_policy/>
+        <sys_scope display_value="CRS Knowledge Database">404e613b4f9213007221e321a310c738</sys_scope>
+        <sys_update_name>sp_angular_provider_11f03dbb4f9213007221e321a310c7e8</sys_update_name>
+        <sys_updated_by>admin</sys_updated_by>
+        <sys_updated_on>2018-06-01 18:37:29</sys_updated_on>
+        <type>directive</type>
+    </sp_angular_provider>
+</record_update>

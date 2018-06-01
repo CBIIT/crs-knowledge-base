@@ -1,0 +1,115 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<record_update table="sp_angular_provider">
+    <sp_angular_provider action="INSERT_OR_UPDATE">
+        <name>crskdRoute</name>
+        <script><![CDATA[/**
+ * Custom route service provider for ServicePortal.
+ * Simply include in a controller for it to work.
+ *
+ */
+function crskdRoute($rootScope, $location) {
+
+  var service = {
+
+    current: {},
+    defaultRoute: null,
+    routeConfig: [],
+    routeParams: {},
+
+    getParams: function getParams() {
+      return service.routeParams;
+    },
+
+    otherwise: function (route) {
+      service.defaultRoute = route;
+    },
+
+    update: function update(path) {
+      function match(config, path) {
+        var m = config.matcher.exec(path);
+        if (!m) return false;
+        for (var i = 0; i < config.groups.length; i++) {
+          service.routeParams[config.groups[i]] = m[i + 1];
+        }
+        return true;
+      }
+
+      service.current = null;
+
+      path = path || $location.hash();
+
+      for (var p in service.routeParams) {
+        delete service.routeParams[p];
+      }
+
+      var c;
+      for (var i = 0; i < service.routeConfig.length; i++) {
+        c = service.routeConfig[i];
+        if (match(c, path)) {
+          service.current = c.route;
+      service.current.params = service.routeParams;
+          break;
+        }
+      }
+
+      if (!service.current) {
+        service.current = service.defaultRoute;
+      }
+
+      if (service.current.redirectTo) {
+        $location.hash(service.current.redirectTo);
+      }
+
+    $rootScope.$broadcast('crs-route-update', path, service.current);
+    },
+
+    when: function when(path, route) {
+      var parts = path.split('/'),
+          matcher = '^',
+          groups = [],
+          str,
+          i;
+
+      for (i = 0; i < parts.length; i++) {
+        if (i === 0 && parts[i] === '') continue;
+        matcher += '/';
+        if (parts[i][0] == ':') {
+          matcher += '([^/]+)';
+          groups.push(parts[i].substr(1));
+        } else {
+          matcher += parts[i];
+        }
+      }
+      matcher += '/?$';
+
+      service.routeConfig.push({
+        matcher: new RegExp(matcher, 'i'),
+        groups: groups,
+        route: route || {}
+      });
+
+      return service;
+    }
+  };
+
+  $rootScope.$on('$locationChangeSuccess', function (e) {
+    service.update();
+  });
+
+  return service;
+}]]></script>
+        <sys_class_name>sp_angular_provider</sys_class_name>
+        <sys_created_by>admin</sys_created_by>
+        <sys_created_on>2018-06-01 18:40:24</sys_created_on>
+        <sys_id>1671fdf74f9213007221e321a310c78a</sys_id>
+        <sys_mod_count>1</sys_mod_count>
+        <sys_name>crskdRoute</sys_name>
+        <sys_package display_value="CRS Knowledge Database" source="x_26385_crs_kd">404e613b4f9213007221e321a310c738</sys_package>
+        <sys_policy/>
+        <sys_scope display_value="CRS Knowledge Database">404e613b4f9213007221e321a310c738</sys_scope>
+        <sys_update_name>sp_angular_provider_1671fdf74f9213007221e321a310c78a</sys_update_name>
+        <sys_updated_by>admin</sys_updated_by>
+        <sys_updated_on>2018-06-01 18:40:46</sys_updated_on>
+        <type>service</type>
+    </sp_angular_provider>
+</record_update>

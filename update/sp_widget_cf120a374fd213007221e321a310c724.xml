@@ -1,0 +1,569 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<record_update table="sp_widget">
+    <sp_widget action="INSERT_OR_UPDATE">
+        <category>custom</category>
+        <client_script><![CDATA[function($scope, $location) {
+	/* widget controller */
+	$scope.$emit('crs.header.display', false);
+	var c = this;
+	
+	var s = $location.search();
+  console.log(s.kb_id);	
+	c.hasResults = false;
+	c.errorMessage = false;
+	
+	c.search = function() {
+		
+		
+		console.log('kb: ' + c.data.selectedKnowledgeBase.name + ' | ' + 
+								'cat: ' + c.data.selectedKnowledgeBase.selectedCategory.name + '|' +
+							  'doc: ' + c.data.selectedDoc.name + '|' +
+								'research_type: ' + c.data.selectedResearchType.name
+							 );
+		
+		var defaultSelection = {id: '1', name: 'All'};
+		
+		c.server.get({searchString: c.data.searchString, 
+									selectedKnowledgeBase: c.data.selectedKnowledgeBase,
+								  selectedCategory: c.data.selectedKnowledgeBase.selectedCategory,
+								  selectedDoc: c.data.selectedKnowledgeBase.selectedCategory.properties.includes('doc') ? c.data.selectedDoc : defaultSelection,
+									selectedIntendedAudience: c.data.selectedKnowledgeBase.selectedCategory.properties.includes('intended_audience') ? c.data.selectedIntendedAudience : defaultSelection,
+									selectedCancerSite: c.data.selectedKnowledgeBase.selectedCategory.properties.includes('cancer_site') ? c.data.selectedCancerSite : defaultSelection,
+									selectedSpecialInterest: c.data.selectedKnowledgeBase.selectedCategory.properties.includes('special_interest') ? c.data.selectedSpecialInterest : defaultSelection,
+									selectedResearchType: c.data.selectedKnowledgeBase.selectedCategory.properties.includes('research_type') ? c.data.selectedResearchType : defaultSelection,
+									selectedCollaborationReportType: c.data.selectedKnowledgeBase.selectedCategory.properties.includes('collaboration_report_type') ? 
+										c.data.selectedCollaborationReportType : defaultSelection
+								 }).then(function(r) {
+			c.result = r.data.result;
+			c.searchResults = r.data.searchResults;
+			c.hasResults = r.data.hasResults;
+			c.errorMessage = r.data.errorMessage;
+		});
+	};
+									
+	if (s.kb_id) {
+		
+		c.data.selectedKnowledgeBase = c.data.knowledgeBases.find(function (e) {
+			return e.id === s.kb_id;
+		});
+
+	}
+	
+	
+	var searchBox = document.getElementById("kbSearchInput");
+		searchBox.addEventListener("keyup", function(event) {
+		// Cancel the default action, if needed
+		event.preventDefault();
+		// Number 13 is the "Enter" key on the keyboard
+		if (event.keyCode === 13) {
+			// Trigger the button element with a click
+			c.search();
+		}
+	});
+	
+	$scope.$watch('$viewContentLoaded', function() {
+     c.search();
+	});
+	
+
+	
+}]]></client_script>
+        <controller_as>c</controller_as>
+        <css>.body {
+ font-family: "SourceSansPro", Helvetica, Arial, sans-serif; 
+}
+
+.crs-sidebar-info {
+  height: 43px;
+  margin-top: 5px;
+  /*background: #46a1d9;*/
+  background: #C6375D;
+  color: white;
+  position: relative;
+  text-align: center;
+  border-radius: 5px;
+}
+.crs-sidebar-info .details {
+  position: absolute;
+  bottom: 4px;
+  left: 20px;
+  right: 20px;
+  z-index: 2;
+}
+.crs-sidebar-info .details h1 {
+  font-size: 1.4em;
+  margin: 0 0 5px 0;
+  font-weight: 400;
+  position: relative;
+  line-height: 1.2;
+}
+
+
+.margin-10 {
+ margin-top: 10px; 
+}
+
+.margin-5 {
+	margin-top: 5px; 
+}
+
+.text {
+	color: #717171;
+}
+
+.count {
+ 	font-size:16px; 
+}
+
+
+.kb-about {
+ 	color: #979797;
+  padding-top: 3px;
+  font-size: 12px;
+}
+
+.kb-title {
+  font-size: 14px;
+  font-weight: 600;
+}
+
+
+.kb-article-summary {
+ 	width: 100%;
+  color: #717171;
+  font-size: 13px;
+  display: inline-flex;
+  margin: 10px 0 8px 5px;
+  padding: 0px;
+}
+
+.kb-breadcrumb {
+ 	color: #979797;
+  padding-bottom: 2px;
+  margin-top: -5px;
+}
+</css>
+        <data_table>sp_instance</data_table>
+        <demo_data/>
+        <description/>
+        <docs/>
+        <field_list/>
+        <has_preview>false</has_preview>
+        <id>crs-kd-search</id>
+        <internal>false</internal>
+        <link/>
+        <name>[crs] KD Search</name>
+        <option_schema/>
+        <public>false</public>
+        <roles/>
+        <script><![CDATA[(function() {
+	/* populate the 'data' object */
+	/* e.g., data.table = $sp.getValue('table'); */
+
+	/* SETUP */
+	// A placeholder for the free text search field
+	data.enterSearchStr = gs.getMessage("Enter search string");
+	
+	// Hard-coded properties
+	// The names(titles) of the knowledge bases associated with CRS. Those are used to filter the available knowledge bases and results.
+	var crsKnowledgeBases = ["CRS Knowledge Base", "Program Descriptions", "Final Reports"];
+	
+	// Categories associate to CRS. Each category also has an associated template where custom properties are defined as sections
+	var categories = [
+		{category: 'Top Accomplishments', properties: ['doc', 'research_type'], template_table: 'u_kb_template_top_accomplishment'},
+		{category: 'Collaboration Report', properties: ['collaboration_report_type', 'nih_partners', 'federal_partners'], template_table: 'u_kb_template_collaboration_report'},
+		{category: 'Significant Items', properties: [], template_table: 'kb_knowledge'}
+	];
+
+	/* MODEL */
+	// Get the CRS Knowledge bases		
+	// Set up a default selection for knowledge base and category ([All Knowledge bases, All categories])
+	data.knowledgeBases = [{id: '1', name: 'All', categories: [{id: '1', name: 'All', properties: []}] }];
+	data.selectedKnowledgeBase = {id: '1', name: 'All', categories: [{id: '1', name: 'All', properties: []}] };
+	data.selectedKnowledgeBase.selectedCategory = {id: '1', name: 'All', properties: []};
+	
+	// Search for all CRS knowledge base titles to get their sys_ids
+	var gr = new GlideRecord('kb_knowledge_base');
+	gr.addQuery("title", "IN", crsKnowledgeBases);
+	gr.query();
+	while (gr.next()) {
+		var resultObj = {};
+		$sp.getRecordDisplayValues(resultObj, gr, 'sys_id,title');
+		data.knowledgeBases.push({id: resultObj.sys_id, name: resultObj.title});
+	}
+	
+	// The Knowledge Base IDs to be used in search filters
+	var kbSysIds = data.knowledgeBases.map(function (kb) {
+		return kb.id;
+	}).filter(function(id) {
+		return id !== '1';
+	});
+		
+	// Get the categories for each knowledge base
+  data.knowledgeBases.map(function (kb) {
+		var gr = new GlideRecord('kb_category');
+		gr.addQuery('parent_id', kb.id);
+		gr.query();
+		var catList = [];
+		while (gr.next()) {
+			var resultObj = {};
+			$sp.getRecordDisplayValues(resultObj, gr, 'sys_id, full_category');			
+			var categoryObj = getCategoryObject(resultObj.full_category);
+			catList.push({id: resultObj.sys_id, name: resultObj.full_category, properties: categoryObj.properties || []});
+		}
+		kb.categories = [{id: '1', name: 'All', properties: []}];
+		kb.categories = kb.categories.concat(catList);
+		kb.selectedCategory = {id: '1', name: 'All', properties: []};
+	});
+		
+
+	// The custom CRS properties available for selection
+	// DOC
+	data.doc = [
+		{id: '1', name: 'All'},
+		{id: 'doc_dcb', name: 'DCB'},
+		{id: 'doc_dccps', name: 'DCCPS'},
+		{id: 'doc_dcp', name: 'DCTD'},
+		{id: 'doc_od_crchd', name: 'OD-CRCHD'},
+		{id: 'doc_od_cssi', name: 'OD-CSSI'},
+		{id: 'doc_od_obf', name: 'OD-OBF'},
+		{id: 'doc_od_ogcr', name: 'OD-OGCR'},
+		{id: 'doc_od_ccg', name: 'OD-CCG'}
+	];
+	data.selectedDoc = {id: '1', name: 'All'};
+	
+	// Intended Audience
+	data.intendedAudience = [
+		{id: '1', name: 'All'},
+		{id: 'intended_audience_congress', name: 'Congress'},
+		{id: 'intended_audience_researchers', name: 'Researchers'},
+		{id: 'intende_audience_public', name: 'Public'}
+	];
+	data.selectedIntendedAudience = {id: '1', name: 'All'};
+	
+	// Cancer Site
+	data.cancerSite = [
+		{id: '1', name: 'All'},
+		{id: 'cancer_site_brain', name: 'Brain'},
+		{id: 'cancer_site_breast', name: 'Breast'},
+		{id: 'cancer_site_lung', name: 'Lung'},
+		{id: 'cancer_site_melanoma', name: 'Melanoma'},
+		{id: 'cancer_site_multiple_myeloma', name: 'Multiple Myeloma'},
+		{id: 'cancer_site-ovarian', name: 'Ovarian'},
+		{id: 'cancer_site_pancreatic', name: 'Pancreatic'},
+		{id: 'cancer_site_prostate', name: 'Prostate'},
+		{id: 'cancer_site_small_cell_lung_cancer', name: 'Small Cell Lung Cancer'}
+	];
+	data.selectedCancerSite = {id: '1', name: 'All'};
+	
+	// Special Interest 
+	data.specialInterest = [
+		{id: '1', name: 'All'},
+		{id: 'special_interest_pediatric', name: 'Pediatric'},
+		{id: 'special_interest_health_disparities', name: 'Health Disparities'},
+		{id: 'special_interest_match', name: 'MATCH'}
+	];
+	data.selectedSpecialInterest = {id: '1', name: 'All'};
+	
+	// Research Type
+	data.researchType = [
+		{id: '1', name: 'All'},
+		{id: 'research_type_basic', name: 'Basic'},
+		{id: 'research_type_pre_clinical', name: 'Pre-Clinical'},
+		{id: 'research_type_clinical', name: 'Clinical'},
+		{id: 'research_type_post_clinical', name: 'Post-Clinical'},
+		{id: 'research_type_epidemiological', name: 'Epidemiological'},
+		{id: 'research_type_population_science', name: 'Population Science'},
+		{id: 'research_type_cancer_control', name: 'Cancer Control'}
+	];
+	data.selectedResearchType = {id: '1', name: 'All'};
+	
+	
+	// Collaboration Rerport Type
+	data.collaborationReportType = [
+		{id: '1', name: 'All'},
+		{id: 'collaboration_reporty_type_committee', name: 'Committee'},
+		{id: 'collaboration_reporty_type_advisory_group', name: 'Advisory Group'},
+		{id: 'collaboration_reporty_type_work_group', name: 'Work Group'}
+	];
+	data.selectedCollaborationReportType = {id: '1', name: 'All'};
+	
+		
+	/* HELPER FUNCTIONS */
+	// Returns the IDs of all categories associated with a knowledge base
+	function categorySysIds(knowledgeBaseId) {
+		var kb;
+		for (var i = 0; i < data.knowledgeBases.length; i++) {
+			if (data.knowledgeBases[i].id === knowledgeBaseId) {
+				kb = data.knowledgeBases[i];
+			}
+		}
+		var categories = [];
+		if (kb) {
+			categories = kb.categories.map(function (cat) {
+				return cat.id;
+			}).filter(function(id) {
+				return id !== '1';
+			});
+		}
+		
+		return categories;
+	}
+	
+	// Get the category object (defines category name, properties and template table) for a given category name
+	function getCategoryObject(categoryName) {
+		for (var i = 0; i < categories.length; i++) {
+			if (categories[i].category === categoryName) {
+					return categories[i];	
+			}
+		}
+	}
+	
+	// Get the template table for a category
+	function getCategoryTemplateTable(categoryName) {
+		for (var i = 0; i < categories.length; i++) {
+			if (categories[i].category === categoryName)  {
+				return categories[i].template_table;
+			}
+		}
+		// return default
+		return 'kb_knowledge';
+	}
+	
+	
+		/* SEARCH PROCESSING */
+	
+	if (input) {
+		data.result = "You searched for: " + input.searchString + ", in Knowledge base: " + input.selectedKnowledgeBase.name + ", category: " + input.selectedCategory.name;
+		
+		var searchString = input.searchString ?  input.searchString.trim() : null;
+		
+		data.searchResults = [];
+				
+		// The table that we need to search depends on the selected category. Every category is associated with a template, which is stored in a table that extends kb_knowledge
+		
+		var categoryObj = getCategoryObject(input.selectedCategory.name);
+		
+		if (input.selectedCategory.id === '1') {
+			// No specific category - search the default n_knowledge table
+			gr = new GlideRecord('kb_knowledge');
+		} else {
+			gr = new GlideRecord(getCategoryTemplateTable(categoryObj.category));
+		}
+		
+		
+		if (searchString) {
+			gr.addQuery('IR_AND_QUERY', searchString);
+		}
+		
+		// Knowledge base and category filters
+		if (input.selectedKnowledgeBase.id === '1') {
+			// Search all knowledge bases
+			gr.addQuery('kb_knowledge_base', 'IN', kbSysIds);
+		} else {
+			gr.addQuery('kb_knowledge_base', input.selectedKnowledgeBase.id);
+		  if (input.selectedCategory.id === '1') {
+				// Search all categories of the selected knowledge base
+				gr.addQuery('kb_category', 'IN', categorySysIds(input.selectedKnowledgeBase.id));
+			} else {
+				gr.addQuery('kb_category', input.selectedCategory.id);
+			}			
+		}
+		
+		if (input.selectedResearchType.id !== '1') {
+			gr.addQuery('u_kb_research_type', input.selectedResearchType.name.toLowerCase());
+		}
+		
+		if (input.selectedDoc.id !== '1') {
+			gr.addQuery('u_kb_doc', input.selectedDoc.name.toLowerCase());
+		}
+		
+		if (input.selectedCollaborationReportType.id !== '1') {
+			gr.addQuery('u_kb_type', input.selectedCollaborationReportType.name.toLowerCase());
+		}
+			
+		//gr.addQuery('IR_AND_OR_QUERY', 'cancer_site_brain');
+		//gr.addQuery('IR_AND_OR_QUERY', input.searchString);
+		gr.query();
+		
+		while (gr.next()) {
+			data.hasResults = true;
+			
+			// data.searchResults.push( gr.short_description + ' | sys_id: ' + gr.sys_id + ' | category: ' + gr.kb_category + ': ' + gr.meta + ': ' + gr.ir_query_score);
+			//gs.log(gr.short_description + ': ' + gr.kb_category + ': ' + gr.meta + ': ' + gr.ir_query_score);
+			var resultObj = {};
+			$sp.getRecordDisplayValues(resultObj, gr, 'sys_id,short_description,kb_category,author,sys_updated_on,published,sys_view_count,meta,ir_query_score');
+			resultObj.url = 'kb_view?sys_kb_id=' + resultObj.sys_id;
+			//resultObj.url = 'crs_kb?xpage=kb_view&sys_kb_id=87e1a5a04f521300045eb8de9310c762&spa=1';
+// 			resultObj.id = gr.sys_id;
+			
+// 			resultObj.description = gr.short_description;
+// 			resultObj.category = gr.kb_category;
+// 			resultObj.metaData = gr.meta;
+// 			resultObj.score = gr.ir_query_score;
+		
+			data.searchResults.push(resultObj);
+			// gs.print(gr.short_description + ': ' + gr.kb_category + ': ' + gr.meta + ': ' + gr.ir_query_score);
+		}
+		
+		
+	}
+	
+	
+	
+})();]]></script>
+        <servicenow>false</servicenow>
+        <sys_class_name>sp_widget</sys_class_name>
+        <sys_created_by>admin</sys_created_by>
+        <sys_created_on>2018-06-01 19:53:54</sys_created_on>
+        <sys_id>cf120a374fd213007221e321a310c724</sys_id>
+        <sys_mod_count>3</sys_mod_count>
+        <sys_name>[crs] KD Search</sys_name>
+        <sys_package display_value="CRS Knowledge Database" source="x_26385_crs_kd">404e613b4f9213007221e321a310c738</sys_package>
+        <sys_policy/>
+        <sys_scope display_value="CRS Knowledge Database">404e613b4f9213007221e321a310c738</sys_scope>
+        <sys_update_name>sp_widget_cf120a374fd213007221e321a310c724</sys_update_name>
+        <sys_updated_by>admin</sys_updated_by>
+        <sys_updated_on>2018-06-01 20:25:52</sys_updated_on>
+        <template><![CDATA[<div class="container">
+    <div class="row">
+        <div class="col-md-3">
+            <!-- 3 columns search menu -->
+
+            <div class="crs-sidebar-info">
+                <div class="details">
+                    <h1>CRS Knowledge Base</h1>
+                </div>
+            </div>
+          
+            <div class="panel panel-default margin-10">
+
+                <div class="panel-body">
+
+                    <div class="form-group">
+                        <label class="control-label" for="kbSelect">Knowledge Base:</label>
+                        <select class="form-control" name="kbSelect" id="kbSelect" ng-options="option.name for option in c.data.knowledgeBases track by option.id"
+                            ng-model="c.data.selectedKnowledgeBase" ng-change="c.search()">
+                        </select>
+                    </div>
+
+                    <div class="form-group">
+                        <label class="control-label" for="categorySelect">Category:</label>
+                        <select class="form-control" name="categorySelect" id="categorySelect" ng-options="option.name for option in c.data.selectedKnowledgeBase.categories track by option.id"
+                            ng-model="c.data.selectedKnowledgeBase.selectedCategory" ng-change="c.search()">
+                        </select>
+                    </div>
+
+                    <div class="form-group" ng-if="c.data.selectedKnowledgeBase.selectedCategory.properties.includes('doc')">
+                        <label class="control-label" for="docSelect">DOC:</label>
+                        <select class="form-control" name="docSelect" id="docSelect" ng-options="option.name for option in c.data.doc track by option.id"
+                            ng-model="c.data.selectedDoc" ng-change="c.search()">
+                        </select>
+                    </div>
+
+                    <div class="form-group" ng-if="c.data.selectedKnowledgeBase.selectedCategory.properties.includes('intended_audience')">
+                        <label class="control-label" for="audienceSelect">Intended Audience:</label>
+                        <select class="form-control" name="audienceSelect" id="audienceSelect" ng-options="option.name for option in c.data.intendedAudience track by option.id"
+                            ng-model="c.data.selectedIntendedAudience" ng-change="c.search()">
+                        </select>
+                    </div>
+
+                    <div class="form-group" ng-if="c.data.selectedKnowledgeBase.selectedCategory.properties.includes('intended_audience')">
+                        <label class="control-label" for="audienceSelect">Intended Audience:</label>
+                        <select class="form-control" name="audienceSelect" id="audienceSelect" ng-options="option.name for option in c.data.intendedAudience track by option.id"
+                            ng-model="c.data.selectedIntendedAudience" ng-change="c.search()">
+                        </select>
+                    </div>
+
+                    <div class="form-group" ng-if="c.data.selectedKnowledgeBase.selectedCategory.properties.includes('cancer_site')">
+                        <label class="control-label" for="cancerSiteSelect">Cancer Site:</label>
+                        <select class="form-control" name="cancerSiteSelect" id="cancerSiteSelect" ng-options="option.name for option in c.data.cancerSite track by option.id"
+                            ng-model="c.data.selectedCancerSite" ng-change="c.search()">
+                        </select>
+                    </div>
+
+                    <div class="form-group" ng-if="c.data.selectedKnowledgeBase.selectedCategory.properties.includes('special_interest')">
+                        <label class="control-label" for="specialInterestSelect">Special Interest:</label>
+                        <select class="form-control" name="specialInterestSelect" id="specialInterestSelect" ng-options="option.name for option in c.data.specialInterest track by option.id"
+                            ng-model="c.data.selectedSpecialInterest" ng-change="c.search()">
+                        </select>
+                    </div>
+
+                    <div class="form-group" ng-if="c.data.selectedKnowledgeBase.selectedCategory.properties.includes('research_type')">
+                        <label class="control-label" for="researchTypeSelect">Research Type:</label>
+                        <select class="form-control" name="researchTypeSelect" id="researchTypeSelect" ng-options="option.name for option in c.data.researchType track by option.id"
+                            ng-model="c.data.selectedResearchType" ng-change="c.search()">
+                        </select>
+                    </div>
+
+                    <div class="form-group" ng-if="c.data.selectedKnowledgeBase.selectedCategory.properties.includes('collaboration_report_type')">
+                        <label class="control-label" for="collaborationReportTypeSelect">Collaboration Report Type:</label>
+                        <select class="form-control" name="collaborationReportTypeSelect" id="collaborationReportTypeSelect" ng-options="option.name for option in c.data.collaborationReportType track by option.id"
+                            ng-model="c.data.selectedCollaborationReportType" ng-change="c.search()">
+                        </select>
+                    </div>
+
+                    <!-- end form -->
+                </div>
+            </div>
+
+            <!-- End of search column -->
+        </div>
+
+
+        <div class="col-md-9 margin-10">
+            <!-- 9 columns results -->
+ 
+                <div class="form-group">
+                    <label for="inputSuccess" class="control-label sr-only">${Search}</label>
+                    <div class="input-group">
+                        <input type="text" class="form-control" name="kbSearchInput" id="kbSearchInput" placeholder="{{::data.enterSearchStr}}" ng-model="c.data.searchString">
+                        <span class="input-group-btn">
+                            <button type="submit" class="btn btn-default" ng-click="c.search();">
+                                <span class="glyphicon glyphicon-search" aria-hidden="true"></span>
+                            </button>
+                        </span>
+                    </div>
+                </div>
+
+
+                <div class="panel panel-default">
+
+                    <div class="panel-heading">
+                        <h3 class="panel-title">
+                            <span class="count text">{{c.searchResults.length || 0}} Results</span>
+                        </h3>
+                    </div>
+                    <div class="panel-body">
+                        <ul class="list-group" ng-if="c.searchResults.length > 0">
+                            <li class="list-group-item" ng-repeat="result in c.searchResults">
+                                <i class="glyphicon glyphicon-file"></i>
+                               
+                                	<a class="kb-title" ng-href="{{result.url}}" target="_blank">{{result.short_description}}</a>
+                               
+                                <br>
+                              	<div class="kb-about">
+                                
+                                    Author: {{result.author}} 
+                                    <span class="dot" aria-hidden="true"> • </span>
+                                    {{result.sys_view_count}} Views
+                                    <span class="dot" aria-hidden="true"> • </span>
+                                    Updated: <sn-time-ago timestamp="::result.sys_updated_on"/>
+                                    <span class="dot" aria-hidden="true"> • </span>
+                                    Published: <sn-time-ago timestamp="::result.published"/>
+                                  
+                                
+                                </div>
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+
+        <!-- End of row -->
+    </div>
+
+    <!-- End of container -->
+</div>]]></template>
+    </sp_widget>
+</record_update>
