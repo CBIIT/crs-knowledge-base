@@ -9,8 +9,6 @@
 	
 	var s = $location.search();
   console.log(s.kb_id);	
-	c.hasResults = false;
-	c.errorMessage = false;
 	
 	c.search = function() {
 		
@@ -34,11 +32,22 @@
 									selectedCollaborationReportType: c.data.selectedKnowledgeBase.selectedCategory.properties.includes('collaboration_report_type') ? 
 										c.data.selectedCollaborationReportType : defaultSelection
 								 }).then(function(r) {
-			c.result = r.data.result;
 			c.searchResults = r.data.searchResults;
-			c.hasResults = r.data.hasResults;
-			c.errorMessage = r.data.errorMessage;
 		});
+	};
+	
+	c.reset = function() {
+		c.data.searchString = "";
+		c.data.selectedKnowledgeBase = c.data.knowledgeBases[0];
+		c.data.selectedCategory = c.data.selectedKnowledgeBase.categories[0];
+		c.data.selectedDoc = c.data.doc[0];
+	  c.data.selectedIntendedAudience = c.data.intendedAudience[0];
+		c.data.selectedCancerSite = c.data.cancerSite[0];
+		c.data.selectedSpecialInterest = c.data.specialInterest[0];
+		c.data.selectedResearchType = c.data.researchType[0];
+		c.data.selectedCollaborationReportType = c.data.collaborationReportType[0];
+		
+		c.search();
 	};
 									
 	if (s.kb_id) {
@@ -49,7 +58,7 @@
 
 	}
 	
-	
+	//Search on enter key pressed
 	var searchBox = document.getElementById("kbSearchInput");
 		searchBox.addEventListener("keyup", function(event) {
 		// Cancel the default action, if needed
@@ -61,6 +70,7 @@
 		}
 	});
 	
+	// Perform an initial search when the page loads
 	$scope.$watch('$viewContentLoaded', function() {
      c.search();
 	});
@@ -160,7 +170,7 @@
 	/* populate the 'data' object */
 	/* e.g., data.table = $sp.getValue('table'); */
 
-	/* SETUP */
+	/* Configuration */
 	// A placeholder for the free text search field
 	data.enterSearchStr = gs.getMessage("Enter search string");
 	
@@ -168,22 +178,23 @@
 	// The names(titles) of the knowledge bases associated with CRS. Those are used to filter the available knowledge bases and results.
 	var crsKnowledgeBases = ["CRS Knowledge Base", "Program Descriptions", "Final Reports"];
 	
-	// Categories associate to CRS. Each category also has an associated template where custom properties are defined as sections
+	// Categories associated to CRS. Each category also has an associated template where custom properties are defined as sections
 	var categories = [
 		{category: 'Top Accomplishments', properties: ['doc', 'research_type'], template_table: 'u_kb_template_top_accomplishment'},
 		{category: 'Collaboration Report', properties: ['collaboration_report_type', 'nih_partners', 'federal_partners'], template_table: 'u_kb_template_collaboration_report'},
-		{category: 'Significant Items', properties: [], template_table: 'kb_knowledge'}
+		{category: 'Significant Items', properties: [], template_table: 'kb_knowledge'} // standard template for now
 	];
 
-	/* MODEL */
+	/* SETUP */
 	// Get the CRS Knowledge bases		
 	// Set up a default selection for knowledge base and category ([All Knowledge bases, All categories])
 	data.knowledgeBases = [{id: '1', name: 'All', categories: [{id: '1', name: 'All', properties: []}] }];
 	data.selectedKnowledgeBase = {id: '1', name: 'All', categories: [{id: '1', name: 'All', properties: []}] };
 	data.selectedKnowledgeBase.selectedCategory = {id: '1', name: 'All', properties: []};
-	
+
 	// Search for all CRS knowledge base titles to get their sys_ids
 	var gr = new GlideRecord('kb_knowledge_base');
+	gr.orderBy("order");
 	gr.addQuery("title", "IN", crsKnowledgeBases);
 	gr.query();
 	while (gr.next()) {
@@ -191,16 +202,16 @@
 		$sp.getRecordDisplayValues(resultObj, gr, 'sys_id,title');
 		data.knowledgeBases.push({id: resultObj.sys_id, name: resultObj.title});
 	}
-	
+
 	// The Knowledge Base IDs to be used in search filters
 	var kbSysIds = data.knowledgeBases.map(function (kb) {
 		return kb.id;
 	}).filter(function(id) {
 		return id !== '1';
 	});
-		
+
 	// Get the categories for each knowledge base
-  data.knowledgeBases.map(function (kb) {
+	data.knowledgeBases.map(function (kb) {
 		var gr = new GlideRecord('kb_category');
 		gr.addQuery('parent_id', kb.id);
 		gr.query();
@@ -215,7 +226,7 @@
 		kb.categories = kb.categories.concat(catList);
 		kb.selectedCategory = {id: '1', name: 'All', properties: []};
 	});
-		
+
 
 	// The custom CRS properties available for selection
 	// DOC
@@ -230,8 +241,8 @@
 		{id: 'doc_od_ogcr', name: 'OD-OGCR'},
 		{id: 'doc_od_ccg', name: 'OD-CCG'}
 	];
-	data.selectedDoc = {id: '1', name: 'All'};
-	
+	data.selectedDoc = data.doc[0];
+
 	// Intended Audience
 	data.intendedAudience = [
 		{id: '1', name: 'All'},
@@ -239,8 +250,8 @@
 		{id: 'intended_audience_researchers', name: 'Researchers'},
 		{id: 'intende_audience_public', name: 'Public'}
 	];
-	data.selectedIntendedAudience = {id: '1', name: 'All'};
-	
+	data.selectedIntendedAudience = data.intendedAudience[0];
+
 	// Cancer Site
 	data.cancerSite = [
 		{id: '1', name: 'All'},
@@ -254,8 +265,8 @@
 		{id: 'cancer_site_prostate', name: 'Prostate'},
 		{id: 'cancer_site_small_cell_lung_cancer', name: 'Small Cell Lung Cancer'}
 	];
-	data.selectedCancerSite = {id: '1', name: 'All'};
-	
+	data.selectedCancerSite = data.cancerSite[0];
+
 	// Special Interest 
 	data.specialInterest = [
 		{id: '1', name: 'All'},
@@ -263,8 +274,8 @@
 		{id: 'special_interest_health_disparities', name: 'Health Disparities'},
 		{id: 'special_interest_match', name: 'MATCH'}
 	];
-	data.selectedSpecialInterest = {id: '1', name: 'All'};
-	
+	data.selectedSpecialInterest = data.specialInterest[0];
+
 	// Research Type
 	data.researchType = [
 		{id: '1', name: 'All'},
@@ -276,19 +287,19 @@
 		{id: 'research_type_population_science', name: 'Population Science'},
 		{id: 'research_type_cancer_control', name: 'Cancer Control'}
 	];
-	data.selectedResearchType = {id: '1', name: 'All'};
-	
-	
-	// Collaboration Rerport Type
+	data.selectedResearchType = data.researchType[0];
+
+
+	// Collaboration Report Type
 	data.collaborationReportType = [
 		{id: '1', name: 'All'},
 		{id: 'collaboration_reporty_type_committee', name: 'Committee'},
 		{id: 'collaboration_reporty_type_advisory_group', name: 'Advisory Group'},
 		{id: 'collaboration_reporty_type_work_group', name: 'Work Group'}
 	];
-	data.selectedCollaborationReportType = {id: '1', name: 'All'};
-	
-		
+	data.selectedCollaborationReportType = data.collaborationReportType[0];
+
+
 	/* HELPER FUNCTIONS */
 	// Returns the IDs of all categories associated with a knowledge base
 	function categorySysIds(knowledgeBaseId) {
@@ -334,6 +345,7 @@
 		/* SEARCH PROCESSING */
 	
 	if (input) {
+		
 		data.result = "You searched for: " + input.searchString + ", in Knowledge base: " + input.selectedKnowledgeBase.name + ", category: " + input.selectedCategory.name;
 		
 		var searchString = input.searchString ?  input.searchString.trim() : null;
@@ -353,6 +365,7 @@
 		
 		
 		if (searchString) {
+			// Index search
 			gr.addQuery('IR_AND_QUERY', searchString);
 		}
 		
@@ -382,34 +395,19 @@
 			gr.addQuery('u_kb_type', input.selectedCollaborationReportType.name.toLowerCase());
 		}
 			
-		//gr.addQuery('IR_AND_OR_QUERY', 'cancer_site_brain');
-		//gr.addQuery('IR_AND_OR_QUERY', input.searchString);
 		gr.query();
 		
 		while (gr.next()) {
-			data.hasResults = true;
 			
-			// data.searchResults.push( gr.short_description + ' | sys_id: ' + gr.sys_id + ' | category: ' + gr.kb_category + ': ' + gr.meta + ': ' + gr.ir_query_score);
-			//gs.log(gr.short_description + ': ' + gr.kb_category + ': ' + gr.meta + ': ' + gr.ir_query_score);
-			var resultObj = {};
-			$sp.getRecordDisplayValues(resultObj, gr, 'sys_id,short_description,kb_category,author,sys_updated_on,published,sys_view_count,meta,ir_query_score');
-			resultObj.url = 'kb_view?sys_kb_id=' + resultObj.sys_id;
-			//resultObj.url = 'crs_kb?xpage=kb_view&sys_kb_id=87e1a5a04f521300045eb8de9310c762&spa=1';
-// 			resultObj.id = gr.sys_id;
-			
-// 			resultObj.description = gr.short_description;
-// 			resultObj.category = gr.kb_category;
-// 			resultObj.metaData = gr.meta;
-// 			resultObj.score = gr.ir_query_score;
+			var articleResult = {};
+			$sp.getRecordDisplayValues(articleResult, gr, 'sys_id,short_description,kb_category,author,sys_updated_on,published,sys_view_count,meta,ir_query_score');
+			articleResult.url = 'kb_view?sys_kb_id=' + articleResult.sys_id;
 		
-			data.searchResults.push(resultObj);
-			// gs.print(gr.short_description + ': ' + gr.kb_category + ': ' + gr.meta + ': ' + gr.ir_query_score);
+			data.searchResults.push(articleResult);
 		}
 		
 		
 	}
-	
-	
 	
 })();]]></script>
         <servicenow>false</servicenow>
@@ -417,14 +415,14 @@
         <sys_created_by>admin</sys_created_by>
         <sys_created_on>2018-06-01 19:53:54</sys_created_on>
         <sys_id>cf120a374fd213007221e321a310c724</sys_id>
-        <sys_mod_count>3</sys_mod_count>
+        <sys_mod_count>37</sys_mod_count>
         <sys_name>[crs] KD Search</sys_name>
         <sys_package display_value="CRS Knowledge Database" source="x_26385_crs_kd">404e613b4f9213007221e321a310c738</sys_package>
         <sys_policy/>
         <sys_scope display_value="CRS Knowledge Database">404e613b4f9213007221e321a310c738</sys_scope>
         <sys_update_name>sp_widget_cf120a374fd213007221e321a310c724</sys_update_name>
         <sys_updated_by>admin</sys_updated_by>
-        <sys_updated_on>2018-06-01 20:25:52</sys_updated_on>
+        <sys_updated_on>2018-06-02 17:04:47</sys_updated_on>
         <template><![CDATA[<div class="container">
     <div class="row">
         <div class="col-md-3">
@@ -502,6 +500,10 @@
                             ng-model="c.data.selectedCollaborationReportType" ng-change="c.search()">
                         </select>
                     </div>
+                  
+                  	<div class="form-group">
+                       <button type="submit" class="btn btn-link" ng-click="c.reset();">reset</button> 
+                  	</div>
 
                     <!-- end form -->
                 </div>
