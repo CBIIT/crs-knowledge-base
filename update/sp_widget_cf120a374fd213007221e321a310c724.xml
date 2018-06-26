@@ -577,7 +577,7 @@ b {
 			
 				var articleResult = {};
 				$sp.getRecordDisplayValues(articleResult, gr, 'sys_id,short_description,kb_knowledge_base,kb_category,author,sys_updated_on,published,sys_view_count');
-				articleResult.url = 'kb_view?sys_kb_id=' + articleResult.sys_id;
+				articleResult.url = 'kb_view.do?sys_kb_id=' + articleResult.sys_id;
 
 				data.searchResults.push(articleResult);
 			}
@@ -610,8 +610,7 @@ b {
 
 					var articleResult = {};
 					$sp.getRecordDisplayValues(articleResult, gr, 'sys_id,short_description,kb_knowledge_base,kb_category,author,sys_updated_on,published,sys_view_count');
-					articleResult.url = 'kb_view?sys_kb_id=' + articleResult.sys_id;
-
+					articleResult.url = 'kb_view.do?sys_kb_id=' + articleResult.sys_id;
 					values.push(articleResult);
 				}
 			});
@@ -625,15 +624,17 @@ b {
         <sys_class_name>sp_widget</sys_class_name>
         <sys_created_by>admin</sys_created_by>
         <sys_created_on>2018-06-01 19:53:54</sys_created_on>
+        <sys_customer_update>false</sys_customer_update>
         <sys_id>cf120a374fd213007221e321a310c724</sys_id>
-        <sys_mod_count>357</sys_mod_count>
+        <sys_mod_count>367</sys_mod_count>
         <sys_name>[crs] KD Search</sys_name>
         <sys_package display_value="CRS Knowledge Database" source="x_26385_crs_kd">404e613b4f9213007221e321a310c738</sys_package>
         <sys_policy/>
+        <sys_replace_on_upgrade>false</sys_replace_on_upgrade>
         <sys_scope display_value="CRS Knowledge Database">404e613b4f9213007221e321a310c738</sys_scope>
         <sys_update_name>sp_widget_cf120a374fd213007221e321a310c724</sys_update_name>
-        <sys_updated_by>admin</sys_updated_by>
-        <sys_updated_on>2018-06-25 15:17:09</sys_updated_on>
+        <sys_updated_by>yuw5@nih.gov</sys_updated_by>
+        <sys_updated_on>2018-06-26 14:58:41</sys_updated_on>
         <template><![CDATA[<div class="container">
   <div class="row">
         <div class="col-md-3">
@@ -788,7 +789,7 @@ b {
                               	</div>
                               	<div class="kb-about">
                                 
-                                    Author: {{result.author}} 
+                                    Author: {{result.author}}
                                     <span class="dot" aria-hidden="true"> • </span>
                                     {{result.sys_view_count}} Views
                                     <span class="dot" aria-hidden="true"> • </span>
