@@ -14,22 +14,17 @@
 	
 	c.search = function(type) {
 		
-		if(type == 1){
-			c.data.selectedCategory = [];
-			c.data.filters = [];
-		}
-		else if(type == 2){
-			c.data.filters = [];
-		}
-		
 		var defaultSelection = [];
 		
-		c.server.get({searchString: c.data.searchString, 
+		c.server.get({
+									searchLevel:type,
+									searchString: c.data.searchString, 
 									selectedKnowledgeBase: c.data.selectedKnowledgeBase,
 								  selectedCategory: c.data.selectedCategory,
 								  selectedDoc: c.data.filters.includes('doc')? c.data.selectedDoc : defaultSelection,
 									selectedCancerSite: c.data.filters.includes('cancer_site') ? c.data.selectedCancerSite : defaultSelection,
-									selectedResearchType: c.data.filters.includes('research_type') ? c.data.selectedResearchType : defaultSelection
+									selectedResearchType: c.data.filters.includes('research_type') ? c.data.selectedResearchType : defaultSelection,
+									filters: c.data.filters
 								 }).then(function(r) {
 			c.data = r.data;
 			c.searchResults = r.data.searchResults;
@@ -38,15 +33,21 @@
 		});
 	};
 	
+	c.showContent = function(template_id,doc_id){
+		//$('#document_content').modal('show');
+		console.log(template_id);
+		window.displayData(doc_id,template_id);
+	}
+	
 	c.reset = function() {
 		c.data.searchString = "";
-		c.data.selectedKnowledgeBase = c.data.knowledgeBases[0];
+		c.data.selectedKnowledgeBase = [];
 		c.data.selectedCategory = [];
 		c.data.selectedDoc = [];
 	  c.data.selectedCancerSite = [];
 		c.data.selectedResearchType = [];
 		
-		c.search();
+		c.search(0);
 	};
 	
 	//Search on enter key pressed
@@ -57,7 +58,7 @@
 		// Number 13 is the "Enter" key on the keyboard
 		if (event.keyCode === 13) {
 			// Trigger the button element with a click
-			c.search();
+			c.search(3);
 		}
 	});
 	
@@ -88,6 +89,19 @@
 		}
 	}
 	
+	c.updateKnowledgeBaseData = function(item){
+		if(item.selected){
+			c.data.selectedKnowledgeBase.push(item.id);
+		}
+		else{
+			var idx = c.data.selectedKnowledgeBase.indexOf(item.id);
+			if (idx > -1) {
+				c.data.selectedKnowledgeBase.splice(idx, 1);
+			}
+		}
+		c.search(0);
+	}
+	
 	c.updateCategoryData = function(item){
 		if(item.selected){
 			c.data.selectedCategory.push(item.name);
@@ -98,7 +112,7 @@
 				c.data.selectedCategory.splice(idx, 1);
 			}
 		}
-		c.search();
+		c.search(1);
 	}
 	
 	c.updateCancerSiteData = function(item){
@@ -111,7 +125,7 @@
 				c.data.selectedCancerSite.splice(idx, 1);
 			}
 		}
-		c.search();
+		c.search(2);
 	}
 	
 	c.updateResearchTypeData = function(item){
@@ -124,7 +138,7 @@
 				c.data.selectedResearchType.splice(idx, 1);
 			}
 		}
-		c.search();
+		c.search(2);
 	}
 	
 	c.updateDocData = function(item){
@@ -137,12 +151,15 @@
 				c.data.selectedDoc.splice(idx, 1);
 			}
 		}
-		c.search();
+		c.search(2);
 	}
 	
 	// Perform an initial search when the page loads
 	$scope.$watch('$viewContentLoaded', function() {
-     c.search();
+    c.data.selectedKnowledgeBase = [];
+		c.data.selectedCategory = [];
+		c.data.filters = []; 
+		c.search(0);
 	});
 	
 	var htmlToWord = (function() {
@@ -153,7 +170,21 @@
 					document.body.appendChild(a);
 					a.setAttribute('style', 'display:none');
 					a.setAttribute('href', uri + encodeURIComponent((template.replace("{content}",data))));
-					a.setAttribute('download', "report.doc");
+					var today = new Date();
+					var dd = today.getDate();
+					var mm = today.getMonth()+1;
+					var yyyy = today.getFullYear();
+
+					if(dd<10) {
+							dd = '0'+dd
+					} 
+
+					if(mm<10) {
+							mm = '0'+mm
+					} 
+
+					today = yyyy + "-"+ mm + "-" + dd;	
+					a.setAttribute('download', "NERD_report_"+today+".doc");
 					a.click();
           document.body.removeChild(a);
       }
@@ -175,6 +206,15 @@
 				tmp.Database = rs.kb_knowledge_base;
 				tmp.Category = rs.kb_category;
 				tmp.Title = rs.short_description;
+				if(c.data.filters.includes('research_type')){
+					tmp["Research Type"] = rs.u_kb_research_type;
+				}
+				if(c.data.filters.includes('cancer_site')){
+					tmp["Cancer Site/Type"] = rs.u_kb_cancer_site_type;
+				}
+				if(c.data.filters.includes('doc')){
+					tmp.Doc = rs.u_kb_doc;
+				}
 				data.push(tmp);
 			}
 		});
@@ -183,10 +223,24 @@
 
 		/* add to workbook */
 		var wb = XLSX.utils.book_new();
-		XLSX.utils.book_append_sheet(wb, ws, "hitlist");
+		XLSX.utils.book_append_sheet(wb, ws, "sheet1");
 
 		/* write workbook and force a download */
-		XLSX.writeFile(wb, "report.xlsx");
+		var today = new Date();
+		var dd = today.getDate();
+		var mm = today.getMonth()+1;
+		var yyyy = today.getFullYear();
+
+		if(dd<10) {
+				dd = '0'+dd
+		} 
+
+		if(mm<10) {
+				mm = '0'+mm
+		} 
+
+		today = yyyy + "-"+ mm + "-" + dd;
+		XLSX.writeFile(wb, "NERD_report_"+today+".xlsx");
   }
 	
 	c.export2Word = function () {
@@ -331,6 +385,7 @@ b {
 .kb-title {
   font-size: 14px;
   font-weight: 600;
+  cursor:pointer;
 }
 
 .kb-ref{
@@ -439,9 +494,15 @@ b {
 							 "Scientific Experts":{categories:[], filters:[]},
 							 "Final Report Knowledge Base":{'Triennial Report': {template_table: 'u_kb_template_triennial_report', filters:[]}}
 							};
+	
+	var infos_category = {'Top Accomplishments': {kb: 'Basic Knowledge Base',template_table: 'u_kb_template_top_accomplishment', filters:["cancer_site","research_type","doc"]},
+														'Collaboration Report' : {kb: 'Basic Knowledge Base',template_table: 'u_kb_template_collaboration_report', filters:[]},
+														'Significant Items':{kb: 'Basic Knowledge Base',template_table: 'u_kb_template_significant_item', filters:["cancer_site"]}, 
+							 'Triennial Report': {kb: 'Final Report Knowledge Base',template_table: 'u_kb_template_triennial_report', filters:[]}
+							};
 
 	/* SETUP */
-	data.knowledgeBases = [{id: '-1', name: 'All'}];
+	data.knowledgeBases = [];
 	
 	// Search for all CRS knowledge base titles to get their sys_ids
 	var gr = new GlideRecord('kb_knowledge_base');
@@ -461,44 +522,19 @@ b {
 	}).filter(function(id) {
 		return id !== '-1';
 	});
-
-	// Get the categories for each knowledge base
+	
+	var cache = [];
 	data.categories = [];
-	if(input && input.selectedKnowledgeBase.id != "-1" ){
-		var tmp = new GlideRecord('kb_category');
-		tmp.addQuery('parent_id', input.selectedKnowledgeBase.id);
-		tmp.query();
-		var catList = [];
-		while (tmp.next()) {
-			var obj = {};
-			$sp.getRecordDisplayValues(obj, tmp, 'sys_id, full_category');			
-			catList.push({id: obj.sys_id, name: obj.full_category});
-		}
-		data.categories = data.categories.concat(catList);
-		data.selectedKnowledgeBase = input.selectedKnowledgeBase;
-		if(input.selectedCategory.length > 0){
-			data.selectedCategory = input.selectedCategory;
-			//merge filters if duplicate
-			var cache = [];
-			input.selectedCategory.forEach(function(cat){
-				infos[input.selectedKnowledgeBase.name][cat].filters.forEach(function(fts){
-					if(cache.indexOf(fts) == -1){
-						cache.push(fts);
-					}
-				});
-			});
-			data.filters = cache;
-		}
-		else{
-			data.selectedCategory = [];
-			data.filters = [];
-		}
+	gr = new GlideRecord('kb_category');
+	gr.addQuery('parent_id', 'IN', kbSysIds);
+	gr.query();
+	cache = [];
+	while (gr.next()) {
+		var obj = {};
+		$sp.getRecordDisplayValues(obj, gr, 'sys_id, full_category');			
+		cache.push({id: obj.sys_id, name: obj.full_category});
 	}
-	else{
-		data.selectedKnowledgeBase = {id: '-1', name: 'All'};
-		data.selectedCategory = [];
-		data.filters = [];
-	}
+	data.categories = data.categories.concat(cache);
 	
 	// DOC
 	data.doc = [
@@ -543,11 +579,102 @@ b {
 		/* SEARCH PROCESSING */
 	
 	if (input) {
-		data.selectedDoc = input.selectedDoc;
-		data.selectedCancerSite  = input.selectedCancerSite;
-		data.selectedResearchType = input.selectedResearchType;
-		
-		data.result = "You searched for: " + input.searchString + ", in Knowledge base: " + input.selectedKnowledgeBase.name + ", category: " + input.selectedCategory.join(',');
+		// Get the categories for each knowledge base
+		if(input.searchLevel == 0){
+			if(input.selectedKnowledgeBase.length == 0){
+				  //select all the categories
+					data.selectedKnowledgeBase = [];	
+					data.selectedCategory = [];
+					data.filters = [];
+			}
+			else{
+				  //update the categories
+					data.selectedKnowledgeBase = input.selectedKnowledgeBase;
+				//update selected Category
+					var cache_id = [];
+					gr = new GlideRecord('kb_category');
+					gr.addQuery('parent_id', 'IN', data.selectedKnowledgeBase);
+					gr.query();
+					while (gr.next()) {
+						var objt = {};
+						$sp.getRecordDisplayValues(objt, gr, 'sys_id, full_category');			
+						cache_id.push(objt.sys_id);
+					}
+					cache = [];
+				  input.selectedCategory.forEach(function(sc){
+						if(cache_id.indexOf(sc) > -1){
+							cache.push(sc);
+						}	
+					});
+					data.selectedCategory = cache;
+					//update the filters
+					data.filters = [];
+				  cache = [];
+					data.selectedCategory.forEach(function(cat){
+						infos_category[cat].filters.forEach(function(fts){
+							if(cache.indexOf(fts) == -1){
+								cache.push(fts);
+							}
+						});
+					});
+					data.filters = cache;
+			}
+		}
+		else if(input.searchLevel == 1){
+			if(input.selectedCategory.length == 0){
+				data.selectedKnowledgeBase = [];
+				data.selectedCategory = [];
+				data.filters = [];
+			}
+			else{
+				//update the kb
+				cache = [];
+				data.selectedCategory = input.selectedCategory;
+				input.selectedCategory.forEach(function(sc){
+					//get kb from category
+					if(cache.indexOf(infos_category[sc].kb)  == -1 ){
+						cache.push(infos_category[sc].kb);
+					}
+				});
+				var cache_tmp = [];
+				data.knowledgeBases.forEach(function(kb){
+					if(cache.indexOf(kb.name) > -1){
+						cache_tmp.push(kb.id);
+					}
+				});
+				data.selectedKnowledgeBase = cache_tmp;
+				//update the filters
+				data.filters = [];
+				cache = [];
+				input.selectedCategory.forEach(function(cat){
+					infos_category[cat].filters.forEach(function(fts){
+						if(cache.indexOf(fts) == -1){
+							cache.push(fts);
+						}
+					});
+				});
+				data.filters = cache;
+			}
+		}
+		else if(input.searchLevel == 2){
+			//do nothing
+			data.selectedKnowledgeBase = input.selectedKnowledgeBase;
+			data.selectedCategory = input.selectedCategory;
+			data.filters = input.filters;
+		}
+		else if(input.searchLevel == 3){
+			//do nothing
+			data.selectedKnowledgeBase = input.selectedKnowledgeBase;
+			data.selectedCategory = input.selectedCategory;
+			data.filters = input.filters;
+		}
+
+
+		data.selectedDoc = data.filters.indexOf('doc') > -1 ? input.selectedDoc : [];
+		data.selectedCancerSite  = data.filters.indexOf('cancer_site') > -1 ? input.selectedCancerSite : [];
+		data.selectedResearchType = data.filters.indexOf('research_type') > -1 ? input.selectedResearchType : [];
+
+		data.result = "You searched for: " + input.searchString + ", in Knowledge base: " + input.selectedKnowledgeBase.join(',') + ", category: " + input.selectedCategory.join(',');
 		
 		var searchString = input.searchString ?  input.searchString.trim() : null;
 		
@@ -556,14 +683,14 @@ b {
 		// The table that we need to search depends on the selected category. Every category is associated with a template, which is stored in a table that extends kb_knowledge
 
 		//todo......
-		if (input.selectedCategory.length == 0) {
+		if (data.selectedCategory.length == 0) {
 			// No specific category - search the default n_knowledge table
 			gr = new GlideRecord('kb_knowledge');
-			if(input.selectedKnowledgeBase.id === '-1'){
+			if(data.selectedKnowledgeBase.length == 0){
 				gr.addQuery('kb_knowledge_base', 'IN', kbSysIds);
 			}
 			else{
-				gr.addQuery('kb_knowledge_base', input.selectedKnowledgeBase.id);
+				gr.addQuery('kb_knowledge_base', data.selectedKnowledgeBase);
 			}
 			if (searchString) {
 				// Index search
@@ -578,13 +705,13 @@ b {
 				var articleResult = {};
 				$sp.getRecordDisplayValues(articleResult, gr, 'sys_id,short_description,kb_knowledge_base,kb_category,author,sys_updated_on,published,sys_view_count');
 				articleResult.url = 'kb_view.do?sys_kb_id=' + articleResult.sys_id;
-
+				articleResult.template = infos_category[articleResult.kb_category].template_table;
 				data.searchResults.push(articleResult);
 			}
 		} else {
 			var values = [];
 			input.selectedCategory.forEach(function(cat){
-				var tmpl = infos[input.selectedKnowledgeBase.name][cat].template_table;
+				var tmpl = infos[infos_category[cat].kb][cat].template_table;
 				gr = new GlideRecord(tmpl);
 				if (searchString) {
 					// Index search
@@ -609,8 +736,9 @@ b {
 				while (gr.next()) {
 
 					var articleResult = {};
-					$sp.getRecordDisplayValues(articleResult, gr, 'sys_id,short_description,kb_knowledge_base,kb_category,author,sys_updated_on,published,sys_view_count');
+					$sp.getRecordDisplayValues(articleResult, gr, 'sys_id,short_description,kb_knowledge_base,kb_category,author,sys_updated_on,published,sys_view_count,u_kb_cancer_site_type,u_kb_research_type,u_kb_doc');
 					articleResult.url = 'kb_view.do?sys_kb_id=' + articleResult.sys_id;
+					articleResult.template = infos_category[articleResult.kb_category].template_table;
 					values.push(articleResult);
 				}
 			});
@@ -626,7 +754,7 @@ b {
         <sys_created_on>2018-06-01 19:53:54</sys_created_on>
         <sys_customer_update>false</sys_customer_update>
         <sys_id>cf120a374fd213007221e321a310c724</sys_id>
-        <sys_mod_count>367</sys_mod_count>
+        <sys_mod_count>450</sys_mod_count>
         <sys_name>[crs] KD Search</sys_name>
         <sys_package display_value="CRS Knowledge Database" source="x_26385_crs_kd">404e613b4f9213007221e321a310c738</sys_package>
         <sys_policy/>
@@ -634,7 +762,7 @@ b {
         <sys_scope display_value="CRS Knowledge Database">404e613b4f9213007221e321a310c738</sys_scope>
         <sys_update_name>sp_widget_cf120a374fd213007221e321a310c724</sys_update_name>
         <sys_updated_by>yuw5@nih.gov</sys_updated_by>
-        <sys_updated_on>2018-06-26 14:58:41</sys_updated_on>
+        <sys_updated_on>2018-06-27 01:31:48</sys_updated_on>
         <template><![CDATA[<div class="container">
   <div class="row">
         <div class="col-md-3">
@@ -652,12 +780,15 @@ b {
 
                     <div class="form-group">
                         <label class="control-label" for="kbSelect">Knowledge Base:</label>
-                      <div class="form-content">
-                         <select class="form-control" name="kbSelect" id="kbSelect" ng-options="option.name for option in c.data.knowledgeBases track by option.id"
-                            ng-model="c.data.selectedKnowledgeBase" ng-change="c.search(1)">
-                        </select>
-                      </div>
-                       
+                      <div class="facet-scroll"> 
+                          <div ng-repeat="item in c.data.knowledgeBases" class="facet-field-padding ng-scope" style=""> 
+                            <div ng-if="item.id" class="checkbox ng-scope"> 
+                              <label class="checkbox-label ng-binding">
+                                <input type="checkbox" class="chekbox-input ng-pristine ng-untouched ng-valid ng-empty" ng-model="item.selected" ng-click="c.updateKnowledgeBaseData(item)" value="{{item.id}}" role="checkbox" aria-invalid="false" ng-checked="c.data.selectedKnowledgeBase.indexOf(item.id) > -1">{{item.name}}
+                              </label> 
+                            </div>
+                          </div>
+                        </div>                       
                     </div>
 
                     <div class="form-group">
@@ -731,7 +862,7 @@ b {
                     <div class="input-group">
                         <input type="text" class="form-control" name="kbSearchInput" id="kbSearchInput" placeholder="{{::data.enterSearchStr}}" ng-model="c.data.searchString">
                         <span class="input-group-btn">
-                            <button type="submit" class="btn btn-default" ng-click="c.search();">
+                            <button type="submit" class="btn btn-default" ng-click="c.search(3);">
                                 <span class="glyphicon glyphicon-search" aria-hidden="true"></span>
                             </button>
                         </span>
@@ -781,7 +912,7 @@ b {
                               <input type="checkbox" ng-model="cb_checkbox" ng-change="c.change(cb_checkbox)" class="checkbox content-checkbox" id="cb_{{result.sys_id}}" name="selections" value="{{result.sys_id}},{{result.kb_knowledge_base}},{{result.kb_category}}" >
                                 <i class="glyphicon glyphicon-file"></i>
                                
-                                	<a class="kb-title" ng-href="{{result.url}}" target="_blank">{{result.short_description}}</a>
+                                	<a class="kb-title" ng-click="c.showContent(result.template,result.sys_id)" >{{result.short_description}}</a>
                                
                                 <br>
                                 <div class="kb-ref">
