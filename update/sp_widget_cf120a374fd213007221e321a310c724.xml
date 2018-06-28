@@ -20,14 +20,22 @@
 									searchLevel:type,
 									searchString: c.data.searchString, 
 									selectedKnowledgeBase: c.data.selectedKnowledgeBase,
-								  selectedCategory: c.data.selectedCategory,
 								  selectedDoc: c.data.filters.includes('doc')? c.data.selectedDoc : defaultSelection,
 									selectedCancerSite: c.data.filters.includes('cancer_site') ? c.data.selectedCancerSite : defaultSelection,
 									selectedResearchType: c.data.filters.includes('research_type') ? c.data.selectedResearchType : defaultSelection,
 									filters: c.data.filters
 								 }).then(function(r) {
 			c.data = r.data;
-			c.searchResults = r.data.searchResults;
+			c.data.tabs = r.data.searchResults;
+			c.selectedCategories = {};
+			var idx = 0;
+			c.resultLen = 0;
+			c.data.tabs.forEach(function(t){
+					c.selectedCategories[t.name] = idx++;
+					c.resultLen += t.list.length;
+			});
+			document.getElementById("cb_selectAll").checked = false;
+			//c.searchResults = r.data.searchResults;
 			c.selectedCount = 0;
 			c.isExportable = false;
 		});
@@ -35,14 +43,22 @@
 	
 	c.showContent = function(template_id,doc_id){
 		//$('#document_content').modal('show');
-		console.log(template_id);
 		window.displayData(doc_id,template_id);
+	}
+	
+	c.updateFilter = function(cat){
+		var idx = c.selectedCategories[cat.name];
+		c.resultLen += cat.selected?c.data.tabs[idx].list.length: -c.data.tabs[idx].list.length;
+		if(c.resultLen == 0){
+			document.getElementById("cb_selectAll").checked = false;
+			c.isExportable = false;
+		}
+		c.data.tabs[idx].show = !c.data.tabs[idx].show;
 	}
 	
 	c.reset = function() {
 		c.data.searchString = "";
-		c.data.selectedKnowledgeBase = [];
-		c.data.selectedCategory = [];
+		c.data.selectedKnowledgeBase = {id: '-1', name: 'All'};
 		c.data.selectedDoc = [];
 	  c.data.selectedCancerSite = [];
 		c.data.selectedResearchType = [];
@@ -84,9 +100,11 @@
 		else{
 			c.selectedCount--;
 			if(c.selectedCount <= 0){
+				document.getElementById("cb_selectAll").checked = false;
 				c.isExportable = false;
 			}
 		}
+		console.log(c.selectedCount);
 	}
 	
 	c.updateKnowledgeBaseData = function(item){
@@ -156,8 +174,7 @@
 	
 	// Perform an initial search when the page loads
 	$scope.$watch('$viewContentLoaded', function() {
-    c.data.selectedKnowledgeBase = [];
-		c.data.selectedCategory = [];
+    c.data.selectedKnowledgeBase = {id: '-1', name: 'All'};
 		c.data.filters = []; 
 		c.search(0);
 	});
@@ -199,24 +216,29 @@
 			}
 		});
 		var data = [];
-		c.searchResults.forEach(function(rs){
-			if(cache.indexOf(rs.sys_id) >= 0){
-				var tmp = {};
-				tmp["Date entered"] = rs.published;
-				tmp.Database = rs.kb_knowledge_base;
-				tmp.Category = rs.kb_category;
-				tmp.Title = rs.short_description;
-				if(c.data.filters.includes('research_type')){
-					tmp["Research Type"] = rs.u_kb_research_type;
-				}
-				if(c.data.filters.includes('cancer_site')){
-					tmp["Cancer Site/Type"] = rs.u_kb_cancer_site_type;
-				}
-				if(c.data.filters.includes('doc')){
-					tmp.Doc = rs.u_kb_doc;
-				}
-				data.push(tmp);
+		c.data.tabs.forEach(function(t){
+			if(t.show){
+				t.list.forEach(function(rs){
+					if(cache.indexOf(rs.sys_id) >= 0){
+						var tmp = {};
+						tmp["Date entered"] = rs.published;
+						tmp.Database = rs.kb_knowledge_base;
+						tmp.Category = rs.kb_category;
+						tmp.Title = rs.short_description;
+						if(c.data.filters.includes('research_type')){
+							tmp["Research Type"] = rs.u_kb_research_type;
+						}
+						if(c.data.filters.includes('cancer_site')){
+							tmp["Cancer Site/Type"] = rs.u_kb_cancer_site_type;
+						}
+						if(c.data.filters.includes('doc')){
+							tmp.Doc = rs.u_kb_doc;
+						}
+						data.push(tmp);
+					}
+				});
 			}
+			
 		});
 		/* generate a worksheet */
 		var ws = XLSX.utils.json_to_sheet(data);
@@ -321,7 +343,7 @@ b {
   left: 20px;
   right: 20px;
   z-index: 2;
-  font-size: 0.8em;
+  font-size: 0.7em;
   padding-top: 10px;
 }
 .crs-sidebar-info .details h1 {
@@ -336,11 +358,27 @@ b {
 	position:relative;
 }
 
+.panel-relative .panel-title{
+	display:inline-block;
+}
+
+.filter-btn-label{
+	font-size:14px;
+  font-weight:bold;
+  margin-right:10px;
+}
+
 .panel-action{
   top:5px;
   right:15px;
   float:right;
 	position:absolute;
+}
+
+.panel-bar-filter{
+	top: 5px;
+  position: absolute;
+  right: 15px;
 }
 
 
@@ -361,9 +399,13 @@ b {
   margin:5px 5px 5px 2px;
 }
 
+.checkbox-section-all{
+	margin-top:5px;
+}
+
 .content-checkbox{
 	position:absolute;
-  left:-20px;
+  left:10px;
   top:30px;
 }
 
@@ -374,7 +416,6 @@ b {
 .count {
  	font-size:16px; 
 }
-
 
 .kb-about {
  	color: #979797;
@@ -392,8 +433,7 @@ b {
 }
 
 .list-group{
-	margin-bottom: 20px;
-  padding-left: 20px;
+	margin-bottom: 0px !important;
 }
 
 .kb-ref span{
@@ -429,6 +469,10 @@ b {
 	margin-bottom:0px;
 }
 
+.form-hidden{
+	display:none;
+}
+
 .form-group .control-label{
 	padding: 10px 15px;
   margin-bottom:0px;
@@ -439,6 +483,25 @@ b {
 
 .form-content{
 	padding:10px;
+}
+
+.tab-content{
+  border-left: 1px solid #ddd;
+  border-right: 1px solid #ddd;
+  border-bottom: 1px solid #ddd;
+}
+
+.item-row {
+    border-bottom:1px solid #ddd;
+  	border-left:0px;
+  	border-right:0px;
+  	border-top:0px;
+  	margin-bottom:0px;
+  	padding-left: 40px;
+}
+
+.item-row:last-child{
+	border-bottom:0px;
 }
 
 .form-info{
@@ -454,11 +517,24 @@ b {
 }
 
 .facet-scroll{
-  max-height: 160px;
+  max-height: 250px;
   padding-top: 5px;
   padding-left: 15px;
   padding-bottom: 5px;
   overflow-y: auto;
+}
+
+.dropdown-options{
+	padding:5px 10px;
+  font-weight: normal;
+}
+.dropdown-menu{
+	min-width:200px;
+}
+
+.checkbox-item{
+	margin-top:0px;
+  margin-bottom:0px;
 }
 </css>
         <data_table>sp_instance</data_table>
@@ -505,6 +581,7 @@ b {
 	data.knowledgeBases = [];
 	
 	// Search for all CRS knowledge base titles to get their sys_ids
+	var default_kb = {}; 
 	var gr = new GlideRecord('kb_knowledge_base');
 	gr.orderBy("order");
 	gr.addQuery("title", "IN", knowledgeBases);
@@ -513,168 +590,84 @@ b {
 		var resultObj = {};
 		$sp.getRecordDisplayValues(resultObj, gr, 'sys_id,title');
 		data.knowledgeBases.push({id: resultObj.sys_id, name: resultObj.title});
+		if(resultObj.title == "Basic Knowledge Base"){
+			default_kb.id = resultObj.sys_id;
+			default_kb.name = resultObj.title;
+		}
 	}
-
-	// The Knowledge Base IDs to be used in search filters
-	//currently, only "basic knowledge base" will be searched
-	var kbSysIds = data.knowledgeBases.map(function (kb) {
-		return kb.id;
-	}).filter(function(id) {
-		return id !== '-1';
-	});
-	
-	var cache = [];
-	data.categories = [];
-	gr = new GlideRecord('kb_category');
-	gr.addQuery('parent_id', 'IN', kbSysIds);
-	gr.query();
-	cache = [];
-	while (gr.next()) {
-		var obj = {};
-		$sp.getRecordDisplayValues(obj, gr, 'sys_id, full_category');			
-		cache.push({id: obj.sys_id, name: obj.full_category});
-	}
-	data.categories = data.categories.concat(cache);
-	
-	// DOC
-	data.doc = [
-		{id: 'doc_dcb', name: 'DCB'},
-		{id: 'doc_dccps', name: 'DCCPS'},
-		{id: 'doc_dcp', name: 'DCTD'},
-		{id: 'doc_od_crchd', name: 'OD-CRCHD'},
-		{id: 'doc_od_cssi', name: 'OD-CSSI'},
-		{id: 'doc_od_obf', name: 'OD-OBF'},
-		{id: 'doc_od_ogcr', name: 'OD-OGCR'},
-		{id: 'doc_ccg', name: 'CCG'},
-		{id: 'doc_ccr', name: 'CCR'},
-		{id: 'doc_dceg', name: 'DCEG'},
-		{id: 'doc_dcp', name: 'DCP'}
-	];
-
-	// Cancer Site
-	data.cancerSite = [
-		{id: 'cancer_site_brain', name: 'Brain'},
-		{id: 'cancer_site_breast', name: 'Breast'},
-		{id: 'cancer_site_lung', name: 'Lung'},
-		{id: 'cancer_site_melanoma', name: 'Melanoma'},
-		{id: 'cancer_site_multiple_myeloma', name: 'Multiple Myeloma'},
-		{id: 'cancer_site-ovarian', name: 'Ovarian'},
-		{id: 'cancer_site_pancreatic', name: 'Pancreatic'},
-		{id: 'cancer_site_prostate', name: 'Prostate'},
-		{id: 'cancer_site_small_cell_lung_cancer', name: 'Small Cell Lung Cancer'},
-		{id: 'cancer_site_pediatric', name: 'Pediatric'}
-	];
-	
-	// Research Type
-	data.researchType = [
-		{id: 'research_type_basic', name: 'Basic'},
-		{id: 'research_type_pre_clinical', name: 'Pre-Clinical'},
-		{id: 'research_type_clinical', name: 'Clinical'},
-		{id: 'research_type_post_clinical', name: 'Post-Clinical'},
-		{id: 'research_type_epidemiological', name: 'Epidemiological'},
-		{id: 'research_type_population_science', name: 'Population Science'},
-		{id: 'research_type_cancer_control', name: 'Cancer Control'}
-	];
-	
-		/* SEARCH PROCESSING */
 	
 	if (input) {
-		// Get the categories for each knowledge base
-		if(input.searchLevel == 0){
-			if(input.selectedKnowledgeBase.length == 0){
-				  //select all the categories
-					data.selectedKnowledgeBase = [];	
-					data.selectedCategory = [];
-					data.filters = [];
-			}
-			else{
-				  //update the categories
-					data.selectedKnowledgeBase = input.selectedKnowledgeBase;
-				//update selected Category
-					var cache_id = [];
-					gr = new GlideRecord('kb_category');
-					gr.addQuery('parent_id', 'IN', data.selectedKnowledgeBase);
-					gr.query();
-					while (gr.next()) {
-						var objt = {};
-						$sp.getRecordDisplayValues(objt, gr, 'sys_id, full_category');			
-						cache_id.push(objt.sys_id);
-					}
-					cache = [];
-				  input.selectedCategory.forEach(function(sc){
-						if(cache_id.indexOf(sc) > -1){
-							cache.push(sc);
-						}	
-					});
-					data.selectedCategory = cache;
-					//update the filters
-					data.filters = [];
-				  cache = [];
-					data.selectedCategory.forEach(function(cat){
-						infos_category[cat].filters.forEach(function(fts){
-							if(cache.indexOf(fts) == -1){
-								cache.push(fts);
-							}
-						});
-					});
-					data.filters = cache;
-			}
+		if(input.selectedKnowledgeBase.id == "-1"){
+			data.selectedKnowledgeBase = default_kb;
 		}
-		else if(input.searchLevel == 1){
-			if(input.selectedCategory.length == 0){
-				data.selectedKnowledgeBase = [];
-				data.selectedCategory = [];
-				data.filters = [];
-			}
-			else{
-				//update the kb
-				cache = [];
-				data.selectedCategory = input.selectedCategory;
-				input.selectedCategory.forEach(function(sc){
-					//get kb from category
-					if(cache.indexOf(infos_category[sc].kb)  == -1 ){
-						cache.push(infos_category[sc].kb);
-					}
-				});
-				var cache_tmp = [];
-				data.knowledgeBases.forEach(function(kb){
-					if(cache.indexOf(kb.name) > -1){
-						cache_tmp.push(kb.id);
-					}
-				});
-				data.selectedKnowledgeBase = cache_tmp;
-				//update the filters
-				data.filters = [];
-				cache = [];
-				input.selectedCategory.forEach(function(cat){
-					infos_category[cat].filters.forEach(function(fts){
-						if(cache.indexOf(fts) == -1){
-							cache.push(fts);
-						}
-					});
-				});
-				data.filters = cache;
-			}
-		}
-		else if(input.searchLevel == 2){
-			//do nothing
+		else{
 			data.selectedKnowledgeBase = input.selectedKnowledgeBase;
-			data.selectedCategory = input.selectedCategory;
-			data.filters = input.filters;
 		}
-		else if(input.searchLevel == 3){
-			//do nothing
-			data.selectedKnowledgeBase = input.selectedKnowledgeBase;
-			data.selectedCategory = input.selectedCategory;
-			data.filters = input.filters;
+		
+		// The Knowledge Base IDs to be used in search filters
+		gr = new GlideRecord('kb_category');
+		gr.addQuery('parent_id', data.selectedKnowledgeBase.id);
+		gr.query();
+		var categories = [];
+		while (gr.next()) {
+			var obj = {};
+			$sp.getRecordDisplayValues(obj, gr, 'sys_id, label');			
+			categories.push({id: obj.sys_id, name: obj.label});
 		}
 
+		// DOC
+		data.doc = [
+			{id: 'doc_dcb', name: 'DCB'},
+			{id: 'doc_dccps', name: 'DCCPS'},
+			{id: 'doc_dcp', name: 'DCTD'},
+			{id: 'doc_od_crchd', name: 'OD-CRCHD'},
+			{id: 'doc_od_cssi', name: 'OD-CSSI'},
+			{id: 'doc_od_obf', name: 'OD-OBF'},
+			{id: 'doc_od_ogcr', name: 'OD-OGCR'},
+			{id: 'doc_ccg', name: 'CCG'},
+			{id: 'doc_ccr', name: 'CCR'},
+			{id: 'doc_dceg', name: 'DCEG'},
+			{id: 'doc_dcp', name: 'DCP'}
+		];
+
+		// Cancer Site
+		data.cancerSite = [
+			{id: 'cancer_site_brain', name: 'Brain'},
+			{id: 'cancer_site_breast', name: 'Breast'},
+			{id: 'cancer_site_lung', name: 'Lung'},
+			{id: 'cancer_site_melanoma', name: 'Melanoma'},
+			{id: 'cancer_site_multiple_myeloma', name: 'Multiple Myeloma'},
+			{id: 'cancer_site-ovarian', name: 'Ovarian'},
+			{id: 'cancer_site_pancreatic', name: 'Pancreatic'},
+			{id: 'cancer_site_prostate', name: 'Prostate'},
+			{id: 'cancer_site_small_cell_lung_cancer', name: 'Small Cell Lung Cancer'},
+			{id: 'cancer_site_pediatric', name: 'Pediatric'}
+		];
+
+		// Research Type
+		data.researchType = [
+			{id: 'research_type_basic', name: 'Basic'},
+			{id: 'research_type_pre_clinical', name: 'Pre-Clinical'},
+			{id: 'research_type_clinical', name: 'Clinical'},
+			{id: 'research_type_post_clinical', name: 'Post-Clinical'},
+			{id: 'research_type_epidemiological', name: 'Epidemiological'},
+			{id: 'research_type_population_science', name: 'Population Science'},
+			{id: 'research_type_cancer_control', name: 'Cancer Control'}
+		];
+	
+		/* SEARCH PROCESSING */
+		data.filters  = [];
+		if(data.selectedKnowledgeBase.name == "Basic Knowledge Base"){
+			data.filters.push('doc');
+			data.filters.push('cancer_site');
+			data.filters.push('research_type');
+		}
 
 		data.selectedDoc = data.filters.indexOf('doc') > -1 ? input.selectedDoc : [];
 		data.selectedCancerSite  = data.filters.indexOf('cancer_site') > -1 ? input.selectedCancerSite : [];
 		data.selectedResearchType = data.filters.indexOf('research_type') > -1 ? input.selectedResearchType : [];
 
-		data.result = "You searched for: " + input.searchString + ", in Knowledge base: " + input.selectedKnowledgeBase.join(',') + ", category: " + input.selectedCategory.join(',');
+		data.result = "You searched for: " + input.searchString + ", in Knowledge base: " + data.selectedKnowledgeBase.name ;
 		
 		var searchString = input.searchString ?  input.searchString.trim() : null;
 		
@@ -682,69 +675,48 @@ b {
 				
 		// The table that we need to search depends on the selected category. Every category is associated with a template, which is stored in a table that extends kb_knowledge
 
-		//todo......
-		if (data.selectedCategory.length == 0) {
-			// No specific category - search the default n_knowledge table
-			gr = new GlideRecord('kb_knowledge');
-			if(data.selectedKnowledgeBase.length == 0){
-				gr.addQuery('kb_knowledge_base', 'IN', kbSysIds);
-			}
-			else{
-				gr.addQuery('kb_knowledge_base', data.selectedKnowledgeBase);
-			}
+		//search on categories
+		
+		categories.forEach(function(cat){
+			var values = [];
+			var tmpl = infos[infos_category[cat.name].kb][cat.name].template_table;
+			gr = new GlideRecord(tmpl);
 			if (searchString) {
 				// Index search
 				gr.addQuery('IR_AND_QUERY', searchString);
 				data.searchString = searchString;
 			}
-			
+
+			if (data.selectedResearchType.length > 0) {
+				gr.addQuery('u_kb_research_type', 'IN', data.selectedResearchType);
+			}
+
+			if (data.selectedCancerSite.length > 0) {
+				gr.addQuery('u_kb_cancer_site_type', data.selectedCancerSite);
+			}
+
+			if (data.selectedDoc.length > 0) {
+				gr.addQuery('u_kb_doc', data.selectedDoc);
+			}
+
 			gr.query();
-			
+
 			while (gr.next()) {
-			
+
 				var articleResult = {};
-				$sp.getRecordDisplayValues(articleResult, gr, 'sys_id,short_description,kb_knowledge_base,kb_category,author,sys_updated_on,published,sys_view_count');
+				$sp.getRecordDisplayValues(articleResult, gr, 'sys_id,short_description,kb_knowledge_base,kb_category,author,sys_updated_on,published,sys_view_count,u_kb_cancer_site_type,u_kb_research_type,u_kb_doc');
 				articleResult.url = 'kb_view.do?sys_kb_id=' + articleResult.sys_id;
 				articleResult.template = infos_category[articleResult.kb_category].template_table;
-				data.searchResults.push(articleResult);
+				values.push(articleResult);
 			}
-		} else {
-			var values = [];
-			input.selectedCategory.forEach(function(cat){
-				var tmpl = infos[infos_category[cat].kb][cat].template_table;
-				gr = new GlideRecord(tmpl);
-				if (searchString) {
-					// Index search
-					gr.addQuery('IR_AND_QUERY', searchString);
-					data.searchString = searchString;
-				}
-
-				if (input.selectedResearchType.length > 0) {
-					gr.addQuery('u_kb_research_type', 'IN', input.selectedResearchType);
-				}
-
-				if (input.selectedCancerSite.length > 0) {
-					gr.addQuery('u_kb_cancer_site_type', input.selectedCancerSite);
-				}
-
-				if (input.selectedDoc.length > 0) {
-					gr.addQuery('u_kb_doc', input.selectedDoc);
-				}
-
-				gr.query();
-
-				while (gr.next()) {
-
-					var articleResult = {};
-					$sp.getRecordDisplayValues(articleResult, gr, 'sys_id,short_description,kb_knowledge_base,kb_category,author,sys_updated_on,published,sys_view_count,u_kb_cancer_site_type,u_kb_research_type,u_kb_doc');
-					articleResult.url = 'kb_view.do?sys_kb_id=' + articleResult.sys_id;
-					articleResult.template = infos_category[articleResult.kb_category].template_table;
-					values.push(articleResult);
-				}
-			});
-			data.searchResults = values;
-			
-		}
+			if(values.length > 0){
+				var tab = {};
+				tab.name = cat.name;
+				tab.list = values;
+				tab.show = true;
+				data.searchResults.push(tab);
+			}
+		});
 	}
 	
 })();]]></script>
@@ -754,7 +726,7 @@ b {
         <sys_created_on>2018-06-01 19:53:54</sys_created_on>
         <sys_customer_update>false</sys_customer_update>
         <sys_id>cf120a374fd213007221e321a310c724</sys_id>
-        <sys_mod_count>450</sys_mod_count>
+        <sys_mod_count>601</sys_mod_count>
         <sys_name>[crs] KD Search</sys_name>
         <sys_package display_value="CRS Knowledge Database" source="x_26385_crs_kd">404e613b4f9213007221e321a310c738</sys_package>
         <sys_policy/>
@@ -762,7 +734,7 @@ b {
         <sys_scope display_value="CRS Knowledge Database">404e613b4f9213007221e321a310c738</sys_scope>
         <sys_update_name>sp_widget_cf120a374fd213007221e321a310c724</sys_update_name>
         <sys_updated_by>yuw5@nih.gov</sys_updated_by>
-        <sys_updated_on>2018-06-27 01:31:48</sys_updated_on>
+        <sys_updated_on>2018-06-28 21:18:43</sys_updated_on>
         <template><![CDATA[<div class="container">
   <div class="row">
         <div class="col-md-3">
@@ -780,37 +752,18 @@ b {
 
                     <div class="form-group">
                         <label class="control-label" for="kbSelect">Knowledge Base:</label>
-                      <div class="facet-scroll"> 
-                          <div ng-repeat="item in c.data.knowledgeBases" class="facet-field-padding ng-scope" style=""> 
-                            <div ng-if="item.id" class="checkbox ng-scope"> 
-                              <label class="checkbox-label ng-binding">
-                                <input type="checkbox" class="chekbox-input ng-pristine ng-untouched ng-valid ng-empty" ng-model="item.selected" ng-click="c.updateKnowledgeBaseData(item)" value="{{item.id}}" role="checkbox" aria-invalid="false" ng-checked="c.data.selectedKnowledgeBase.indexOf(item.id) > -1">{{item.name}}
-                              </label> 
-                            </div>
-                          </div>
-                        </div>                       
+                      <div class="form-content">
+                         <select class="form-control" name="kbSelect" id="kbSelect" ng-options="option.name for option in c.data.knowledgeBases track by option.id"
+                            ng-model="c.data.selectedKnowledgeBase" ng-change="c.search(0)">
+                        </select>
+                      </div>                       
                     </div>
 
-                    <div class="form-group">
-                        <label class="control-label" for="categorySelect">Category:</label>
-                      	<div class="facet-scroll">
-                          <div class="form-info" ng-if="c.data.categories.length == 0">
-                            	Please select a Knowledge Base above.
-                          </div>
-                          <div ng-repeat="item in c.data.categories" class="facet-field-padding ng-scope" style=""> 
-                            <div ng-if="item.id" class="checkbox ng-scope"> 
-                              <label class="checkbox-label ng-binding">
-                                <input type="checkbox" class="chekbox-input ng-pristine ng-untouched ng-valid ng-empty" ng-model="item.selected" ng-click="c.updateCategoryData(item)" value="{{item.id}}" role="checkbox" aria-invalid="false" ng-checked="c.data.selectedCategory.indexOf(item.name) > -1">{{item.name}}</label> 
-                            </div>
-                          </div>
-                        </div>
-                    </div>
-                  
                     <div class="form-group" ng-if="c.data.filters.includes('cancer_site')">
                         <label class="control-label" for="cancerSiteSelect">Cancer Site/Type:</label>
                       	<div class="facet-scroll"> 
                           <div ng-repeat="item in c.data.cancerSite" class="facet-field-padding ng-scope" style=""> 
-                            <div ng-if="item.id" class="checkbox ng-scope"> 
+                            <div ng-if="item.id" class="checkbox ng-scope checkbox-item"> 
                               <label class="checkbox-label ng-binding">
                                 <input type="checkbox" class="chekbox-input ng-pristine ng-untouched ng-valid ng-empty" ng-model="item.selected" ng-click="c.updateCancerSiteData(item)" value="{{item.id}}" role="checkbox" aria-invalid="false" ng-checked="c.data.selectedCancerSite.indexOf(item.name) > -1">{{item.name}}</label> 
                             </div>
@@ -822,7 +775,7 @@ b {
                         <label class="control-label" for="researchTypeSelect">Research Type:</label>
                         <div class="facet-scroll"> 
                             <div ng-repeat="item in c.data.researchType" class="facet-field-padding ng-scope" style=""> 
-                              <div ng-if="item.id" class="checkbox ng-scope"> 
+                              <div ng-if="item.id" class="checkbox ng-scope checkbox-item"> 
                                 <label class="checkbox-label ng-binding">
                                   <input type="checkbox" class="chekbox-input ng-pristine ng-untouched ng-valid ng-empty" ng-model="item.selected" ng-click="c.updateResearchTypeData(item)" value="{{item.id}}" role="checkbox" aria-invalid="false" ng-checked="c.data.selectedResearchType.indexOf(item.name) > -1">{{item.name}}</label> 
                               </div>
@@ -834,7 +787,7 @@ b {
                         <label class="control-label" for="docSelect">DOC:</label>
                       <div class="facet-scroll"> 
                             <div ng-repeat="item in c.data.doc" class="facet-field-padding ng-scope" style=""> 
-                              <div ng-if="item.id" class="checkbox ng-scope"> 
+                              <div ng-if="item.id" class="checkbox ng-scope checkbox-item"> 
                                 <label class="checkbox-label ng-binding">
                                   <input type="checkbox" class="chekbox-input ng-pristine ng-untouched ng-valid ng-empty" ng-model="item.selected" ng-click="c.updateDocData(item)" value="{{item.id}}" role="checkbox" aria-invalid="false" ng-checked="c.data.selectedDoc.indexOf(item.name) > -1">{{item.name}}</label> 
                               </div>
@@ -874,7 +827,7 @@ b {
 
                     <div class="panel-heading panel-relative">
                       <div class="panel-title">
-                        <span class="count text">{{c.searchResults.length || 0}} Results</span>
+                        <span class="count text">{{c.resultLen}} Results</span>
                       </div>
                       <div class="panel-action" ng-if="c.isExportable">
                         <button class="btn btn-link" ng-click="c.export2Excel()">
@@ -904,34 +857,44 @@ b {
                           <input type="checkbox" class="checkbox checkbox-all" id="cb_selectAll" name="selectAll" value="all"> Select All
                         </span>
                       </div>
+                      <div class="button-group panel-bar-filter">
+                        <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown"><span class="filter-btn-label">Categories  </span> <span class="caret"></span></button>
+                        <ul class="dropdown-menu">
+                          <li class="dropdown-options" ng-repeat="cat in c.data.tabs"><input type="checkbox" class="chekbox-input ng-pristine ng-untouched ng-valid ng-empty" ng-model="cat.selected" ng-click="c.updateFilter(cat)" value="{{cat.name}}" role="checkbox" aria-invalid="false" ng-checked="true">&nbsp;{{cat.name}}</li>
+                        </ul>
+                      </div>
                     </div>
 
                     <div class="panel-body">
-                        <ul class="list-group" ng-if="c.searchResults.length > 0">
-                            <li class="list-group-item" ng-repeat="result in c.searchResults">
+                      <uib-tabset>
+                        <uib-tab ng-repeat="tab in c.data.tabs" ng-if="tab.show" index="0" heading="{{tab.name}}">
+                          <ul class="list-group">
+                            <li class="list-group-item item-row" ng-repeat="result in tab.list">
                               <input type="checkbox" ng-model="cb_checkbox" ng-change="c.change(cb_checkbox)" class="checkbox content-checkbox" id="cb_{{result.sys_id}}" name="selections" value="{{result.sys_id}},{{result.kb_knowledge_base}},{{result.kb_category}}" >
-                                <i class="glyphicon glyphicon-file"></i>
-                               
-                                	<a class="kb-title" ng-click="c.showContent(result.template,result.sys_id)" >{{result.short_description}}</a>
-                               
-                                <br>
-                                <div class="kb-ref">
-                                	<span>{{result.kb_knowledge_base}} > {{result.kb_category}}</span>
-                              	</div>
-                              	<div class="kb-about">
-                                
-                                    Author: {{result.author}}
-                                    <span class="dot" aria-hidden="true"> • </span>
-                                    {{result.sys_view_count}} Views
-                                    <span class="dot" aria-hidden="true"> • </span>
-                                    Updated: <sn-time-ago timestamp="::result.sys_updated_on"/>
-                                    <span class="dot" aria-hidden="true"> • </span>
-                                    Published: <sn-time-ago timestamp="::result.published"/>
-                                  
-                                
-                                </div>
+                              <i class="glyphicon glyphicon-file"></i>
+
+                              <a class="kb-title" ng-click="c.showContent(result.template,result.sys_id)" >{{result.short_description}}</a>
+
+                              <br>
+                              <div class="kb-ref">
+                                <span>{{result.kb_knowledge_base}} > {{result.kb_category}}</span>
+                              </div>
+                              <div class="kb-about">
+
+                                Author: {{result.author}}
+                                <span class="dot" aria-hidden="true"> • </span>
+                                {{result.sys_view_count}} Views
+                                <span class="dot" aria-hidden="true"> • </span>
+                                Updated: <sn-time-ago timestamp="::result.sys_updated_on"/>
+                                <span class="dot" aria-hidden="true"> • </span>
+                                Published: <sn-time-ago timestamp="::result.published"/>
+
+
+                              </div>
                             </li>
-                        </ul>
+                          </ul>
+                        </uib-tab>
+                      </uib-tabset>
                     </div>
                 </div>
             </div>
