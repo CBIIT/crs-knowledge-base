@@ -31,6 +31,7 @@
 			var idx = 0;
 			c.resultLen = 0;
 			c.data.tabs.forEach(function(t){
+				  t.isOpen = true;
 					c.selectedCategories[t.name] = idx++;
 					c.resultLen += t.list.length;
 			});
@@ -149,6 +150,19 @@
 		c.search(2);
 	}
 	
+	c.selectAll_CancerSite = function(){
+		var selectAll = document.getElementById("selectAll_CancerSite");
+		c.data.selectedCancerSite = [];
+		if(selectAll.checked){
+			var tmp = [];
+			c.data.cancerSite.map(function(obj){
+				tmp.push(obj.name);
+			});
+			c.data.selectedCancerSite = tmp;
+		}
+		c.search(2);
+	}
+	
 	c.updateResearchTypeData = function(item){
 		if(item.selected){
 			c.data.selectedResearchType.push(item.name);
@@ -158,6 +172,19 @@
 			if (idx > -1) {
 				c.data.selectedResearchType.splice(idx, 1);
 			}
+		}
+		c.search(2);
+	}
+	
+	c.selectAll_ResearchType = function(){
+		var selectAll = document.getElementById("selectAll_ResearchType");
+		c.data.selectedResearchType = [];
+		if(selectAll.checked){
+			var tmp = [];
+			c.data.researchType.map(function(obj){
+				tmp.push(obj.name);
+			});
+			c.data.selectedResearchType = tmp;
 		}
 		c.search(2);
 	}
@@ -175,10 +202,29 @@
 		c.search(2);
 	}
 	
+	c.selectAll_Doc = function(){
+		var selectAll = document.getElementById("selectAll_Doc");
+		c.data.selectedDoc = [];
+		if(selectAll.checked){
+			var tmp = [];
+			c.data.doc.map(function(obj){
+				tmp.push(obj.name);
+			});
+			c.data.selectedDoc = tmp;
+		}
+		c.search(2);
+	}
+	
 	// Perform an initial search when the page loads
 	$scope.$watch('$viewContentLoaded', function() {
     c.data.selectedKnowledgeBase = {id: '-1', name: 'All'};
-		c.data.filters = []; 
+		c.data.filters = [];
+		if(s.kb_knowledge_base){
+			c.data.selectedKnowledgeBase = {id: s.kb_knowledge_base, name: ''};
+		}
+		if(s.search){
+			c.data.searchString = s.search;
+		}
 		c.search(0);
 	});
 	
@@ -367,7 +413,6 @@ b {
 
 .filter-btn-label{
 	font-size:14px;
-  font-weight:bold;
   margin-right:10px;
 }
 
@@ -485,6 +530,22 @@ b {
   background-color: #f5f5f5 ;
 }
 
+.filter-section{
+  margin-bottom:10px;
+  margin-right:15px;
+  position:relative;
+}
+
+.filter-section button{
+	width:100%;
+  text-align:left;
+}
+
+.filter-section .caret{
+	float:right;
+  margin-top: 10px;
+}
+
 .form-content{
 	padding:10px;
 }
@@ -525,11 +586,10 @@ b {
   padding-top: 5px;
   padding-left: 15px;
   padding-bottom: 5px;
-  overflow-y: auto;
 }
 
 .dropdown-options{
-	padding:5px 10px;
+	padding:0px 10px;
   font-weight: normal;
 }
 .dropdown-menu{
@@ -605,7 +665,11 @@ b {
 			data.selectedKnowledgeBase = default_kb;
 		}
 		else{
-			data.selectedKnowledgeBase = input.selectedKnowledgeBase;
+			data.knowledgeBases.forEach(function(kb){
+				if(kb.id == input.selectedKnowledgeBase.id){
+					data.selectedKnowledgeBase = kb;
+				}
+			});
 		}
 		
 		// The Knowledge Base IDs to be used in search filters
@@ -730,7 +794,7 @@ b {
         <sys_created_on>2018-06-01 19:53:54</sys_created_on>
         <sys_customer_update>false</sys_customer_update>
         <sys_id>cf120a374fd213007221e321a310c724</sys_id>
-        <sys_mod_count>640</sys_mod_count>
+        <sys_mod_count>727</sys_mod_count>
         <sys_name>[crs] KD Search</sys_name>
         <sys_package display_value="CRS Knowledge Database" source="x_26385_crs_kd">404e613b4f9213007221e321a310c738</sys_package>
         <sys_policy/>
@@ -738,18 +802,18 @@ b {
         <sys_scope display_value="CRS Knowledge Database">404e613b4f9213007221e321a310c738</sys_scope>
         <sys_update_name>sp_widget_cf120a374fd213007221e321a310c724</sys_update_name>
         <sys_updated_by>yuw5@nih.gov</sys_updated_by>
-        <sys_updated_on>2018-06-28 22:11:04</sys_updated_on>
+        <sys_updated_on>2018-08-06 21:34:54</sys_updated_on>
         <template><![CDATA[<div class="container">
   <div class="row">
         <div class="col-md-3">
-            <!-- 3 columns search menu -->
+            <!-- 3 columns search menu 
 
             <div class="crs-sidebar-info">
                 <div class="details" title="NCI Encyclopedia and Repository Database">
                   <b>NCI E</b>ncyclopedia and <b>R</b>epository <b>D</b>atabase
                 </div>
             </div>
-          
+          	-->
             <div class="panel panel-default margin-10">
 
                 <div>
@@ -763,56 +827,44 @@ b {
                       </div>                       
                     </div>
 
-                    <div class="form-group" ng-if="c.data.filters.includes('cancer_site')">
-                        <div class="control-label" for="cancerSiteSelect">Cancer Site/Type:
-                      		<!--<div class="checkbox-section-all">
-                            <input type="checkbox" class="checkbox checkbox-all" id="cancer_cb_selectAll"/> Select All
-                          </div>
-													-->
-                      </div>
-                      	<div class="facet-scroll"> 
-                          <div ng-repeat="item in c.data.cancerSite" class="facet-field-padding ng-scope" style=""> 
-                            <div ng-if="item.id" class="checkbox ng-scope checkbox-item"> 
-                              <label class="checkbox-label ng-binding">
-                                <input type="checkbox" class="chekbox-input ng-pristine ng-untouched ng-valid ng-empty" ng-model="item.selected" ng-click="c.updateCancerSiteData(item)" value="{{item.id}}" role="checkbox" aria-invalid="false" ng-checked="c.data.selectedCancerSite.indexOf(item.name) > -1">{{item.name}}</label> 
-                            </div>
-                          </div>
-                        </div>
-                    </div>
-
-                    <div class="form-group" ng-if="c.data.filters.includes('research_type')">
-                        <div class="control-label" for="researchTypeSelect">Research Type:
-                      		<!--<div class="checkbox-section-all">
-                            <input type="checkbox"  class="checkbox checkbox-all"  id="research_cb_selectAll"/> Select All
-                          </div>
-													-->
-                      </div>
-                        
-                      	<div class="facet-scroll"> 
-                            <div ng-repeat="item in c.data.researchType" class="facet-field-padding ng-scope" style=""> 
-                              <div ng-if="item.id" class="checkbox ng-scope checkbox-item"> 
-                                <label class="checkbox-label ng-binding">
-                                  <input type="checkbox" class="chekbox-input ng-pristine ng-untouched ng-valid ng-empty" ng-model="item.selected" ng-click="c.updateResearchTypeData(item)" value="{{item.id}}" role="checkbox" aria-invalid="false" ng-checked="c.data.selectedResearchType.indexOf(item.name) > -1">{{item.name}}</label> 
-                              </div>
-                            </div>
-                          </div>
-                    </div>
-                  
-                  	<div class="form-group" ng-if="c.data.filters.includes('doc')">
-                        <div class="control-label" for="docSelect">DOC:
-                      		<!--<div class="checkbox-section-all">
-                            <input type="checkbox"  class="checkbox checkbox-all"  id="doc_cb_selectAll"/> Select All
-                          </div>
-													-->
+                    <div class="form-group"ng-if="c.data.filters.includes('cancer_site') || c.data.filters.includes('research_type') || c.data.filters.includes('doc')">
+                      <div class="control-label" for="cancerSiteSelect">Filters:
                       </div>
                       <div class="facet-scroll"> 
-                            <div ng-repeat="item in c.data.doc" class="facet-field-padding ng-scope" style=""> 
-                              <div ng-if="item.id" class="checkbox ng-scope checkbox-item"> 
-                                <label class="checkbox-label ng-binding">
-                                  <input type="checkbox" class="chekbox-input ng-pristine ng-untouched ng-valid ng-empty" ng-model="item.selected" ng-click="c.updateDocData(item)" value="{{item.id}}" role="checkbox" aria-invalid="false" ng-checked="c.data.selectedDoc.indexOf(item.name) > -1">{{item.name}}</label> 
-                              </div>
-                            </div>
-                          </div>
+                        <div class="filter-section" ng-if="c.data.filters.includes('cancer_site')">
+                          <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown"><span class="filter-btn-label">Cancer Site/Type  </span> <span class="caret"></span></button>
+                          <ul class="dropdown-menu" style="width:100%;">
+                            <li class="dropdown-options">
+                              <input type="checkbox" id="selectAll_CancerSite" class="chekbox-input ng-pristine ng-untouched ng-valid ng-empty" ng-click="c.selectAll_CancerSite()" ng-checked="c.data.selectedCancerSite.length != 0  && c.data.selectedCancerSite.length == c.data.cancerSite.length">&nbsp;All
+                            </li>
+                            <li class="dropdown-options" ng-repeat="cat in c.data.cancerSite">
+                              <input type="checkbox" class="chekbox-input ng-pristine ng-untouched ng-valid ng-empty" ng-model="cat.selected" ng-click="c.updateCancerSiteData(cat)" value="{{cat.id}}" role="checkbox" aria-invalid="false" ng-checked="true" ng-checked="c.data.selectedCancerSite.indexOf(cat.name) > -1">&nbsp;{{cat.name}}
+                            </li>
+                          </ul>
+                        </div>
+                        <div class="filter-section" ng-if="c.data.filters.includes('research_type')">
+                          <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown"><span class="filter-btn-label">Research Type  </span> <span class="caret"></span></button>
+                          <ul class="dropdown-menu" style="width:100%;">
+                            <li class="dropdown-options">
+                              <input type="checkbox" id="selectAll_ResearchType" class="chekbox-input ng-pristine ng-untouched ng-valid ng-empty" ng-click="c.selectAll_ResearchType()" ng-checked="c.data.selectedResearchType.length != 0  && c.data.selectedResearchType.length == c.data.researchType.length">&nbsp;All
+                            </li>
+                            <li class="dropdown-options" ng-repeat="cat in c.data.researchType">
+                              <input type="checkbox" class="chekbox-input ng-pristine ng-untouched ng-valid ng-empty" ng-model="cat.selected" ng-click="c.updateResearchTypeData(cat)" value="{{cat.id}}" role="checkbox" aria-invalid="false" ng-checked="true" ng-checked="c.data.selectedResearchType.indexOf(cat.name) > -1">&nbsp;{{cat.name}}
+                            </li>
+                          </ul>
+                        </div>
+                        <div class="filter-section" ng-if="c.data.filters.includes('doc')">
+                          <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown"><span class="filter-btn-label">DOC  </span> <span class="caret"></span></button>
+                          <ul class="dropdown-menu" style="width:100%;">
+                            <li class="dropdown-options">
+                              <input type="checkbox" id="selectAll_Doc" class="chekbox-input ng-pristine ng-untouched ng-valid ng-empty" ng-click="c.selectAll_Doc()" ng-checked="c.data.selectedDoc.length != 0  && c.data.selectedDoc.length == c.data.doc.length">&nbsp;All
+                            </li>
+                            <li class="dropdown-options" ng-repeat="cat in c.data.doc">
+                              <input type="checkbox" class="chekbox-input ng-pristine ng-untouched ng-valid ng-empty" ng-model="cat.selected" ng-click="c.updateDocData(cat)" value="{{cat.id}}" role="checkbox" aria-invalid="false" ng-checked="true" ng-checked="c.data.selectedDoc.indexOf(cat.name) > -1">&nbsp;{{cat.name}}
+                            </li>
+                          </ul>
+                        </div>
+                      </div>
                     </div>
                   
                   	<div class="form-group form-btns">
@@ -886,8 +938,13 @@ b {
                     </div>
 
                     <div class="panel-body">
-                      <uib-tabset>
-                        <uib-tab ng-repeat="tab in c.data.tabs" ng-if="tab.show" index="0" heading="{{tab.name}}">
+                      <uib-accordion close-others="false">
+                        <div uib-accordion-group ng-repeat="tab in c.data.tabs" ng-if="tab.show" class="panel-default" is-open="tab.isOpen">
+                          <uib-accordion-heading>
+                            <div>
+                              {{tab.name}} ({{tab.list.length}}) <i class="pull-right" ng-class="{'fa fa-minus-square': tab.isOpen, 'fa fa-plus-square': !tab.isOpen}"></i>
+                            </div>
+                          </uib-accordion-heading>
                           <ul class="list-group">
                             <li class="list-group-item item-row" ng-repeat="result in tab.list">
                               <input type="checkbox" ng-model="cb_checkbox" ng-change="c.change(cb_checkbox)" class="checkbox content-checkbox" id="cb_{{result.sys_id}}" name="selections" value="{{result.sys_id}},{{result.kb_knowledge_base}},{{result.kb_category}}" >
@@ -913,8 +970,8 @@ b {
                               </div>
                             </li>
                           </ul>
-                        </uib-tab>
-                      </uib-tabset>
+                        </div>
+                      </uib-accordion>
                     </div>
                 </div>
             </div>

@@ -1,0 +1,80 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<record_update table="sp_widget">
+    <sp_widget action="INSERT_OR_UPDATE">
+        <category>custom</category>
+        <client_script><![CDATA[function() {  /* widget controller */  var c = this;}]]></client_script>
+        <controller_as>c</controller_as>
+        <css>#crs-kd-header{
+  position: absolute;
+  left: 0;
+  top: -1rem;
+  right: 0;
+  bottom: 0;
+}
+#crs-kd-logo{
+  position:relative;
+  width:100%;
+}
+.logo{
+	padding-left:0px;
+}
+.nci-logo {
+    height: 92px;
+}
+
+#crs-kd-nav{
+  position:relative;
+  width:100%;
+  height:60px;
+  background-color:#C6375D;
+}
+#crs-kd-nav .details {
+  color:white;
+  font-weight:bold;
+  font-size:1.8rem;
+  height:60px;
+	line-height:60px;
+}</css>
+        <data_table>sp_instance</data_table>
+        <demo_data/>
+        <description/>
+        <docs/>
+        <field_list/>
+        <has_preview>false</has_preview>
+        <id>crs-kd-header</id>
+        <internal>false</internal>
+        <link/>
+        <name>[crs] KD Header</name>
+        <option_schema/>
+        <public>false</public>
+        <roles/>
+        <script><![CDATA[(function() {  /* populate the 'data' object */  /* e.g., data.table = $sp.getValue('table'); */})();]]></script>
+        <servicenow>false</servicenow>
+        <sys_class_name>sp_widget</sys_class_name>
+        <sys_created_by>yuw5@nih.gov</sys_created_by>
+        <sys_created_on>2018-07-18 20:31:44</sys_created_on>
+        <sys_customer_update>false</sys_customer_update>
+        <sys_id>9cfd0cc3db9397009b0a74131f96190e</sys_id>
+        <sys_mod_count>22</sys_mod_count>
+        <sys_name>[crs] KD Header</sys_name>
+        <sys_package display_value="CRS Knowledge Database" source="x_26385_crs_kd">404e613b4f9213007221e321a310c738</sys_package>
+        <sys_policy/>
+        <sys_replace_on_upgrade>false</sys_replace_on_upgrade>
+        <sys_scope display_value="CRS Knowledge Database">404e613b4f9213007221e321a310c738</sys_scope>
+        <sys_update_name>sp_widget_9cfd0cc3db9397009b0a74131f96190e</sys_update_name>
+        <sys_updated_by>yuw5@nih.gov</sys_updated_by>
+        <sys_updated_on>2018-07-18 21:42:08</sys_updated_on>
+        <template><![CDATA[<div id="crs-kd-header">
+	<div id="crs-kd-logo">
+    <div class="container logo">
+      <img ng-src="842ca96adbce93c0f59974131f96197f.iix" title="NCI" role="presentation" alt="Portal Logo" class="nci-logo" src="842ca96adbce93c0f59974131f96197f.iix">
+    </div>
+  </div>
+  <div id="crs-kd-nav">
+    <div class="container details" title="NCI Encyclopedia and Repository Database"> 
+      NCI Encyclopedia and Repository Database 
+    </div> 
+  </div>
+</div>]]></template>
+    </sp_widget>
+</record_update>
