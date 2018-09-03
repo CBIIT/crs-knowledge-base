@@ -1,0 +1,104 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<record_update table="sys_ws_operation">
+    <sys_ws_operation action="INSERT_OR_UPDATE">
+        <active>true</active>
+        <consumes>application/json,application/xml,text/xml</consumes>
+        <consumes_customized>false</consumes_customized>
+        <default_operation_uri/>
+        <enforce_acl>cf9d01d3e73003009d6247e603f6a990</enforce_acl>
+        <http_method>GET</http_method>
+        <name>getDocumentById</name>
+        <operation_script><![CDATA[(function process(/*RESTAPIRequest*/ request, /*RESTAPIResponse*/ response) {
+	var template = {"u_kb_template_top_accomplishment":['Short description','Cancer Site/Type','Research Type','Description','References','Involved organization', 'DOC'],
+					 "u_kb_template_collaboration_report":['Short description','Type','NIH Partners','Federal Partners','Description'],
+					 "u_kb_template_significant_item": ['Short description','Cancer Site/Type', 'Congressional Language','Background','Recent Accomplishments','New Opportunities'],
+					 "u_kb_template_triennial_report": ['Short description','Background','Methods','Results', 'Conclusions']
+				   };
+	
+	var data_columns = {
+                "u_kb_template_top_accomplishment":{
+                                "Short description":"short_description",
+                                "Cancer Site/Type":"u_kb_cancer_site_type", 
+                                "Description":"u_kb_description",
+                                "DOC":"u_kb_doc",
+                                "Involved organization":"u_kb_involved_organization",
+                                "References":"u_kb_references",
+                                "Research Type":"u_kb_research_type",
+                },
+                "u_kb_template_collaboration_report":{
+                                "Short description":"short_description",
+                                "Description":"u_kb_description",
+                                "Federal Partners":"u_kb_federal_partners",
+                                "NIH Partners":"u_kb_nih_partners",
+                                "Type":"u_kb_type"
+                },
+                "u_kb_template_significant_item":{
+                                "Short description":"short_description",
+                                "Cancer Site/Type":"u_kb_cancer_site_type",
+                                "Background":"u_kb_background",
+                                "Congressional Language":"u_kb_congressional_language",
+                                "New Opportunities":"u_kb_new_opportunities",
+                                "Recent Accomplishments":"u_kb_recent_accomplishments"
+                },
+                "u_kb_template_triennial_report":{
+                                "Short description":"short_description",
+                                "Background":"u_kb_background",
+                                "Conclusions":"u_kb_conclusions",
+                                "Methods":"u_kb_methods",
+                                "Results":"u_kb_results"
+                }
+};
+ 
+    var document_id = request.queryParams.id;
+	var table_name = request.queryParams.name;
+	
+	var column_label = template[table_name];
+    var temp = data_columns[table_name];
+
+    var column_name = [];
+    for(var i = 0; i < column_label.length; i++){
+        column_name[i] = temp[column_label[i]];
+    }
+	
+	var item = new GlideRecord(table_name);
+		item.addQuery('sys_id', document_id);
+	item.query();
+	item.next();
+	
+	var result = {};
+	for(var j = 0; j < column_name.length; j++){
+		if(item.getDisplayValue(column_name[j]) == null || item.getDisplayValue(column_name[j]).trim().length == 0){
+			result[column_label[j]] = "N/A";					
+		}else{
+			result[column_label[j]] = item.getDisplayValue(column_name[j]);
+		 }
+	}
+  
+	return result;
+})(request, response);]]></operation_script>
+        <operation_uri>/api/x_26385_crs_kd/export/getDocumentById</operation_uri>
+        <produces>application/json,application/xml,text/xml</produces>
+        <produces_customized>false</produces_customized>
+        <relative_path>/getDocumentById</relative_path>
+        <request_example/>
+        <requires_acl_authorization>true</requires_acl_authorization>
+        <requires_authentication>true</requires_authentication>
+        <short_description/>
+        <sys_class_name>sys_ws_operation</sys_class_name>
+        <sys_created_by>zhoujim@nih.gov</sys_created_by>
+        <sys_created_on>2018-06-26 20:52:59</sys_created_on>
+        <sys_customer_update>false</sys_customer_update>
+        <sys_id>d3bf36f3dbfa57009b0a74131f961981</sys_id>
+        <sys_mod_count>11</sys_mod_count>
+        <sys_name>getDocumentById</sys_name>
+        <sys_package display_value="CRS Knowledge Database" source="x_26385_crs_kd">404e613b4f9213007221e321a310c738</sys_package>
+        <sys_policy/>
+        <sys_replace_on_upgrade>false</sys_replace_on_upgrade>
+        <sys_scope display_value="CRS Knowledge Database">404e613b4f9213007221e321a310c738</sys_scope>
+        <sys_update_name>sys_ws_operation_d3bf36f3dbfa57009b0a74131f961981</sys_update_name>
+        <sys_updated_by>zhoujim@nih.gov</sys_updated_by>
+        <sys_updated_on>2018-06-27 00:25:17</sys_updated_on>
+        <web_service_definition display_value="export">01e1bbe7db6a53005358dc50cf961994</web_service_definition>
+        <web_service_version/>
+    </sys_ws_operation>
+</record_update>

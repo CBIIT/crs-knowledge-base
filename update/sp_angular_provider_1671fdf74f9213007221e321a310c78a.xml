@@ -101,11 +101,13 @@ function crskdRoute($rootScope, $location) {
         <sys_class_name>sp_angular_provider</sys_class_name>
         <sys_created_by>admin</sys_created_by>
         <sys_created_on>2018-06-01 18:40:24</sys_created_on>
+        <sys_customer_update>false</sys_customer_update>
         <sys_id>1671fdf74f9213007221e321a310c78a</sys_id>
         <sys_mod_count>1</sys_mod_count>
         <sys_name>crskdRoute</sys_name>
         <sys_package display_value="CRS Knowledge Database" source="x_26385_crs_kd">404e613b4f9213007221e321a310c738</sys_package>
         <sys_policy/>
+        <sys_replace_on_upgrade>false</sys_replace_on_upgrade>
         <sys_scope display_value="CRS Knowledge Database">404e613b4f9213007221e321a310c738</sys_scope>
         <sys_update_name>sp_angular_provider_1671fdf74f9213007221e321a310c78a</sys_update_name>
         <sys_updated_by>admin</sys_updated_by>

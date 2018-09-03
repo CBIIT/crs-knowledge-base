@@ -1,0 +1,161 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<record_update table="sp_widget">
+    <sp_widget action="INSERT_OR_UPDATE">
+        <category>custom</category>
+        <client_script><![CDATA[function($location) {
+  var c = this;
+  var s = $location.search();
+  var redirect = false;
+
+  if (s.xpage && s.xpage == 'kd_search') {
+    c.xpage = "main";
+  }
+	else{
+		c.xpage = "home";
+	}
+	
+	//Search on enter key pressed
+	c.inputOnkeypress = function(){
+		if (event.keyCode === 13) {
+			c.searchKB();
+		}
+	}
+	
+	c.showAllContent = function(){
+		c.xpage = "main";
+		s.xpage = 'kd_search'; // this is our default page
+    $location.search(s).replace();
+	}
+	
+	c.searchKB = function(){
+		c.xpage = "main";
+		s.xpage = 'kd_search';
+		s.search = c.data.searchString;
+    $location.search(s).replace();
+	}
+}]]></client_script>
+        <controller_as>c</controller_as>
+        <css>#crs-kd-home{
+	position: absolute;
+  left: 0;
+  top: 152px;
+  right: 0;
+  bottom: 0;
+}
+#search-area{
+	padding:30px 0;
+}
+#crs-main {
+  position: absolute;
+  left: 0;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  //background-color: #123E57;
+  
+}
+.split-line{
+	border:1px solid #ddd;
+  box-shadow:0 2px 2px rgba(0,0,0,0.16);
+}
+#crs-kd-summary{
+	
+}
+.summary-title{
+	padding:40px 0;
+  text-align:center;
+  font-size:23px;
+  color:#14819b;
+  font-family: Montserrat,Avant Garde,Arial,sans-serif;
+}
+.searchBox{
+	width:50%;
+  margin-left:auto;
+  margin-right:auto;
+}
+.search-link{
+	  width: 50%;
+    margin-left: auto;
+    margin-right: auto;
+    text-align: center;
+    margin-top: 10px;
+}
+.search-link a{
+	  cursor:pointer;
+}
+.bread-bar{
+	border-bottom: 1px solid #ddd;
+  padding-bottom:10px;
+}
+.bread-bar i{
+	margin-top:10px;
+}</css>
+        <data_table>sp_instance</data_table>
+        <demo_data/>
+        <description/>
+        <docs/>
+        <field_list/>
+        <has_preview>false</has_preview>
+        <id>crs-kd-home</id>
+        <internal>false</internal>
+        <link/>
+        <name>[crs] KD Home</name>
+        <option_schema/>
+        <public>false</public>
+        <roles/>
+        <script><![CDATA[(function() {  /* populate the 'data' object */  /* e.g., data.table = $sp.getValue('table'); */})();]]></script>
+        <servicenow>false</servicenow>
+        <sys_class_name>sp_widget</sys_class_name>
+        <sys_created_by>yuw5@nih.gov</sys_created_by>
+        <sys_created_on>2018-07-18 21:58:33</sys_created_on>
+        <sys_customer_update>false</sys_customer_update>
+        <sys_id>44d1ec83dbd397009b0a74131f9619b1</sys_id>
+        <sys_mod_count>61</sys_mod_count>
+        <sys_name>[crs] KD Home</sys_name>
+        <sys_package display_value="CRS Knowledge Database" source="x_26385_crs_kd">404e613b4f9213007221e321a310c738</sys_package>
+        <sys_policy/>
+        <sys_replace_on_upgrade>false</sys_replace_on_upgrade>
+        <sys_scope display_value="CRS Knowledge Database">404e613b4f9213007221e321a310c738</sys_scope>
+        <sys_update_name>sp_widget_44d1ec83dbd397009b0a74131f9619b1</sys_update_name>
+        <sys_updated_by>yuw5@nih.gov</sys_updated_by>
+        <sys_updated_on>2018-08-06 21:42:12</sys_updated_on>
+        <template><![CDATA[<div id="crs-kd-home">
+	<div id="search-area" class="container" ng-if="c.xpage == 'home'">
+    <div class="searchBox">
+      <div class="input-group">
+        <input type="text" class="form-control" name="homeSearchInput" id="homeSearchInput" ng-keypress="c.inputOnkeypress()" placeholder="Type here to search for knowledge" ng-model="c.data.searchString">
+        <span class="input-group-btn">
+          <button type="submit" class="btn btn-default" ng-click="c.searchKB()">
+            <span class="glyphicon glyphicon-search" aria-hidden="true"></span>
+          </button>
+        </span>
+      </div>
+    </div>
+    <div class="search-link">
+      <a ng-click="c.showAllContent()">Browser All Available Content</a>
+    </div>
+  </div>
+  <div class="split-line" ng-if="c.xpage == 'home'">
+    
+  </div>
+  <div id="crs-kd-summary" class="container"  ng-if="c.xpage == 'home'">
+    <div class="summary-title">Explore Our Knowledge Bases</div>
+    <div>
+      <widget id="crs-kd-summary"></widget>
+    </div>
+  </div>
+  <div id="crs-main" ng-if="c.xpage == 'main'">
+    <div class="bread-bar">
+      <div class="container">
+        <ul class="hidden-sm hidden-xs nav nav-pills nav-sm"> 
+         <li><a ng-href="crs_kd" role="link" href="crs_kd">Home</a></li> 
+         <li><i class="fa fa-chevron-right"></i></li> 
+         <li><a ng-href="crs_kd?xpage=kd_search" class="ng-binding" role="link" href="crs_kd?xpage=kd_search">Knowledge Search</a></li>  
+        </ul>
+      </div>
+    </div>
+    <widget id="crs-kd-search"></widget>
+  </div>
+</div>]]></template>
+    </sp_widget>
+</record_update>

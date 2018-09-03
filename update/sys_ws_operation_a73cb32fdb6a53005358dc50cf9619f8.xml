@@ -1,0 +1,100 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<record_update table="sys_ws_operation">
+    <sys_ws_operation action="INSERT_OR_UPDATE">
+        <active>true</active>
+        <consumes>application/json,application/xml,text/xml</consumes>
+        <consumes_customized>false</consumes_customized>
+        <default_operation_uri/>
+        <enforce_acl>cf9d01d3e73003009d6247e603f6a990</enforce_acl>
+        <http_method>POST</http_method>
+        <name>save2word</name>
+        <operation_script><![CDATA[(function process(/*RESTAPIRequest*/ request, /*RESTAPIResponse*/ response) {
+	var data = request.body.data;
+	var files = data.files;
+	var schemas = {"u_kb_template_triennial_report":{
+					"Background":"u_kb_background",
+					"Methods":"u_kb_methods",
+					"Results":"u_kb_results",
+					"Conclusions":"u_kb_conclusions"
+				},"u_kb_template_top_accomplishment":{
+					"Cancer Site/Type": "u_kb_cancer_site_type",
+					  "Involved organization": "u_kb_involved_organization",
+					  "References":"u_kb_references",
+					  "Description":"u_kb_description",
+					  "DOC":"u_kb_doc",
+					  "Research Type":"u_kb_research_type"
+				},"u_kb_template_significant_item":{
+					"Cancer Site/Type": "u_kb_cancer_site_type",
+					  "New Opportunities":"u_kb_new_opportunities",
+					  "Recent Accomplishments":"u_kb_recent_accomplishments",
+					  "Background":"u_kb_background",
+					  "Congressional Language":"u_kb_template_significant_item"
+				},"u_kb_template_collaboration_report":{
+					"Description":"u_kb_description",
+					    "Federal Partners":"u_kb_federal_partners",
+					    "NIH Partners":"u_kb_nih_partners",
+					    "Type":"u_kb_type"
+				}};
+	var config = {"Final Report Knowledge Base>Triennial Report":"u_kb_template_triennial_report",
+				  "Basic Knowledge Base>Top Accomplishments":"u_kb_template_top_accomplishment",
+				  "Basic Knowledge Base>Significant Items":"u_kb_template_significant_item",
+				  "Basic Knowledge Base>Collaboration Report":"u_kb_template_collaboration_report"
+	};
+	var body = {};
+	body.content = [];
+	var cache = {};
+	files.forEach(function(f){
+		var tmp = config[f.kb + ">" +f.category];
+		if(cache[tmp] == null){
+			cache[tmp] = [];
+		}
+		cache[tmp].push(f.sys_id);
+	});
+	var dt = {};
+	var gr;
+	for(var key in cache){
+		var s = schemas[key];
+		gr = new GlideRecord(key);
+		gr.addQuery("sys_id", "IN", cache[key]);
+		gr.query();
+
+		while (gr.next()) {
+			dt[gr.sys_id] = {};
+			for(var ckey in s){
+				dt[gr.sys_id][ckey] = gr[s[ckey]];
+			}
+			dt[gr.sys_id].title = gr.short_description;
+		}
+	}
+	files.forEach(function(fs){
+		body.content.push(dt[fs.sys_id]);
+	});
+	
+	response.setBody(body);	
+})(request, response);]]></operation_script>
+        <operation_uri>/api/x_26385_crs_kd/export/word</operation_uri>
+        <produces>application/json,application/xml,text/xml</produces>
+        <produces_customized>false</produces_customized>
+        <relative_path>/word</relative_path>
+        <request_example/>
+        <requires_acl_authorization>false</requires_acl_authorization>
+        <requires_authentication>true</requires_authentication>
+        <short_description/>
+        <sys_class_name>sys_ws_operation</sys_class_name>
+        <sys_created_by>admin</sys_created_by>
+        <sys_created_on>2018-06-13 20:26:53</sys_created_on>
+        <sys_customer_update>false</sys_customer_update>
+        <sys_id>a73cb32fdb6a53005358dc50cf9619f8</sys_id>
+        <sys_mod_count>14</sys_mod_count>
+        <sys_name>save2word</sys_name>
+        <sys_package display_value="CRS Knowledge Database" source="x_26385_crs_kd">404e613b4f9213007221e321a310c738</sys_package>
+        <sys_policy/>
+        <sys_replace_on_upgrade>false</sys_replace_on_upgrade>
+        <sys_scope display_value="CRS Knowledge Database">404e613b4f9213007221e321a310c738</sys_scope>
+        <sys_update_name>sys_ws_operation_a73cb32fdb6a53005358dc50cf9619f8</sys_update_name>
+        <sys_updated_by>admin</sys_updated_by>
+        <sys_updated_on>2018-06-15 20:33:00</sys_updated_on>
+        <web_service_definition display_value="export">01e1bbe7db6a53005358dc50cf961994</web_service_definition>
+        <web_service_version/>
+    </sys_ws_operation>
+</record_update>
