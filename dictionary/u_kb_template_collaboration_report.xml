@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<database>
+    <element attributes="document_viewer_audit=all,global_search_config_handler=KnowledgeArticle,all_tables.text_index_translations=true,attachment_index=true,text_index_attachment_displayed=true,text_index_enable_idf=true,synch_attachments=true,use_document_viewer=true,text_index_filter_junk=false" audit="true" extends="kb_knowledge" label="Collaboration report" max_length="40" name="u_kb_template_collaboration_report" text_index="true" type="collection">
+        <element label="Description" max_length="8000" name="x_26385_crs_kd_u_kb_description" text_index="true" type="html"/>
+        <element label="Federal Partners" max_length="500" name="x_26385_crs_kd_u_kb_federal_partners" text_index="true" type="string"/>
+        <element label="NIH Partners" max_length="500" name="x_26385_crs_kd_u_kb_nih_partners" text_index="true" type="string"/>
+        <element label="Type" max_length="500" name="x_26385_crs_kd_u_kb_type" text_index="true" type="string"/>
+    </element>
+</database>

@@ -49,7 +49,7 @@
         <sys_created_on>2018-07-19 15:47:10</sys_created_on>
         <sys_customer_update>false</sys_customer_update>
         <sys_id>6966d0dbdbdb97009b0a74131f961987</sys_id>
-        <sys_mod_count>31</sys_mod_count>
+        <sys_mod_count>36</sys_mod_count>
         <sys_name>[crs] KD Summary</sys_name>
         <sys_package display_value="CRS Knowledge Database" source="x_26385_crs_kd">404e613b4f9213007221e321a310c738</sys_package>
         <sys_policy/>
@@ -57,54 +57,29 @@
         <sys_scope display_value="CRS Knowledge Database">404e613b4f9213007221e321a310c738</sys_scope>
         <sys_update_name>sp_widget_6966d0dbdbdb97009b0a74131f961987</sys_update_name>
         <sys_updated_by>yuw5@nih.gov</sys_updated_by>
-        <sys_updated_on>2018-07-20 22:22:50</sys_updated_on>
+        <sys_updated_on>2018-09-06 16:40:45</sys_updated_on>
         <template><![CDATA[<div class="container">
   <div class="summary-box">
     <div class="kb-tile-block">
       <div class="panel panel-default"> 
           <div> 
            <div class="kb-top-pad"> 
-            <a href="crs_kd?xpage=kd_search&amp;kb_knowledge_base=6532c26bdbb61700e92cff621f9619c1" aria-label="" class="kb-tile-link" role="link"> 
+            <a href="crs_kd?xpage=kd_search&amp;kb_knowledge_base=f5644dcadb54ab0054d8ff621f9619d7" aria-label="" class="kb-tile-link" role="link"> 
              <div class="kb-center"> 
               <div class="link-icon"> 
                <img alt="" src="nci_knowledge-base.svg" aria-hidden="true" data-ng-if="!item.icon" class="ng-scope" role="presentation">
               </div> 
-              <div class="link-text ng-scope" title="knowledge base"> 
+              <div class="link-text ng-scope"> 
                <h5 class="ng-binding">Basic Knowledge Base</h5> 
               </div> 
              </div></a> 
            </div> 
           </div> 
           <div class="kb-details"> 
-            <span title="Article" aria-label="7 Articles">
+            <span title="Article" aria-label="107 Articles">
               <span class="kb-summary">
                 <i class="fa fa-file-text" aria-hidden="true"></i>
-                <span class="kb-count ng-binding">7</span>
-              </span>
-            </span>
-          </div> 
-      </div>
-    </div>
-    <div class="kb-tile-block">
-      <div class="panel panel-default"> 
-          <div> 
-           <div class="kb-top-pad"> 
-            <a href="crs_kd?xpage=kd_search&amp;kb_knowledge_base=0d82c66bdbb61700e92cff621f96191c" aria-label="" class="kb-tile-link" role="link"> 
-             <div class="kb-center"> 
-              <div class="link-icon"> 
-               <img alt="" src="nci_knowledge-base.svg" aria-hidden="true" data-ng-if="!item.icon" class="ng-scope" role="presentation">
-              </div> 
-              <div class="link-text ng-scope" title="knowledge base"> 
-               <h5 class="ng-binding">Final Report Knowledge Base</h5> 
-              </div> 
-             </div></a> 
-           </div> 
-          </div> 
-          <div class="kb-details"> 
-            <span title="Article" aria-label="1 Articles">
-              <span class="kb-summary">
-                <i class="fa fa-file-text" aria-hidden="true"></i>
-                <span class="kb-count ng-binding">1</span>
+                <span class="kb-count ng-binding">107</span>
               </span>
             </span>
           </div> 

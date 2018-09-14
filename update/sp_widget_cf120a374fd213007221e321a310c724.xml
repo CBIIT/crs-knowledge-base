@@ -10,6 +10,10 @@
 	c.isExportable = true;
 	c.selectedCount = 0;
 	
+	c.pageChanged = function() {
+    
+  };
+	
 	var s = $location.search();
 	
 	c.search = function(type) {
@@ -20,7 +24,8 @@
 									searchLevel:type,
 									searchString: c.data.searchString, 
 									selectedKnowledgeBase: c.data.selectedKnowledgeBase,
-								  selectedDoc: c.data.filters.includes('doc')? c.data.selectedDoc : defaultSelection,
+								  selectedYear: c.data.filters.includes('fiscal_year')? c.data.selectedYear : defaultSelection,
+									selectedDoc: c.data.filters.includes('doc')? c.data.selectedDoc : defaultSelection,
 									selectedCancerSite: c.data.filters.includes('cancer_site') ? c.data.selectedCancerSite : defaultSelection,
 									selectedResearchType: c.data.filters.includes('research_type') ? c.data.selectedResearchType : defaultSelection,
 									filters: c.data.filters
@@ -39,6 +44,10 @@
 			//c.searchResults = r.data.searchResults;
 			c.selectedCount = 0;
 			c.isExportable = false;
+			
+			c.data.maxSize = 5;
+			c.data.pageSize = 10;
+			c.data.bigCurrentPage = 1;
 		});
 	};
 	
@@ -60,6 +69,7 @@
 	c.reset = function() {
 		c.data.searchString = "";
 		c.data.selectedKnowledgeBase = {id: '-1', name: 'All'};
+		c.data.selectedYear = [];
 		c.data.selectedDoc = [];
 	  c.data.selectedCancerSite = [];
 		c.data.selectedResearchType = [];
@@ -215,6 +225,32 @@
 		c.search(2);
 	}
 	
+	c.updateYearData = function(item){
+		if(item.selected){
+			c.data.selectedYear.push(item.name);
+		}
+		else{
+			var idx = c.data.selectedYear.indexOf(item.name);
+			if (idx > -1) {
+				c.data.selectedYear.splice(idx, 1);
+			}
+		}
+		c.search(2);
+	}
+	
+	c.selectAll_Year = function(){
+		var selectAll = document.getElementById("selectAll_Year");
+		c.data.selectedYear = [];
+		if(selectAll.checked){
+			var tmp = [];
+			c.data.fiscalYear.map(function(obj){
+				tmp.push(obj.name);
+			});
+			c.data.selectedYear = tmp;
+		}
+		c.search(2);
+	}
+	
 	// Perform an initial search when the page loads
 	$scope.$watch('$viewContentLoaded', function() {
     c.data.selectedKnowledgeBase = {id: '-1', name: 'All'};
@@ -275,13 +311,13 @@
 						tmp.Category = rs.kb_category;
 						tmp.Title = rs.short_description;
 						if(c.data.filters.includes('research_type')){
-							tmp["Research Type"] = rs.u_kb_research_type;
+							tmp["Research Type"] = rs.x_26385_crs_kd_u_kb_research_type;
 						}
 						if(c.data.filters.includes('cancer_site')){
-							tmp["Cancer Site/Type"] = rs.u_kb_cancer_site_type;
+							tmp["Cancer Site/Type"] = rs.x_26385_crs_kd_u_kb_cancer_site_type;
 						}
 						if(c.data.filters.includes('doc')){
-							tmp.Doc = rs.u_kb_doc;
+							tmp.Doc = rs.x_26385_crs_kd_u_kb_doc;
 						}
 						data.push(tmp);
 					}
@@ -357,249 +393,7 @@
 	
 }]]></client_script>
         <controller_as>c</controller_as>
-        <css>.body {
- font-family: "SourceSansPro", Helvetica, Arial, sans-serif; 
-}
-
-b {
-	font-weight:bold;
-  font-size:1.5em;
-}
-
-.crs-abbrv{
-	font-size:1.4em;
-  font-weight:bold;
-  margin-top: 5px;
-}
-
-.crs-detail{
-	font-size:1em;
-  margin-top: 5px;
-}
-
-.crs-sidebar-info {
-  height: 43px;
-  margin-top: 5px;
-  /*background: #46a1d9;*/
-  background: #C6375D;
-  color: white;
-  position: relative;
-  text-align: center;
-  border-radius: 5px;
-}
-.crs-sidebar-info .details {
-  position: absolute;
-  left: 20px;
-  right: 20px;
-  z-index: 2;
-  font-size: 0.7em;
-  padding-top: 10px;
-}
-.crs-sidebar-info .details h1 {
-  font-size: 1.4em;
-  margin: 0 0 5px 0;
-  font-weight: 400;
-  position: relative;
-  line-height: 1.2;
-}
-
-.panel-relative{
-	position:relative;
-}
-
-.panel-relative .panel-title{
-	display:inline-block;
-}
-
-.filter-btn-label{
-	font-size:14px;
-  margin-right:10px;
-}
-
-.panel-action{
-  top:5px;
-  right:15px;
-  float:right;
-	position:absolute;
-}
-
-.panel-bar-filter{
-	top: 5px;
-  position: absolute;
-  right: 15px;
-}
-
-
-.margin-10 {
- margin-top: 10px; 
-}
-
-.margin-5 {
-	margin-top: 5px; 
-}
-
-.panel-bar{
-	font-size:13px;
-}
-
-.checkbox-all{
-	float:left;
-  margin:5px 5px 5px 2px;
-}
-
-.checkbox-section-all{
-	float:right;
-  font-size:14px;
-}
-
-.content-checkbox{
-	position:absolute;
-  left:10px;
-  top:30px;
-}
-
-.text {
-	color: #717171;
-}
-
-.count {
- 	font-size:16px; 
-}
-
-.kb-about {
- 	color: #979797;
-  padding-top: 3px;
-  font-size: 12px;
-}
-
-.kb-title {
-  font-size: 14px;
-  font-weight: 600;
-  cursor:pointer;
-}
-
-.kb-ref{
-}
-
-.list-group{
-	margin-bottom: 0px !important;
-}
-
-.kb-ref span{
-	font-size:12px;
-  color:#979797;
-  display:block;
-}
-
-.kb-article-summary {
- 	width: 100%;
-  color: #717171;
-  font-size: 13px;
-  display: inline-flex;
-  margin: 10px 0 8px 5px;
-  padding: 0px;
-}
-
-.kb-breadcrumb {
- 	color: #979797;
-  padding-bottom: 2px;
-  margin-top: -5px;
-}
-
-.btn-disable{
-  background-color:transparent;
-  border-color:transparent;
-  box-shadow:none;
-  color:darkgray;
-  cursor:default;
-}
-
-.form-group{
-	margin-bottom:0px;
-}
-
-.form-hidden{
-	display:none;
-}
-
-.form-group .control-label{
-	padding: 10px 15px;
-  margin-bottom:0px;
-  border-bottom: 1px solid #DDDDDD;
-  width: 100%;
-  background-color: #f5f5f5 ;
-}
-
-.filter-section{
-  margin-bottom:10px;
-  margin-right:15px;
-  position:relative;
-}
-
-.filter-section button{
-	width:100%;
-  text-align:left;
-}
-
-.filter-section .caret{
-	float:right;
-  margin-top: 10px;
-}
-
-.form-content{
-	padding:10px;
-}
-
-.tab-content{
-  border-left: 1px solid #ddd;
-  border-right: 1px solid #ddd;
-  border-bottom: 1px solid #ddd;
-}
-
-.item-row {
-    border-bottom:1px solid #ddd;
-  	border-left:0px;
-  	border-right:0px;
-  	border-top:0px;
-  	margin-bottom:0px;
-  	padding-left: 40px;
-}
-
-.item-row:last-child{
-	border-bottom:0px;
-}
-
-.form-info{
-	color:#979797;
-}
-
-.form-btns{
-	border-top:1px solid #DDDDDD;
-}
-
-.form-searchBox{
-	margin-bottom:15px;
-}
-
-.facet-scroll{
-  max-height: 250px;
-  padding-top: 5px;
-  padding-left: 15px;
-  padding-bottom: 5px;
-}
-
-.dropdown-options{
-	padding:0px 10px;
-  font-weight: normal;
-}
-.dropdown-menu{
-	min-width:200px;
-}
-
-.checkbox-item{
-	margin-top:0px;
-  margin-bottom:0px;
-}
+        <css>
 </css>
         <data_table>sp_instance</data_table>
         <demo_data/>
@@ -722,6 +516,12 @@ b {
 			{id: 'research_type_population_science', name: 'Population Science'},
 			{id: 'research_type_cancer_control', name: 'Cancer Control'}
 		];
+		
+		// Research Type
+		data.fiscalYear = [
+			{id: '2017', name: '2017'},
+			{id: '2016', name: '2016'}
+		];
 	
 		/* SEARCH PROCESSING */
 		data.filters  = [];
@@ -729,11 +529,13 @@ b {
 			data.filters.push('doc');
 			data.filters.push('cancer_site');
 			data.filters.push('research_type');
+			data.filters.push('fiscal_year');
 		}
 
 		data.selectedDoc = data.filters.indexOf('doc') > -1 ? input.selectedDoc : [];
 		data.selectedCancerSite  = data.filters.indexOf('cancer_site') > -1 ? input.selectedCancerSite : [];
 		data.selectedResearchType = data.filters.indexOf('research_type') > -1 ? input.selectedResearchType : [];
+		data.selectedYear = data.filters.indexOf('fiscal_year') > -1 ? input.selectedYear : [];
 
 		data.result = "You searched for: " + input.searchString + ", in Knowledge base: " + data.selectedKnowledgeBase.name ;
 		
@@ -756,15 +558,25 @@ b {
 			}
 
 			if (data.selectedResearchType.length > 0) {
-				gr.addQuery('u_kb_research_type', 'IN', data.selectedResearchType);
+				var researhQuery = gr.addQuery('x_26385_crs_kd_u_kb_research_type', 'CONTAINS', data.selectedResearchType[0]);
+				for(var i = 1; i< data.selectedResearchType.length ; i++){
+					researhQuery.addOrCondition('x_26385_crs_kd_u_kb_research_type', 'CONTAINS', data.selectedResearchType[i]);
+				}
 			}
 
 			if (data.selectedCancerSite.length > 0) {
-				gr.addQuery('u_kb_cancer_site_type', data.selectedCancerSite);
+				var cancerQuery = gr.addQuery('x_26385_crs_kd_u_kb_cancer_site_type', 'CONTAINS', data.selectedCancerSite[0]);
+				for(var j = 1; j< data.selectedCancerSite.length ; j++){
+					cancerQuery.addOrCondition('x_26385_crs_kd_u_kb_cancer_site_type', 'CONTAINS', data.selectedCancerSite[j]);
+				}
 			}
 
 			if (data.selectedDoc.length > 0) {
-				gr.addQuery('u_kb_doc', data.selectedDoc);
+				gr.addQuery('x_26385_crs_kd_u_kb_doc', 'IN', data.selectedDoc);
+			}
+			
+			if (data.selectedYear.length > 0) {
+				gr.addQuery('x_26385_crs_kd_u_kb_fiscal_year', 'IN', data.selectedYear);
 			}
 
 			gr.query();
@@ -772,8 +584,9 @@ b {
 			while (gr.next()) {
 
 				var articleResult = {};
-				$sp.getRecordDisplayValues(articleResult, gr, 'sys_id,short_description,kb_knowledge_base,kb_category,author,sys_updated_on,published,sys_view_count,u_kb_cancer_site_type,u_kb_research_type,u_kb_doc');
+				$sp.getRecordDisplayValues(articleResult, gr, 'sys_id,short_description,kb_knowledge_base,kb_category,author,sys_updated_on,published,sys_view_count,x_26385_crs_kd_u_kb_cancer_site_type,x_26385_crs_kd_u_kb_research_type,x_26385_crs_kd_u_kb_doc,x_26385_crs_kd_u_kb_fiscal_year');
 				articleResult.url = 'kb_view.do?sys_kb_id=' + articleResult.sys_id;
+				articleResult.fYear = articleResult.x_26385_crs_kd_u_kb_fiscal_year;
 				articleResult.template = infos_category[articleResult.kb_category].template_table;
 				values.push(articleResult);
 			}
@@ -794,7 +607,7 @@ b {
         <sys_created_on>2018-06-01 19:53:54</sys_created_on>
         <sys_customer_update>false</sys_customer_update>
         <sys_id>cf120a374fd213007221e321a310c724</sys_id>
-        <sys_mod_count>727</sys_mod_count>
+        <sys_mod_count>759</sys_mod_count>
         <sys_name>[crs] KD Search</sys_name>
         <sys_package display_value="CRS Knowledge Database" source="x_26385_crs_kd">404e613b4f9213007221e321a310c738</sys_package>
         <sys_policy/>
@@ -802,7 +615,7 @@ b {
         <sys_scope display_value="CRS Knowledge Database">404e613b4f9213007221e321a310c738</sys_scope>
         <sys_update_name>sp_widget_cf120a374fd213007221e321a310c724</sys_update_name>
         <sys_updated_by>yuw5@nih.gov</sys_updated_by>
-        <sys_updated_on>2018-08-06 21:34:54</sys_updated_on>
+        <sys_updated_on>2018-09-13 20:47:41</sys_updated_on>
         <template><![CDATA[<div class="container">
   <div class="row">
         <div class="col-md-3">
@@ -864,6 +677,17 @@ b {
                             </li>
                           </ul>
                         </div>
+                        <div class="filter-section" ng-if="c.data.filters.includes('fiscal_year')">
+                          <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown"><span class="filter-btn-label">Fiscal Year  </span> <span class="caret"></span></button>
+                          <ul class="dropdown-menu" style="width:100%;">
+                            <li class="dropdown-options">
+                              <input type="checkbox" id="selectAll_Year" class="chekbox-input ng-pristine ng-untouched ng-valid ng-empty" ng-click="c.selectAll_Year()" ng-checked="c.data.selectedYear.length != 0  && c.data.selectedYear.length == c.data.fiscalYear.length">&nbsp;All
+                            </li>
+                            <li class="dropdown-options" ng-repeat="cat in c.data.fiscalYear">
+                              <input type="checkbox" class="chekbox-input ng-pristine ng-untouched ng-valid ng-empty" ng-model="cat.selected" ng-click="c.updateYearData(cat)" value="{{cat.id}}" role="checkbox" aria-invalid="false" ng-checked="true" ng-checked="c.data.selectedYear.indexOf(cat.name) > -1">&nbsp;{{cat.name}}
+                            </li>
+                          </ul>
+                        </div>
                       </div>
                     </div>
                   
@@ -897,7 +721,7 @@ b {
 
                 <div class="panel panel-default">
 
-                    <div class="panel-heading panel-relative">
+                    <div class="panel-head panel-relative">
                       <div class="panel-title">
                         <span class="count text">{{c.resultLen}} Results</span>
                       </div>
@@ -923,7 +747,7 @@ b {
                       </div>
                     </div>
                   
-                    <div class="panel-heading panel-relative">
+                    <div class="panel-head panel-relative">
                       <div class="panel-title">
                         <span class="panel-bar">
                           <input type="checkbox" class="checkbox checkbox-all" id="cb_selectAll" name="selectAll" value="all"> Select All
@@ -946,7 +770,7 @@ b {
                             </div>
                           </uib-accordion-heading>
                           <ul class="list-group">
-                            <li class="list-group-item item-row" ng-repeat="result in tab.list">
+                            <li class="list-group-item item-row" ng-repeat="result in tab.list" ng-show="$index >= (c.data.bigCurrentPage -1) * c.data.pageSize && $index < c.data.bigCurrentPage * c.data.pageSize">
                               <input type="checkbox" ng-model="cb_checkbox" ng-change="c.change(cb_checkbox)" class="checkbox content-checkbox" id="cb_{{result.sys_id}}" name="selections" value="{{result.sys_id}},{{result.kb_knowledge_base}},{{result.kb_category}}" >
                               <i class="glyphicon glyphicon-file"></i>
 
@@ -959,17 +783,33 @@ b {
                               <div class="kb-about">
 
                                 Author: {{result.author}}
-                                <span class="dot" aria-hidden="true"> • </span>
-                                {{result.sys_view_count}} Views
+                                <span class="dot-divider" aria-hidden="true"> • </span>
+                                Fiscal Year: {{result.fYear}}
+                                <!--
+																{{result.sys_view_count}} Views
                                 <span class="dot" aria-hidden="true"> • </span>
                                 Updated: <sn-time-ago timestamp="::result.sys_updated_on"/>
                                 <span class="dot" aria-hidden="true"> • </span>
                                 Published: <sn-time-ago timestamp="::result.published"/>
-
+																-->
 
                               </div>
                             </li>
                           </ul>
+                          <div class="tab-paging-section">
+                            <ul ng-show="(tab.list.length / c.data.pageSize) > 1"  uib-pagination total-items="tab.list.length" items-per-page="c.data.pageSize" ng-model="c.data.bigCurrentPage" max-size="c.data.maxSize" class="pagination-sm" ng-change="c.pageChanged()" direction-links="false" boundary-links="true" force-ellipses="true">
+                            </ul>
+                            <div class="tab-paging-setting">
+                              <label for="my_pageSize" class="label-hidden">pageSize:</label>
+                              <select class="form-control" id="my_pageSize" ng-model="c.data.pageSize" ng-init="c.data.pageSize = '10'">
+                                <option value="5">5</option>
+                                <option value="10">10</option>
+                                <option value="15">15</option>
+                                <option value="20">20</option>
+                              </select>
+                            </div>
+                            <div class="tab-paging-label">Items per page:</div>
+                          </div>
                         </div>
                       </uib-accordion>
                     </div>
