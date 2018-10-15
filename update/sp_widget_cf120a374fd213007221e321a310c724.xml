@@ -2,7 +2,7 @@
 <record_update table="sp_widget">
     <sp_widget action="INSERT_OR_UPDATE">
         <category>custom</category>
-        <client_script><![CDATA[function($scope, $location, $http) {
+        <client_script><![CDATA[function($scope, $location, $http,NERDSearchBasicArticleByCriteria) {
 	/* widget controller */
 	$scope.$emit('crs.header.display', false);
 	var c = this;
@@ -10,28 +10,43 @@
 	c.isExportable = true;
 	c.selectedCount = 0;
 	
+	c.data.tabs = c.data.searchResults;
+	c.selectedCategories = {};
+	var index = 0;
+	c.resultLen = 0;
+	c.data.tabs.forEach(function(t){
+		t.isOpen = true;
+		c.selectedCategories[t.name] = index++;
+		c.resultLen += t.list.length;
+	});
+	document.getElementById("cb_selectAll").checked = false;
+	//c.searchResults = r.data.searchResults;
+	c.selectedCount = 0;
+	c.isExportable = false;
+
+	c.data.maxSize = 5;
+	c.data.pageSize = 10;
+	c.data.bigCurrentPage = 1;
+	
 	c.pageChanged = function() {
     
   };
 	
 	var s = $location.search();
 	
-	c.search = function(type) {
+	c.search = function() {
 		
-		var defaultSelection = [];
+		var params = {
+									searchString: c.data.searchString && c.data.searchString !== ""? c.data.searchString : "", 
+									knowledgeBaseID: c.data.selectedKnowledgeBase.id,
+								  selectedYears: c.data.selectedYear.length > 0 ? c.data.selectedYear.join(",") : "",
+									selectedDocs: c.data.selectedDoc.length > 0 ? c.data.selectedDoc.join(",") : "",
+									selectedCancerSites: c.data.selectedCancerSite.length > 0 ? c.data.selectedCancerSite.join(",") : "",
+									selectedResearchTypes: c.data.selectedResearchType.length > 0 ? c.data.selectedResearchType.join(",") : ""
+								 };
 		
-		c.server.get({
-									searchLevel:type,
-									searchString: c.data.searchString, 
-									selectedKnowledgeBase: c.data.selectedKnowledgeBase,
-								  selectedYear: c.data.filters.includes('fiscal_year')? c.data.selectedYear : defaultSelection,
-									selectedDoc: c.data.filters.includes('doc')? c.data.selectedDoc : defaultSelection,
-									selectedCancerSite: c.data.filters.includes('cancer_site') ? c.data.selectedCancerSite : defaultSelection,
-									selectedResearchType: c.data.filters.includes('research_type') ? c.data.selectedResearchType : defaultSelection,
-									filters: c.data.filters
-								 }).then(function(r) {
-			c.data = r.data;
-			c.data.tabs = r.data.searchResults;
+		NERDSearchBasicArticleByCriteria.getList(params,c.data.sessionId).then(function(res){
+			c.data.tabs = res.data.result;
 			c.selectedCategories = {};
 			var idx = 0;
 			c.resultLen = 0;
@@ -48,6 +63,9 @@
 			c.data.maxSize = 5;
 			c.data.pageSize = 10;
 			c.data.bigCurrentPage = 1;
+			$scope.$apply();
+		}, function(error){
+			console.log(error);
 		});
 	};
 	
@@ -68,13 +86,13 @@
 	
 	c.reset = function() {
 		c.data.searchString = "";
-		c.data.selectedKnowledgeBase = {id: '-1', name: 'All'};
+		//c.data.selectedKnowledgeBase = {id: '-1', name: 'All'};
 		c.data.selectedYear = [];
 		c.data.selectedDoc = [];
 	  c.data.selectedCancerSite = [];
 		c.data.selectedResearchType = [];
 		
-		c.search(0);
+		c.search();
 	};
 	
 	//Search on enter key pressed
@@ -85,7 +103,7 @@
 		// Number 13 is the "Enter" key on the keyboard
 		if (event.keyCode === 13) {
 			// Trigger the button element with a click
-			c.search(3);
+			c.search();
 		}
 	});
 	
@@ -131,7 +149,7 @@
 				c.data.selectedKnowledgeBase.splice(idx, 1);
 			}
 		}
-		c.search(0);
+		c.search();
 	}
 	
 	c.updateCategoryData = function(item){
@@ -157,7 +175,7 @@
 				c.data.selectedCancerSite.splice(idx, 1);
 			}
 		}
-		c.search(2);
+		c.search();
 	}
 	
 	c.selectAll_CancerSite = function(){
@@ -170,7 +188,7 @@
 			});
 			c.data.selectedCancerSite = tmp;
 		}
-		c.search(2);
+		c.search();
 	}
 	
 	c.updateResearchTypeData = function(item){
@@ -183,7 +201,7 @@
 				c.data.selectedResearchType.splice(idx, 1);
 			}
 		}
-		c.search(2);
+		c.search();
 	}
 	
 	c.selectAll_ResearchType = function(){
@@ -196,7 +214,7 @@
 			});
 			c.data.selectedResearchType = tmp;
 		}
-		c.search(2);
+		c.search();
 	}
 	
 	c.updateDocData = function(item){
@@ -209,7 +227,7 @@
 				c.data.selectedDoc.splice(idx, 1);
 			}
 		}
-		c.search(2);
+		c.search();
 	}
 	
 	c.selectAll_Doc = function(){
@@ -222,7 +240,7 @@
 			});
 			c.data.selectedDoc = tmp;
 		}
-		c.search(2);
+		c.search();
 	}
 	
 	c.updateYearData = function(item){
@@ -235,7 +253,7 @@
 				c.data.selectedYear.splice(idx, 1);
 			}
 		}
-		c.search(2);
+		c.search();
 	}
 	
 	c.selectAll_Year = function(){
@@ -248,21 +266,10 @@
 			});
 			c.data.selectedYear = tmp;
 		}
-		c.search(2);
+		c.search();
 	}
 	
-	// Perform an initial search when the page loads
-	$scope.$watch('$viewContentLoaded', function() {
-    c.data.selectedKnowledgeBase = {id: '-1', name: 'All'};
-		c.data.filters = [];
-		if(s.kb_knowledge_base){
-			c.data.selectedKnowledgeBase = {id: s.kb_knowledge_base, name: ''};
-		}
-		if(s.search){
-			c.data.searchString = s.search;
-		}
-		c.search(0);
-	});
+	
 	
 	var htmlToWord = (function() {
       var uri = 'data:text/html,';
@@ -409,186 +416,89 @@
         <public>false</public>
         <roles/>
         <script><![CDATA[(function() {
-	/* populate the 'data' object */
-	/* e.g., data.table = $sp.getValue('table'); */
-
-	/* Configuration */
-	// A placeholder for the free text search field
-	data.enterSearchStr = gs.getMessage("Enter search string");
-	
-	// Hard-coded properties
-	// The names(titles) of the knowledge bases associated with CRS. Those are used to filter the available knowledge bases and results.
-	var knowledgeBases = ["Basic Knowledge Base", "Program Descriptions", "Scientific Experts" ,"Final Report Knowledge Base"];
-	
-	// Categories and Filters associated to knowledge bases. Each category also has an associated template where custom properties are defined as sections
-	var infos = {"Basic Knowledge Base":{'Top Accomplishments': {template_table: 'u_kb_template_top_accomplishment', filters:["cancer_site","research_type","doc"]},
-														'Collaboration Report' : {template_table: 'u_kb_template_collaboration_report', filters:[]},
-														'Significant Items':{template_table: 'u_kb_template_significant_item', filters:["cancer_site"]}}, 
-							 "Program Descriptions":{categories:[], filters:[]}, 
-							 "Scientific Experts":{categories:[], filters:[]},
-							 "Final Report Knowledge Base":{'Triennial Report': {template_table: 'u_kb_template_triennial_report', filters:[]}}
+	data.sessionId = gs.getSession().getSessionToken();
+	var infos_category = {'Top Accomplishments': {template_table: 'u_kb_template_top_accomplishment', filters:{"cancerSite":"x_26385_crs_kd_u_kb_cancer_site_type",
+																																																						 "researchType":"x_26385_crs_kd_u_kb_research_type",
+																																																						 "doc":"x_26385_crs_kd_u_kb_doc",
+																																																						 "fiscalYear":"x_26385_crs_kd_u_kb_fiscal_year"}}
 							};
-	
-	var infos_category = {'Top Accomplishments': {kb: 'Basic Knowledge Base',template_table: 'u_kb_template_top_accomplishment', filters:["cancer_site","research_type","doc"]},
-														'Collaboration Report' : {kb: 'Basic Knowledge Base',template_table: 'u_kb_template_collaboration_report', filters:[]},
-														'Significant Items':{kb: 'Basic Knowledge Base',template_table: 'u_kb_template_significant_item', filters:["cancer_site"]}, 
-							 'Triennial Report': {kb: 'Final Report Knowledge Base',template_table: 'u_kb_template_triennial_report', filters:[]}
-							};
-
-	/* SETUP */
 	data.knowledgeBases = [];
-	
-	// Search for all CRS knowledge base titles to get their sys_ids
-	var default_kb = {}; 
 	var gr = new GlideRecord('kb_knowledge_base');
-	gr.orderBy("order");
-	gr.addQuery("title", "IN", knowledgeBases);
+	gr.addQuery("title", "Basic Knowledge Base");
 	gr.query();
+	gr.next();
+	var kb_id = gr.sys_id.toString();
+	data.knowledgeBases.push({id: kb_id, name: gr.title.toString()});
+	data.selectedKnowledgeBase = {id: kb_id, name: gr.title.toString()};
+	
+	gr = new GlideRecord('kb_category');
+	gr.addQuery('parent_id', kb_id);
+	gr.query();
+	var categories = [];
 	while (gr.next()) {
-		var resultObj = {};
-		$sp.getRecordDisplayValues(resultObj, gr, 'sys_id,title');
-		data.knowledgeBases.push({id: resultObj.sys_id, name: resultObj.title});
-		if(resultObj.title == "Basic Knowledge Base"){
-			default_kb.id = resultObj.sys_id;
-			default_kb.name = resultObj.title;
-		}
+		var obj = {};
+		categories.push({id: gr.sys_id.toString(), name: gr.label.toString()});
 	}
 	
-	if (input) {
-		if(input.selectedKnowledgeBase.id == "-1"){
-			data.selectedKnowledgeBase = default_kb;
-		}
-		else{
-			data.knowledgeBases.forEach(function(kb){
-				if(kb.id == input.selectedKnowledgeBase.id){
-					data.selectedKnowledgeBase = kb;
-				}
-			});
-		}
-		
-		// The Knowledge Base IDs to be used in search filters
-		gr = new GlideRecord('kb_category');
-		gr.addQuery('parent_id', data.selectedKnowledgeBase.id);
-		gr.query();
-		var categories = [];
-		while (gr.next()) {
-			var obj = {};
-			$sp.getRecordDisplayValues(obj, gr, 'sys_id, label');			
-			categories.push({id: obj.sys_id, name: obj.label});
-		}
-
-		// DOC
-		data.doc = [
-			{id: 'doc_dcb', name: 'DCB'},
-			{id: 'doc_dccps', name: 'DCCPS'},
-			{id: 'doc_dcp', name: 'DCTD'},
-			{id: 'doc_od_crchd', name: 'OD-CRCHD'},
-			{id: 'doc_od_cssi', name: 'OD-CSSI'},
-			{id: 'doc_od_obf', name: 'OD-OBF'},
-			{id: 'doc_od_ogcr', name: 'OD-OGCR'},
-			{id: 'doc_ccg', name: 'CCG'},
-			{id: 'doc_ccr', name: 'CCR'},
-			{id: 'doc_dceg', name: 'DCEG'},
-			{id: 'doc_dcp', name: 'DCP'}
-		];
-
-		// Cancer Site
-		data.cancerSite = [
-			{id: 'cancer_site_brain', name: 'Brain'},
-			{id: 'cancer_site_breast', name: 'Breast'},
-			{id: 'cancer_site_lung', name: 'Lung'},
-			{id: 'cancer_site_melanoma', name: 'Melanoma'},
-			{id: 'cancer_site_multiple_myeloma', name: 'Multiple Myeloma'},
-			{id: 'cancer_site-ovarian', name: 'Ovarian'},
-			{id: 'cancer_site_pancreatic', name: 'Pancreatic'},
-			{id: 'cancer_site_prostate', name: 'Prostate'},
-			{id: 'cancer_site_small_cell_lung_cancer', name: 'Small Cell Lung Cancer'},
-			{id: 'cancer_site_pediatric', name: 'Pediatric'}
-		];
-
-		// Research Type
-		data.researchType = [
-			{id: 'research_type_basic', name: 'Basic'},
-			{id: 'research_type_pre_clinical', name: 'Pre-Clinical'},
-			{id: 'research_type_clinical', name: 'Clinical'},
-			{id: 'research_type_post_clinical', name: 'Post-Clinical'},
-			{id: 'research_type_epidemiological', name: 'Epidemiological'},
-			{id: 'research_type_population_science', name: 'Population Science'},
-			{id: 'research_type_cancer_control', name: 'Cancer Control'}
-		];
-		
-		// Research Type
-		data.fiscalYear = [
-			{id: '2017', name: '2017'},
-			{id: '2016', name: '2016'}
-		];
+	cache = {};
+	data.doc = [];
+	cache.doc = [];
+	data.cancerSite = [];
+	cache.cancerSite = [];
+	data.researchType = [];
+	cache.researchType = [];
+	data.fiscalYear = [];
+	cache.fiscalYear = [];
 	
-		/* SEARCH PROCESSING */
-		data.filters  = [];
-		if(data.selectedKnowledgeBase.name == "Basic Knowledge Base"){
-			data.filters.push('doc');
-			data.filters.push('cancer_site');
-			data.filters.push('research_type');
-			data.filters.push('fiscal_year');
-		}
+	data.searchResults = [];
+	
+	data.filters  = ['doc','cancerSite','researchType','fiscalYear'];
+	data.selectedDoc = [];
+	data.selectedCancerSite  = [];
+	data.selectedResearchType = [];
+	data.selectedYear = [];
 
-		data.selectedDoc = data.filters.indexOf('doc') > -1 ? input.selectedDoc : [];
-		data.selectedCancerSite  = data.filters.indexOf('cancer_site') > -1 ? input.selectedCancerSite : [];
-		data.selectedResearchType = data.filters.indexOf('research_type') > -1 ? input.selectedResearchType : [];
-		data.selectedYear = data.filters.indexOf('fiscal_year') > -1 ? input.selectedYear : [];
-
-		data.result = "You searched for: " + input.searchString + ", in Knowledge base: " + data.selectedKnowledgeBase.name ;
-		
-		var searchString = input.searchString ?  input.searchString.trim() : null;
-		
-		data.searchResults = [];
-				
-		// The table that we need to search depends on the selected category. Every category is associated with a template, which is stored in a table that extends kb_knowledge
-
-		//search on categories
-		
-		categories.forEach(function(cat){
+	
+	categories.forEach(function(cat){
 			var values = [];
-			var tmpl = infos[infos_category[cat.name].kb][cat.name].template_table;
-			gr = new GlideRecord(tmpl);
-			if (searchString) {
-				// Index search
-				gr.addQuery('IR_AND_QUERY', searchString);
-				data.searchString = searchString;
-			}
-
-			if (data.selectedResearchType.length > 0) {
-				var researhQuery = gr.addQuery('x_26385_crs_kd_u_kb_research_type', 'CONTAINS', data.selectedResearchType[0]);
-				for(var i = 1; i< data.selectedResearchType.length ; i++){
-					researhQuery.addOrCondition('x_26385_crs_kd_u_kb_research_type', 'CONTAINS', data.selectedResearchType[i]);
-				}
-			}
-
-			if (data.selectedCancerSite.length > 0) {
-				var cancerQuery = gr.addQuery('x_26385_crs_kd_u_kb_cancer_site_type', 'CONTAINS', data.selectedCancerSite[0]);
-				for(var j = 1; j< data.selectedCancerSite.length ; j++){
-					cancerQuery.addOrCondition('x_26385_crs_kd_u_kb_cancer_site_type', 'CONTAINS', data.selectedCancerSite[j]);
-				}
-			}
-
-			if (data.selectedDoc.length > 0) {
-				gr.addQuery('x_26385_crs_kd_u_kb_doc', 'IN', data.selectedDoc);
-			}
+			var tmpl = infos_category[cat.name].template_table;
+			var filters = infos_category[cat.name].filters;
 			
-			if (data.selectedYear.length > 0) {
-				gr.addQuery('x_26385_crs_kd_u_kb_fiscal_year', 'IN', data.selectedYear);
-			}
+			gr = new GlideRecord(tmpl);
 
 			gr.query();
 
 			while (gr.next()) {
 
 				var articleResult = {};
-				$sp.getRecordDisplayValues(articleResult, gr, 'sys_id,short_description,kb_knowledge_base,kb_category,author,sys_updated_on,published,sys_view_count,x_26385_crs_kd_u_kb_cancer_site_type,x_26385_crs_kd_u_kb_research_type,x_26385_crs_kd_u_kb_doc,x_26385_crs_kd_u_kb_fiscal_year');
+				articleResult.sys_id = gr.sys_id.toString();
+				articleResult.short_description = gr.short_description.toString();
+				articleResult.kb_knowledge_base = gr.getDisplayValue('kb_knowledge_base');
+				articleResult.kb_category = gr.getDisplayValue('kb_category');
+				articleResult.author = gr.getDisplayValue('author');
+				articleResult.sys_updated_on = gr.sys_updated_on.toString();
+				articleResult.published = gr.published.toString();
+				articleResult.sys_view_count = gr.sys_view_count.toString();
+				articleResult.x_26385_crs_kd_u_kb_cancer_site_type = gr.x_26385_crs_kd_u_kb_cancer_site_type.toString();
+				articleResult.x_26385_crs_kd_u_kb_research_type = gr.x_26385_crs_kd_u_kb_research_type.toString();
+				articleResult.x_26385_crs_kd_u_kb_doc = gr.x_26385_crs_kd_u_kb_doc.toString();
+				articleResult.x_26385_crs_kd_u_kb_fiscal_year = gr.x_26385_crs_kd_u_kb_fiscal_year.toString();
 				articleResult.url = 'kb_view.do?sys_kb_id=' + articleResult.sys_id;
 				articleResult.fYear = articleResult.x_26385_crs_kd_u_kb_fiscal_year;
-				articleResult.template = infos_category[articleResult.kb_category].template_table;
+				articleResult.template = tmpl;
 				values.push(articleResult);
+				for(k in filters){
+					var v = articleResult[filters[k]];
+					if(v.trim() != ''){
+						v.trim().split(",").forEach(function(elem){
+							if(cache[k].indexOf(elem) == -1){
+								cache[k].push(elem);
+								data[k].push({id: elem, name: elem});
+							}
+						});
+					}
+					
+				}
 			}
 			if(values.length > 0){
 				var tab = {};
@@ -598,8 +508,6 @@
 				data.searchResults.push(tab);
 			}
 		});
-	}
-	
 })();]]></script>
         <servicenow>false</servicenow>
         <sys_class_name>sp_widget</sys_class_name>
@@ -607,7 +515,7 @@
         <sys_created_on>2018-06-01 19:53:54</sys_created_on>
         <sys_customer_update>false</sys_customer_update>
         <sys_id>cf120a374fd213007221e321a310c724</sys_id>
-        <sys_mod_count>759</sys_mod_count>
+        <sys_mod_count>809</sys_mod_count>
         <sys_name>[crs] KD Search</sys_name>
         <sys_package display_value="CRS Knowledge Database" source="x_26385_crs_kd">404e613b4f9213007221e321a310c738</sys_package>
         <sys_policy/>
@@ -615,7 +523,7 @@
         <sys_scope display_value="CRS Knowledge Database">404e613b4f9213007221e321a310c738</sys_scope>
         <sys_update_name>sp_widget_cf120a374fd213007221e321a310c724</sys_update_name>
         <sys_updated_by>yuw5@nih.gov</sys_updated_by>
-        <sys_updated_on>2018-09-13 20:47:41</sys_updated_on>
+        <sys_updated_on>2018-10-15 19:14:54</sys_updated_on>
         <template><![CDATA[<div class="container">
   <div class="row">
         <div class="col-md-3">
@@ -640,22 +548,22 @@
                       </div>                       
                     </div>
 
-                    <div class="form-group"ng-if="c.data.filters.includes('cancer_site') || c.data.filters.includes('research_type') || c.data.filters.includes('doc')">
+                    <div class="form-group"ng-if="c.data.filters.includes('cancerSite') || c.data.filters.includes('researchType') || c.data.filters.includes('doc')">
                       <div class="control-label" for="cancerSiteSelect">Filters:
                       </div>
                       <div class="facet-scroll"> 
-                        <div class="filter-section" ng-if="c.data.filters.includes('cancer_site')">
+                        <div class="filter-section" ng-if="c.data.filters.includes('cancerSite')">
                           <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown"><span class="filter-btn-label">Cancer Site/Type  </span> <span class="caret"></span></button>
                           <ul class="dropdown-menu" style="width:100%;">
                             <li class="dropdown-options">
                               <input type="checkbox" id="selectAll_CancerSite" class="chekbox-input ng-pristine ng-untouched ng-valid ng-empty" ng-click="c.selectAll_CancerSite()" ng-checked="c.data.selectedCancerSite.length != 0  && c.data.selectedCancerSite.length == c.data.cancerSite.length">&nbsp;All
                             </li>
                             <li class="dropdown-options" ng-repeat="cat in c.data.cancerSite">
-                              <input type="checkbox" class="chekbox-input ng-pristine ng-untouched ng-valid ng-empty" ng-model="cat.selected" ng-click="c.updateCancerSiteData(cat)" value="{{cat.id}}" role="checkbox" aria-invalid="false" ng-checked="true" ng-checked="c.data.selectedCancerSite.indexOf(cat.name) > -1">&nbsp;{{cat.name}}
+                              <input type="checkbox" class="chekbox-input ng-pristine ng-untouched ng-valid ng-empty" ng-model="cat.selected" ng-click="c.updateCancerSiteData(cat)" value="{{cat.id}}" role="checkbox" aria-invalid="false" ng-checked="true" ng-checked="c.data.selectedCancerSite.indexOf(cat.id) > -1">&nbsp;{{cat.name}}
                             </li>
                           </ul>
                         </div>
-                        <div class="filter-section" ng-if="c.data.filters.includes('research_type')">
+                        <div class="filter-section" ng-if="c.data.filters.includes('researchType')">
                           <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown"><span class="filter-btn-label">Research Type  </span> <span class="caret"></span></button>
                           <ul class="dropdown-menu" style="width:100%;">
                             <li class="dropdown-options">
@@ -677,7 +585,7 @@
                             </li>
                           </ul>
                         </div>
-                        <div class="filter-section" ng-if="c.data.filters.includes('fiscal_year')">
+                        <div class="filter-section" ng-if="c.data.filters.includes('fiscalYear')">
                           <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown"><span class="filter-btn-label">Fiscal Year  </span> <span class="caret"></span></button>
                           <ul class="dropdown-menu" style="width:100%;">
                             <li class="dropdown-options">

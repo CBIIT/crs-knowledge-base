@@ -1,0 +1,131 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<record_update table="sys_ws_operation">
+    <sys_ws_operation action="INSERT_OR_UPDATE">
+        <active>true</active>
+        <consumes>application/json,application/xml,text/xml</consumes>
+        <consumes_customized>false</consumes_customized>
+        <default_operation_uri/>
+        <enforce_acl>cf9d01d3e73003009d6247e603f6a990</enforce_acl>
+        <http_method>GET</http_method>
+        <name>searchBasicArticleByCriteria</name>
+        <operation_script><![CDATA[(function process(/*RESTAPIRequest*/ request, /*RESTAPIResponse*/ response) {
+	
+	var searchString = request.queryParams.searchString;
+	var knowledgeBaseID = request.queryParams.knowledgeBaseID;
+	var selectedYears = request.queryParams.selectedYears;
+	var selectedDocs = request.queryParams.selectedDocs;
+	var selectedCancerSites = request.queryParams.selectedCancerSites;
+	var selectedResearchTypes = request.queryParams.selectedResearchTypes;
+    
+	var infos_category = {'Top Accomplishments':'u_kb_template_top_accomplishment'};
+		
+		// The Knowledge Base IDs to be used in search filters
+	var gr = new GlideRecord('kb_category');
+		gr.addQuery('parent_id', knowledgeBaseID);
+		gr.query();
+		var categories = [];
+		while (gr.next()) {
+			categories.push({id: gr.sys_id.toString(), name: gr.label.toString()});
+		}
+
+	var filter = {};
+	filter.selectedDoc = selectedDocs == ""? [] : selectedDocs.toString().split(",");
+	filter.selectedCancerSite  = selectedCancerSites == ""? [] : selectedCancerSites.toString().split(",");
+	filter.selectedResearchType = selectedResearchTypes == ""? [] : selectedResearchTypes.toString().split(",");
+	filter.selectedYear = selectedYears == ""? [] : selectedYears.toString().split(",");
+
+	filter.searchString = searchString.toString();
+		
+	var searchResults = [];
+				
+	categories.forEach(function(cat){
+		var values = [];
+		var tmpl = infos_category[cat.name];
+		gr = new GlideRecord(tmpl);
+		if (filter.searchString !== "") {
+			// Index search
+			gr.addQuery('IR_AND_QUERY', filter.searchString);
+		}
+
+		if (filter.selectedResearchType.length > 0) {
+			var researhQuery = gr.addQuery('x_26385_crs_kd_u_kb_research_type', 'CONTAINS', filter.selectedResearchType[0]);
+			for(var i = 1; i< filter.selectedResearchType.length ; i++){
+				researhQuery.addOrCondition('x_26385_crs_kd_u_kb_research_type', 'CONTAINS', filter.selectedResearchType[i]);
+			}
+		}
+
+		if (filter.selectedCancerSite.length > 0) {
+			var cancerQuery = gr.addQuery('x_26385_crs_kd_u_kb_cancer_site_type', 'CONTAINS', filter.selectedCancerSite[0]);
+			for(var j = 1; j< filter.selectedCancerSite.length ; j++){
+				cancerQuery.addOrCondition('x_26385_crs_kd_u_kb_cancer_site_type', 'CONTAINS', filter.selectedCancerSite[j]);
+			}
+		}
+
+		if (filter.selectedDoc.length > 0) {
+			gr.addQuery('x_26385_crs_kd_u_kb_doc', 'IN', filter.selectedDoc);
+		}
+
+		if (filter.selectedYear.length > 0) {
+			gr.addQuery('x_26385_crs_kd_u_kb_fiscal_year', 'IN', filter.selectedYear);
+		}
+
+		gr.query();
+
+		while (gr.next()) {
+
+			var articleResult = {};
+			articleResult.sys_id = gr.sys_id.toString();
+			articleResult.short_description = gr.short_description.toString();
+			articleResult.kb_knowledge_base = gr.getDisplayValue('kb_knowledge_base');
+			articleResult.kb_category = gr.getDisplayValue('kb_category');
+			articleResult.author = gr.getDisplayValue('author');
+			articleResult.sys_updated_on = gr.sys_updated_on.toString();
+			articleResult.published = gr.published.toString();
+			articleResult.sys_view_count = gr.sys_view_count.toString();
+			articleResult.x_26385_crs_kd_u_kb_cancer_site_type = gr.x_26385_crs_kd_u_kb_cancer_site_type.toString();
+			articleResult.x_26385_crs_kd_u_kb_research_type = gr.x_26385_crs_kd_u_kb_research_type.toString();
+			articleResult.x_26385_crs_kd_u_kb_doc = gr.x_26385_crs_kd_u_kb_doc.toString();
+			articleResult.x_26385_crs_kd_u_kb_fiscal_year = gr.x_26385_crs_kd_u_kb_fiscal_year.toString();
+			articleResult.url = 'kb_view.do?sys_kb_id=' + articleResult.sys_id;
+			articleResult.fYear = articleResult.x_26385_crs_kd_u_kb_fiscal_year;
+			articleResult.template = infos_category[articleResult.kb_category];
+			values.push(articleResult);
+		}
+		if(values.length > 0){
+			var tab = {};
+			tab.name = cat.name;
+			tab.list = values;
+			tab.show = true;
+			searchResults.push(tab);
+		}
+	});
+	
+	return searchResults;
+
+})(request, response);]]></operation_script>
+        <operation_uri>/api/x_26385_crs_kd/export/searchBasicArticleByCriteria</operation_uri>
+        <produces>application/json,application/xml,text/xml</produces>
+        <produces_customized>false</produces_customized>
+        <relative_path>/searchBasicArticleByCriteria</relative_path>
+        <request_example/>
+        <requires_acl_authorization>false</requires_acl_authorization>
+        <requires_authentication>true</requires_authentication>
+        <short_description/>
+        <sys_class_name>sys_ws_operation</sys_class_name>
+        <sys_created_by>yuw5@nih.gov</sys_created_by>
+        <sys_created_on>2018-10-15 15:25:30</sys_created_on>
+        <sys_customer_update>false</sys_customer_update>
+        <sys_id>845c59e7dbc9eb40b86770c08c9619ab</sys_id>
+        <sys_mod_count>32</sys_mod_count>
+        <sys_name>searchBasicArticleByCriteria</sys_name>
+        <sys_package display_value="CRS Knowledge Database" source="x_26385_crs_kd">404e613b4f9213007221e321a310c738</sys_package>
+        <sys_policy/>
+        <sys_replace_on_upgrade>false</sys_replace_on_upgrade>
+        <sys_scope display_value="CRS Knowledge Database">404e613b4f9213007221e321a310c738</sys_scope>
+        <sys_update_name>sys_ws_operation_845c59e7dbc9eb40b86770c08c9619ab</sys_update_name>
+        <sys_updated_by>yuw5@nih.gov</sys_updated_by>
+        <sys_updated_on>2018-10-15 19:14:35</sys_updated_on>
+        <web_service_definition display_value="export">01e1bbe7db6a53005358dc50cf961994</web_service_definition>
+        <web_service_version/>
+    </sys_ws_operation>
+</record_update>
