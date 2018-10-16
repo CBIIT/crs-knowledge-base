@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<record_update>
+    <sys_documentation element="" label="Miscellaneous" language="en" table="u_kb_template_miscellaneous">
+        <sys_documentation action="INSERT_OR_UPDATE">
+            <element/>
+            <help/>
+            <hint/>
+            <label>Miscellaneous</label>
+            <language>en</language>
+            <name>u_kb_template_miscellaneous</name>
+            <plural>Miscellaneous</plural>
+            <sys_class_name>sys_documentation</sys_class_name>
+            <sys_created_by>yuw5@nih.gov</sys_created_by>
+            <sys_created_on>2018-10-16 19:29:43</sys_created_on>
+            <sys_customer_update>false</sys_customer_update>
+            <sys_id>9dde97fbdbc92f40b86770c08c9619b9</sys_id>
+            <sys_mod_count>0</sys_mod_count>
+            <sys_name>Miscellaneous</sys_name>
+            <sys_package display_value="CRS Knowledge Database" source="x_26385_crs_kd">404e613b4f9213007221e321a310c738</sys_package>
+            <sys_policy/>
+            <sys_replace_on_upgrade>false</sys_replace_on_upgrade>
+            <sys_scope display_value="CRS Knowledge Database">404e613b4f9213007221e321a310c738</sys_scope>
+            <sys_update_name>sys_documentation_u_kb_template_miscellaneous__en</sys_update_name>
+            <sys_updated_by>yuw5@nih.gov</sys_updated_by>
+            <sys_updated_on>2018-10-16 19:29:43</sys_updated_on>
+            <url/>
+            <url_target/>
+        </sys_documentation>
+    </sys_documentation>
+</record_update>
