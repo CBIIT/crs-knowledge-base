@@ -10,6 +10,9 @@
   if (s.xpage && s.xpage == 'kd_search') {
     c.xpage = "main";
   }
+	else if(s.xpage && s.xpage == 'kd_article'){
+		c.xpage = "article"
+	}
 	else{
 		c.xpage = "home";
 	}
@@ -56,7 +59,7 @@
         <sys_created_on>2018-07-18 21:58:33</sys_created_on>
         <sys_customer_update>false</sys_customer_update>
         <sys_id>44d1ec83dbd397009b0a74131f9619b1</sys_id>
-        <sys_mod_count>62</sys_mod_count>
+        <sys_mod_count>68</sys_mod_count>
         <sys_name>[crs] KD Home</sys_name>
         <sys_package display_value="CRS Knowledge Database" source="x_26385_crs_kd">404e613b4f9213007221e321a310c738</sys_package>
         <sys_policy/>
@@ -64,7 +67,7 @@
         <sys_scope display_value="CRS Knowledge Database">404e613b4f9213007221e321a310c738</sys_scope>
         <sys_update_name>sp_widget_44d1ec83dbd397009b0a74131f9619b1</sys_update_name>
         <sys_updated_by>yuw5@nih.gov</sys_updated_by>
-        <sys_updated_on>2018-09-04 17:17:39</sys_updated_on>
+        <sys_updated_on>2018-10-17 21:47:45</sys_updated_on>
         <template><![CDATA[<div id="crs-kd-home">
 	<div id="search-area" class="container" ng-if="c.xpage == 'home'">
     <div class="searchBox">
@@ -96,11 +99,29 @@
         <ul class="hidden-sm hidden-xs nav nav-pills nav-sm"> 
          <li><a ng-href="crs_kd" role="link" href="crs_kd">Home</a></li> 
          <li><i class="fa fa-chevron-right"></i></li> 
-         <li><a ng-href="crs_kd?xpage=kd_search" class="ng-binding" role="link" href="crs_kd?xpage=kd_search">Knowledge Search</a></li>  
+         <li><a ng-href="crs_kd?xpage=kd_search" class="ng-binding" role="link" href="crs_kd?xpage=kd_search">Knowledge</a></li>  
         </ul>
       </div>
     </div>
-    <widget id="crs-kd-search"></widget>
+    <div class="main-content">
+      <widget id="crs-kd-search"></widget>
+    </div>
+  </div>
+  <div id="crs-main" ng-if="c.xpage == 'article'">
+    <div class="bread-bar">
+      <div class="container">
+        <ul class="hidden-sm hidden-xs nav nav-pills nav-sm"> 
+         <li><a ng-href="crs_kd" role="link" href="crs_kd">Home</a></li> 
+         <li><i class="fa fa-chevron-right"></i></li> 
+         <li><a ng-href="crs_kd?xpage=kd_search" class="ng-binding" role="link" href="crs_kd?xpage=kd_search">Basic Knowledge Base</a></li>
+         <li><i class="fa fa-chevron-right"></i></li> 
+         <li><a ng-href="crs_kd?xpage=kd_search" class="ng-binding" role="link" href="crs_kd?xpage=kd_search">Top Accomplishments</a></li>
+        </ul>
+      </div>
+    </div>
+    <div class="main-content">
+    	<widget id="crs-kd-article"></widget>
+    </div>
   </div>
 </div>]]></template>
     </sp_widget>

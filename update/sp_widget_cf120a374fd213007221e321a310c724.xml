@@ -536,7 +536,7 @@
         <sys_created_on>2018-06-01 19:53:54</sys_created_on>
         <sys_customer_update>false</sys_customer_update>
         <sys_id>cf120a374fd213007221e321a310c724</sys_id>
-        <sys_mod_count>827</sys_mod_count>
+        <sys_mod_count>829</sys_mod_count>
         <sys_name>[crs] KD Search</sys_name>
         <sys_package display_value="CRS Knowledge Database" source="x_26385_crs_kd">404e613b4f9213007221e321a310c738</sys_package>
         <sys_policy/>
@@ -544,7 +544,7 @@
         <sys_scope display_value="CRS Knowledge Database">404e613b4f9213007221e321a310c738</sys_scope>
         <sys_update_name>sp_widget_cf120a374fd213007221e321a310c724</sys_update_name>
         <sys_updated_by>yuw5@nih.gov</sys_updated_by>
-        <sys_updated_on>2018-10-17 19:58:28</sys_updated_on>
+        <sys_updated_on>2018-10-17 21:29:36</sys_updated_on>
         <template><![CDATA[<div class="container">
   <div class="row">
         <div class="col-md-3">
@@ -703,8 +703,10 @@
                               <input type="checkbox" ng-model="cb_checkbox" ng-change="c.change(cb_checkbox)" class="checkbox content-checkbox" id="cb_{{result.sys_id}}" name="selections" value="{{result.sys_id}},{{result.kb_knowledge_base}},{{result.kb_category}}" >
                               <i class="glyphicon glyphicon-file"></i>
 
-                              <a class="kb-title" ng-click="c.showContent(result.template,result.sys_id)" >{{result.short_description}}</a>
-
+                              <!--
+																	<a class="kb-title" ng-click="c.showContent(result.template,result.sys_id)" >{{result.short_description}}</a>
+															-->
+															<a class="kb-title ng-binding" ng-href="crs_kd?xpage=kd_article&aid={{result.sys_id}}&tid={{result.template}}" role="link" href="crs_kd?xpage=kd_article&aid={{result.sys_id}}&tid={{result.template}}">{{result.short_description}}</a>
                               <br>
                               <div class="kb-ref">
                                 <span>{{result.kb_knowledge_base}} > {{result.kb_category}}</span>
