@@ -1,0 +1,66 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<record_update table="sp_css">
+    <sp_css action="INSERT_OR_UPDATE">
+        <css>tags-input{display:block}&#13;
+tags-input *,tags-input :after,tags-input :before{-moz-box-sizing:border-box;-webkit-box-sizing:border-box;box-sizing:border-box}&#13;
+tags-input .host{position:relative;&#13;
+  /*&#13;
+  margin-top:5px;&#13;
+  margin-bottom:5px;&#13;
+  */&#13;
+  height:100%}&#13;
+tags-input .host:active{outline:0}&#13;
+tags-input .tags{-moz-appearance:textfield;-webkit-appearance:textfield;padding:1px;overflow:hidden;word-wrap:break-word;cursor:text;background-color:#fff;&#13;
+  /*&#13;
+  border:1px solid #a9a9a9;&#13;
+  box-shadow:1px 1px 1px 0 #d3d3d3 inset;&#13;
+  */&#13;
+  height:100%}&#13;
+tags-input .tags.focused{outline:0;-webkit-box-shadow:0 0 3px 1px rgba(5,139,242,.6);-moz-box-shadow:0 0 3px 1px rgba(5,139,242,.6);&#13;
+  box-shadow:0 0 3px 1px rgba(5,139,242,.6)}&#13;
+tags-input .tags .tag-list{margin:0;padding:0;list-style-type:none}&#13;
+tags-input .tags .tag-item{margin:2px;padding:0 5px;display:inline-block;float:left;font:14px "Helvetica Neue",Helvetica,Arial,sans-serif;&#13;
+  height:26px;line-height:25px;border:1px solid #acacac;border-radius:3px;&#13;
+  /*&#13;
+  background:-webkit-linear-gradient(top,#f0f9ff 0,#cbebff 47%,#a1dbff 100%);&#13;
+  background:linear-gradient(to bottom,#f0f9ff 0,#cbebff 47%,#a1dbff 100%)&#13;
+  */&#13;
+}&#13;
+tags-input .tags .tag-item.selected{background:-webkit-linear-gradient(top,#febbbb 0,#fe9090 45%,#ff5c5c 100%);&#13;
+  background:linear-gradient(to bottom,#febbbb 0,#fe9090 45%,#ff5c5c 100%)}&#13;
+tags-input .tags .tag-item .remove-button{margin:0 0 0 5px;padding:0;border:none;background:0 0;&#13;
+  cursor:pointer;vertical-align:middle;font:700 16px Arial,sans-serif;color:#585858}&#13;
+tags-input .tags .input.invalid-tag,tags-input .tags .tag-item .remove-button:active{color:red}&#13;
+tags-input .tags .input{border:0;outline:0;margin:2px;padding:0 0 0 5px;float:left;height:26px;font:14px "Helvetica Neue",Helvetica,Arial,sans-serif}&#13;
+tags-input .tags .input::-ms-clear{display:none}&#13;
+tags-input.ng-invalid .tags{-webkit-box-shadow:0 0 3px 1px rgba(255,0,0,.6);&#13;
+  -moz-box-shadow:0 0 3px 1px rgba(255,0,0,.6);box-shadow:0 0 3px 1px rgba(255,0,0,.6)}&#13;
+tags-input[disabled] .host:focus{outline:0}tags-input[disabled] .tags{background-color:#eee;cursor:default}&#13;
+tags-input[disabled] .tags .tag-item{opacity:.65;background:-webkit-linear-gradient(top,#f0f9ff 0,rgba(203,235,255,.75) 47%,rgba(161,219,255,.62) 100%);&#13;
+  background:linear-gradient(to bottom,#f0f9ff 0,rgba(203,235,255,.75) 47%,rgba(161,219,255,.62) 100%)}&#13;
+tags-input[disabled] .tags .tag-item .remove-button{cursor:default}&#13;
+tags-input[disabled] .tags .tag-item .remove-button:active{color:#585858}tags-input[disabled] .tags .input{background-color:#eee;cursor:default}&#13;
+tags-input .autocomplete{margin-top:5px;position:absolute;padding:5px 0;z-index:999;width:100%;background-color:#fff;border:1px solid rgba(0,0,0,.2);&#13;
+  -webkit-box-shadow:0 5px 10px rgba(0,0,0,.2);-moz-box-shadow:0 5px 10px rgba(0,0,0,.2);box-shadow:0 5px 10px rgba(0,0,0,.2)}&#13;
+tags-input .autocomplete .suggestion-list{margin:0;padding:0;list-style-type:none;max-height:280px;overflow-y:auto;position:relative}&#13;
+tags-input .autocomplete .suggestion-item{padding:5px 10px;cursor:pointer;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;&#13;
+  font:16px "Helvetica Neue",Helvetica,Arial,sans-serif;color:#000;background-color:#fff}&#13;
+tags-input .autocomplete .suggestion-item.selected,tags-input .autocomplete .suggestion-item.selected em{color:#fff;background-color:#0097cf}&#13;
+tags-input .autocomplete .suggestion-item em{font:normal 700 16px "Helvetica Neue",Helvetica,Arial,sans-serif;color:#000;background-color:#fff}</css>
+        <name>NERD_Tags_CSS</name>
+        <sys_class_name>sp_css</sys_class_name>
+        <sys_created_by>yuw5@nih.gov</sys_created_by>
+        <sys_created_on>2018-10-18 15:26:35</sys_created_on>
+        <sys_customer_update>false</sys_customer_update>
+        <sys_id>cf3a3cacdb556300b86770c08c9619f7</sys_id>
+        <sys_mod_count>4</sys_mod_count>
+        <sys_name>NERD_Tags_CSS</sys_name>
+        <sys_package display_value="CRS Knowledge Database" source="x_26385_crs_kd">404e613b4f9213007221e321a310c738</sys_package>
+        <sys_policy/>
+        <sys_replace_on_upgrade>false</sys_replace_on_upgrade>
+        <sys_scope display_value="CRS Knowledge Database">404e613b4f9213007221e321a310c738</sys_scope>
+        <sys_update_name>sp_css_cf3a3cacdb556300b86770c08c9619f7</sys_update_name>
+        <sys_updated_by>yuw5@nih.gov</sys_updated_by>
+        <sys_updated_on>2018-10-18 15:57:53</sys_updated_on>
+    </sp_css>
+</record_update>

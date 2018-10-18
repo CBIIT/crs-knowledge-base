@@ -21,6 +21,9 @@
 		$scope.data = res.data.result;
 		$scope.title = $scope.data['Short description'];
 		$scope.columns = template[params.template_id];
+		$scope.tags = [{text: 'Brain Cancer'},
+									 {text: 'Clinical'},
+									 {text: 'Tumors'}];
 	}, function(error){
 		console.log(error);
 	});
@@ -54,7 +57,7 @@
         <sys_created_on>2018-10-17 20:16:40</sys_created_on>
         <sys_customer_update>false</sys_customer_update>
         <sys_id>ae23f05cdb592300b86770c08c961938</sys_id>
-        <sys_mod_count>16</sys_mod_count>
+        <sys_mod_count>47</sys_mod_count>
         <sys_name>[crs] KD Article</sys_name>
         <sys_package display_value="CRS Knowledge Database" source="x_26385_crs_kd">404e613b4f9213007221e321a310c738</sys_package>
         <sys_policy/>
@@ -62,29 +65,31 @@
         <sys_scope display_value="CRS Knowledge Database">404e613b4f9213007221e321a310c738</sys_scope>
         <sys_update_name>sp_widget_ae23f05cdb592300b86770c08c961938</sys_update_name>
         <sys_updated_by>yuw5@nih.gov</sys_updated_by>
-        <sys_updated_on>2018-10-17 21:43:07</sys_updated_on>
+        <sys_updated_on>2018-10-18 18:39:01</sys_updated_on>
         <template><![CDATA[<div id="crs-article">
   <div class="container">
     <div class="row row-space">
           <div class="col-md-9 article-block">
-						<div class="modal-header">
+						<div class="block-header">
                 <h4  class="modal-title">{{title}}</h4>
             </div>      
-            <div class="modal-body">
+            <div class="block-body">
               <div ng-repeat="item in columns track by $index">
                 <h4>{{item}}</h4> 
-                <div ng-bind-html="data[item]"></div> 
+                <div ng-bind-html="data[item]" style="font-size:14px;"></div> 
               </div> 
             </div>
-            <div class="modal-footer">
-              <span>Tags:</span>
+            <div class="block-footer">
+              <div class="tag-label">
+                Tags:
+              </div>
               <div class="tag-area">
-                Brain Cancer , Clinical , Tumors
+                <tags-input ng-model="tags"></tags-input>
               </div>
             </div>
           </div>
 
-          <div class="col-md-3 attch-block">
+          <div class="col-md-2 attch-block">
              <div class="section-header">
                Attachments
             </div>
@@ -97,7 +102,35 @@
 		</div>
     <!-- comment section -->
     <div class="row row-space">
-      Provide Feedback
+      <div class="col-md-9 feedback-block">
+        <div class="comment-header">
+          <h4>Provide Feedback</h4>
+        </div>      
+        <div class="comment-body">
+          <div class="comment-submit">
+            <h4>Add a comment</h4> 
+            <div style="width:100%;"><textarea name="comment" rows="3" ng-model="comment" style="width:100%;border-color:#ddd;border-radius:5px;"></textarea></div>
+            <div style="width:100%; text-align:right;"><button type="button" class="btn btn-primary">Submit</button></div> 
+          </div>
+          <div class="comment-label">
+            <h4>Comments (3)</h4> 
+          </div>
+          <div class="comment-list">
+            <div class="comment-row"> 
+              <p style="font-weight: bold" class="author pad-right kb-comments-list ng-binding"> Michael Lichten <span class="published pad-right"> - 7/18/2018</span> </p> 
+              <p class="break-word kb-comments-list ng-binding" style="white-space: pre-wrap">Would be great if a PDF version of this page was available.</p> 
+             </div>
+            <div class="comment-row"> 
+              <p style="font-weight: bold" class="author pad-right kb-comments-list ng-binding"> Jone Smith <span class="published pad-right"> - 6/18/2018</span> </p> 
+              <p class="break-word kb-comments-list ng-binding" style="white-space: pre-wrap">Would be great if a PDF version of this page was available.</p> 
+             </div>
+            <div class="comment-row"> 
+              <p style="font-weight: bold" class="author pad-right kb-comments-list ng-binding"> James Smith <span class="published pad-right"> - 5/18/2018</span> </p> 
+              <p class="break-word kb-comments-list ng-binding" style="white-space: pre-wrap">Would be great if a PDF version of this page was available.</p> 
+             </div>
+          </div>
+        </div>
+      </div>
     </div>
   </div>
 </div>]]></template>
