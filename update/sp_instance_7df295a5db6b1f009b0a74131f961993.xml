@@ -12,7 +12,7 @@
         <short_description/>
         <size>md</size>
         <sp_column display_value="1">abe2d5a5db6b1f009b0a74131f96196a</sp_column>
-        <sp_widget display_value="[crs] KD Content">9956f6fbdb365700e92cff621f9619b6</sp_widget>
+        <sp_widget/>
         <sys_class_name>sp_instance</sys_class_name>
         <sys_created_by>yuw5@nih.gov</sys_created_by>
         <sys_created_on>2018-07-26 19:58:07</sys_created_on>
