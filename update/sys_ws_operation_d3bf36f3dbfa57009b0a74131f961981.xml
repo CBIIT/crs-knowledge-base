@@ -9,15 +9,15 @@
         <http_method>GET</http_method>
         <name>getDocumentById</name>
         <operation_script><![CDATA[(function process(/*RESTAPIRequest*/ request, /*RESTAPIResponse*/ response) {
-	var template = {"u_kb_template_top_accomplishment":['Short description','Cancer Site/Type','Research Type','Description','References','Involved organization', 'DOC', 'Fiscal Year'],
-					 "u_kb_template_collaboration_report":['Short description','Type','NIH Partners','Federal Partners','Description'],
-					 "u_kb_template_significant_item": ['Short description','Cancer Site/Type', 'Congressional Language','Background','Recent Accomplishments','New Opportunities'],
-					 "u_kb_template_triennial_report": ['Short description','Background','Methods','Results', 'Conclusions']
+	var template = {"u_kb_template_top_accomplishment":['Title','Cancer Site/Type','Research Type','Description','References','Involved organization', 'DOC', 'Fiscal Year'],
+					 "u_kb_template_collaboration_report":['Title','Type','NIH Partners','Federal Partners','Description'],
+					 "u_kb_template_significant_item": ['Title','Cancer Site/Type', 'Congressional Language','Background','Recent Accomplishments','New Opportunities'],
+					 "u_kb_template_triennial_report": ['Title','Background','Methods','Results', 'Conclusions']
 				   };
 	
 	var data_columns = {
                 "u_kb_template_top_accomplishment":{
-                                "Short description":"short_description",
+                                "Title":"x_26385_crs_kd_u_kb_title",
                                 "Cancer Site/Type":"x_26385_crs_kd_u_kb_cancer_site_type", 
                                 "Description":"x_26385_crs_kd_u_kb_description",
                                 "DOC":"x_26385_crs_kd_u_kb_doc",
@@ -27,14 +27,14 @@
                                 "Research Type":"x_26385_crs_kd_u_kb_research_type",
                 },
                 "u_kb_template_collaboration_report":{
-                                "Short description":"short_description",
+                                "Title":"title",
                                 "Description":"u_kb_description",
                                 "Federal Partners":"u_kb_federal_partners",
                                 "NIH Partners":"u_kb_nih_partners",
                                 "Type":"u_kb_type"
                 },
                 "u_kb_template_significant_item":{
-                                "Short description":"short_description",
+                                "Title":"title",
                                 "Cancer Site/Type":"u_kb_cancer_site_type",
                                 "Background":"u_kb_background",
                                 "Congressional Language":"u_kb_congressional_language",
@@ -42,7 +42,7 @@
                                 "Recent Accomplishments":"u_kb_recent_accomplishments"
                 },
                 "u_kb_template_triennial_report":{
-                                "Short description":"short_description",
+                                "Title":"title",
                                 "Background":"u_kb_background",
                                 "Conclusions":"u_kb_conclusions",
                                 "Methods":"u_kb_methods",
@@ -90,7 +90,7 @@
         <sys_created_on>2018-06-26 20:52:59</sys_created_on>
         <sys_customer_update>false</sys_customer_update>
         <sys_id>d3bf36f3dbfa57009b0a74131f961981</sys_id>
-        <sys_mod_count>13</sys_mod_count>
+        <sys_mod_count>14</sys_mod_count>
         <sys_name>getDocumentById</sys_name>
         <sys_package display_value="CRS Knowledge Database" source="x_26385_crs_kd">404e613b4f9213007221e321a310c738</sys_package>
         <sys_policy/>
@@ -98,7 +98,7 @@
         <sys_scope display_value="CRS Knowledge Database">404e613b4f9213007221e321a310c738</sys_scope>
         <sys_update_name>sys_ws_operation_d3bf36f3dbfa57009b0a74131f961981</sys_update_name>
         <sys_updated_by>yuw5@nih.gov</sys_updated_by>
-        <sys_updated_on>2018-09-13 20:34:58</sys_updated_on>
+        <sys_updated_on>2018-10-22 19:41:01</sys_updated_on>
         <web_service_definition display_value="export">01e1bbe7db6a53005358dc50cf961994</web_service_definition>
         <web_service_version/>
     </sys_ws_operation>

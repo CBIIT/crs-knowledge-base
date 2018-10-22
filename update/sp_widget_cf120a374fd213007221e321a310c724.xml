@@ -493,13 +493,14 @@
 
 				var articleResult = {};
 				articleResult.sys_id = gr.sys_id.toString();
-				articleResult.short_description = gr.short_description.toString();
+				//articleResult.short_description = gr.short_description.toString();
 				articleResult.kb_knowledge_base = gr.getDisplayValue('kb_knowledge_base');
 				articleResult.kb_category = gr.getDisplayValue('kb_category');
 				articleResult.author = gr.getDisplayValue('author');
 				articleResult.sys_updated_on = gr.sys_updated_on.toString();
 				articleResult.published = gr.published.toString();
 				articleResult.sys_view_count = gr.sys_view_count.toString();
+				articleResult.title = gr.x_26385_crs_kd_u_kb_title.toString();
 				articleResult.x_26385_crs_kd_u_kb_cancer_site_type = gr.x_26385_crs_kd_u_kb_cancer_site_type.toString();
 				articleResult.x_26385_crs_kd_u_kb_research_type = gr.x_26385_crs_kd_u_kb_research_type.toString();
 				articleResult.x_26385_crs_kd_u_kb_doc = gr.x_26385_crs_kd_u_kb_doc.toString();
@@ -536,7 +537,7 @@
         <sys_created_on>2018-06-01 19:53:54</sys_created_on>
         <sys_customer_update>false</sys_customer_update>
         <sys_id>cf120a374fd213007221e321a310c724</sys_id>
-        <sys_mod_count>829</sys_mod_count>
+        <sys_mod_count>831</sys_mod_count>
         <sys_name>[crs] KD Search</sys_name>
         <sys_package display_value="CRS Knowledge Database" source="x_26385_crs_kd">404e613b4f9213007221e321a310c738</sys_package>
         <sys_policy/>
@@ -544,7 +545,7 @@
         <sys_scope display_value="CRS Knowledge Database">404e613b4f9213007221e321a310c738</sys_scope>
         <sys_update_name>sp_widget_cf120a374fd213007221e321a310c724</sys_update_name>
         <sys_updated_by>yuw5@nih.gov</sys_updated_by>
-        <sys_updated_on>2018-10-17 21:29:36</sys_updated_on>
+        <sys_updated_on>2018-10-22 19:19:16</sys_updated_on>
         <template><![CDATA[<div class="container">
   <div class="row">
         <div class="col-md-3">
@@ -706,7 +707,7 @@
                               <!--
 																	<a class="kb-title" ng-click="c.showContent(result.template,result.sys_id)" >{{result.short_description}}</a>
 															-->
-															<a class="kb-title ng-binding" ng-href="crs_kd?xpage=kd_article&aid={{result.sys_id}}&tid={{result.template}}" role="link" href="crs_kd?xpage=kd_article&aid={{result.sys_id}}&tid={{result.template}}">{{result.short_description}}</a>
+															<a class="kb-title ng-binding" ng-href="crs_kd?xpage=kd_article&aid={{result.sys_id}}&tid={{result.template}}" role="link" href="crs_kd?xpage=kd_article&aid={{result.sys_id}}&tid={{result.template}}">{{result.title}}</a>
                               <br>
                               <div class="kb-ref">
                                 <span>{{result.kb_knowledge_base}} > {{result.kb_category}}</span>
