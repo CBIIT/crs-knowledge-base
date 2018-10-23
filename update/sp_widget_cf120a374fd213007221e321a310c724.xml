@@ -411,6 +411,32 @@
 		
   }
 	
+	c.data.doc = [];
+	var cache = c.data.tmp.doc;
+	cache.sort();
+	cache.forEach(function(elem){
+		c.data.doc.push({id: elem, name: elem.substring(1, elem.length -1), count: c.data.count.doc[elem]});
+	});
+	
+	c.data.cancerSite = [];
+	cache = c.data.tmp.cancerSite;
+	cache.sort();
+	cache.forEach(function(elem){
+		c.data.cancerSite.push({id: elem, name: elem.substring(1, elem.length -1), count: c.data.count.cancerSite[elem]});
+	});
+	c.data.researchType = [];
+	cache = c.data.tmp.researchType;
+	cache.sort();
+	cache.forEach(function(elem){
+		c.data.researchType.push({id: elem, name: elem.substring(1, elem.length -1), count: c.data.count.researchType[elem]});
+	});
+	c.data.fiscalYear = [];
+	cache = c.data.tmp.fiscalYear;
+	cache.sort();
+	cache.forEach(function(elem){
+		c.data.fiscalYear.push({id: elem, name: elem.substring(1, elem.length -1), count: c.data.count.fiscalYear[elem]});
+	});
+	
 	if(s.search){
 		c.data.searchString = s.search;
 		c.search();
@@ -461,14 +487,20 @@
 		categories.push({id: gr.sys_id.toString(), name: gr.label.toString()});
 	}
 	
+	data.count = {};
 	cache = {};
-	data.doc = [];
+	data.tmp = {};
+	data.count.doc = {};
+	data.tmp.doc = [];
 	cache.doc = [];
-	data.cancerSite = [];
+	data.tmp.cancerSite = [];
+	data.count.cancerSite = {};
 	cache.cancerSite = [];
-	data.researchType = [];
+	data.tmp.researchType = [];
+	data.count.researchType = {};
 	cache.researchType = [];
-	data.fiscalYear = [];
+	data.tmp.fiscalYear = [];
+	data.count.fiscalYear = {};
 	cache.fiscalYear = [];
 	
 	data.searchResults = [];
@@ -511,11 +543,15 @@
 				values.push(articleResult);
 				for(k in filters){
 					var v = articleResult[filters[k]];
-					if(v.trim() != ''){
-						v.trim().split(",").forEach(function(elem){
+					if(v != ''){
+						v.split(",").forEach(function(elem){
 							if(cache[k].indexOf(elem) == -1){
 								cache[k].push(elem);
-								data[k].push({id: elem, name: elem});
+								data.tmp[k].push(elem);
+								data.count[k][elem] = 1;
+							}
+							else{
+								data.count[k][elem] ++;
 							}
 						});
 					}
@@ -537,7 +573,7 @@
         <sys_created_on>2018-06-01 19:53:54</sys_created_on>
         <sys_customer_update>false</sys_customer_update>
         <sys_id>cf120a374fd213007221e321a310c724</sys_id>
-        <sys_mod_count>831</sys_mod_count>
+        <sys_mod_count>849</sys_mod_count>
         <sys_name>[crs] KD Search</sys_name>
         <sys_package display_value="CRS Knowledge Database" source="x_26385_crs_kd">404e613b4f9213007221e321a310c738</sys_package>
         <sys_policy/>
@@ -545,7 +581,7 @@
         <sys_scope display_value="CRS Knowledge Database">404e613b4f9213007221e321a310c738</sys_scope>
         <sys_update_name>sp_widget_cf120a374fd213007221e321a310c724</sys_update_name>
         <sys_updated_by>yuw5@nih.gov</sys_updated_by>
-        <sys_updated_on>2018-10-22 19:19:16</sys_updated_on>
+        <sys_updated_on>2018-10-23 20:03:54</sys_updated_on>
         <template><![CDATA[<div class="container">
   <div class="row">
         <div class="col-md-3">
@@ -581,7 +617,7 @@
                               <input type="checkbox" id="selectAll_CancerSite" class="chekbox-input ng-pristine ng-untouched ng-valid ng-empty" ng-click="c.selectAll_CancerSite()" ng-checked="c.data.selectedCancerSite.length != 0  && c.data.selectedCancerSite.length == c.data.cancerSite.length">&nbsp;All
                             </li>
                             <li class="dropdown-options" ng-repeat="cat in c.data.cancerSite">
-                              <input type="checkbox" class="chekbox-input ng-pristine ng-untouched ng-valid ng-empty" ng-model="cat.selected" ng-click="c.updateCancerSiteData(cat)" value="{{cat.id}}" role="checkbox" aria-invalid="false" ng-checked="true" ng-checked="c.data.selectedCancerSite.indexOf(cat.id) > -1">&nbsp;{{cat.name}}
+                              <input type="checkbox" class="chekbox-input ng-pristine ng-untouched ng-valid ng-empty" ng-model="cat.selected" ng-click="c.updateCancerSiteData(cat)" value="{{cat.id}}" role="checkbox" aria-invalid="false" ng-checked="true" ng-checked="c.data.selectedCancerSite.indexOf(cat.id) > -1">&nbsp;{{cat.name}} ({{cat.count}})
                             </li>
                           </ul>
                         </div>
@@ -592,7 +628,7 @@
                               <input type="checkbox" id="selectAll_ResearchType" class="chekbox-input ng-pristine ng-untouched ng-valid ng-empty" ng-click="c.selectAll_ResearchType()" ng-checked="c.data.selectedResearchType.length != 0  && c.data.selectedResearchType.length == c.data.researchType.length">&nbsp;All
                             </li>
                             <li class="dropdown-options" ng-repeat="cat in c.data.researchType">
-                              <input type="checkbox" class="chekbox-input ng-pristine ng-untouched ng-valid ng-empty" ng-model="cat.selected" ng-click="c.updateResearchTypeData(cat)" value="{{cat.id}}" role="checkbox" aria-invalid="false" ng-checked="true" ng-checked="c.data.selectedResearchType.indexOf(cat.name) > -1">&nbsp;{{cat.name}}
+                              <input type="checkbox" class="chekbox-input ng-pristine ng-untouched ng-valid ng-empty" ng-model="cat.selected" ng-click="c.updateResearchTypeData(cat)" value="{{cat.id}}" role="checkbox" aria-invalid="false" ng-checked="true" ng-checked="c.data.selectedResearchType.indexOf(cat.name) > -1">&nbsp;{{cat.name}} ({{cat.count}})
                             </li>
                           </ul>
                         </div>
@@ -603,7 +639,7 @@
                               <input type="checkbox" id="selectAll_Doc" class="chekbox-input ng-pristine ng-untouched ng-valid ng-empty" ng-click="c.selectAll_Doc()" ng-checked="c.data.selectedDoc.length != 0  && c.data.selectedDoc.length == c.data.doc.length">&nbsp;All
                             </li>
                             <li class="dropdown-options" ng-repeat="cat in c.data.doc">
-                              <input type="checkbox" class="chekbox-input ng-pristine ng-untouched ng-valid ng-empty" ng-model="cat.selected" ng-click="c.updateDocData(cat)" value="{{cat.id}}" role="checkbox" aria-invalid="false" ng-checked="true" ng-checked="c.data.selectedDoc.indexOf(cat.name) > -1">&nbsp;{{cat.name}}
+                              <input type="checkbox" class="chekbox-input ng-pristine ng-untouched ng-valid ng-empty" ng-model="cat.selected" ng-click="c.updateDocData(cat)" value="{{cat.id}}" role="checkbox" aria-invalid="false" ng-checked="true" ng-checked="c.data.selectedDoc.indexOf(cat.name) > -1">&nbsp;{{cat.name}} ({{cat.count}})
                             </li>
                           </ul>
                         </div>
@@ -614,7 +650,7 @@
                               <input type="checkbox" id="selectAll_Year" class="chekbox-input ng-pristine ng-untouched ng-valid ng-empty" ng-click="c.selectAll_Year()" ng-checked="c.data.selectedYear.length != 0  && c.data.selectedYear.length == c.data.fiscalYear.length">&nbsp;All
                             </li>
                             <li class="dropdown-options" ng-repeat="cat in c.data.fiscalYear">
-                              <input type="checkbox" class="chekbox-input ng-pristine ng-untouched ng-valid ng-empty" ng-model="cat.selected" ng-click="c.updateYearData(cat)" value="{{cat.id}}" role="checkbox" aria-invalid="false" ng-checked="true" ng-checked="c.data.selectedYear.indexOf(cat.name) > -1">&nbsp;{{cat.name}}
+                              <input type="checkbox" class="chekbox-input ng-pristine ng-untouched ng-valid ng-empty" ng-model="cat.selected" ng-click="c.updateYearData(cat)" value="{{cat.id}}" role="checkbox" aria-invalid="false" ng-checked="true" ng-checked="c.data.selectedYear.indexOf(cat.name) > -1">&nbsp;{{cat.name}} ({{cat.count}})
                             </li>
                           </ul>
                         </div>
