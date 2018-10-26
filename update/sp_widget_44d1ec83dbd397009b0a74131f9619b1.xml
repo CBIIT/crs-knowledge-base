@@ -36,6 +36,7 @@
 		s.search = c.data.searchString;
     $location.search(s).replace();
 	}
+	
 }]]></client_script>
         <controller_as>c</controller_as>
         <css/>
@@ -59,7 +60,7 @@
         <sys_created_on>2018-07-18 21:58:33</sys_created_on>
         <sys_customer_update>false</sys_customer_update>
         <sys_id>44d1ec83dbd397009b0a74131f9619b1</sys_id>
-        <sys_mod_count>69</sys_mod_count>
+        <sys_mod_count>71</sys_mod_count>
         <sys_name>[crs] KD Home</sys_name>
         <sys_package display_value="CRS Knowledge Database" source="x_26385_crs_kd">404e613b4f9213007221e321a310c738</sys_package>
         <sys_policy/>
@@ -67,7 +68,7 @@
         <sys_scope display_value="CRS Knowledge Database">404e613b4f9213007221e321a310c738</sys_scope>
         <sys_update_name>sp_widget_44d1ec83dbd397009b0a74131f9619b1</sys_update_name>
         <sys_updated_by>yuw5@nih.gov</sys_updated_by>
-        <sys_updated_on>2018-10-18 18:47:40</sys_updated_on>
+        <sys_updated_on>2018-10-25 14:37:17</sys_updated_on>
         <template><![CDATA[<div id="crs-kd-home">
 	<div id="search-area" class="container" ng-if="c.xpage == 'home'">
     <div class="searchBox">

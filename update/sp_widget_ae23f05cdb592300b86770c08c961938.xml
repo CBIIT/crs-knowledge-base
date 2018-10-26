@@ -8,7 +8,8 @@
 	var s = $location.search();
 	var template = {"u_kb_template_top_accomplishment":['Cancer Site/Type','Research Type','Description','References','Involved organization', 'DOC', 'Fiscal Year']
 				   };
-	
+	c.knowledge_id = s.kb_knowledge_base;
+	c.hasFilter = s.hasFilter;
 	var sessionId = c.data.info.sessionId;
 	var data = {};
 	var columns = [];
@@ -27,6 +28,37 @@
 	}, function(error){
 		console.log(error);
 	});
+	
+	c.loadDictionary = function(query){
+		var tags = [{text: 'Basic'},
+								{text: 'Bladder'},
+								{text: 'Brain'},
+								{text: 'Cancer Control'},
+								{text: 'Central nervous system'},
+								{text: 'Cervical'},
+								{text: 'Endometrial'},
+								{text: 'Kidney'},
+								{text: 'Liver'},
+								{text: 'Lung'},
+								{text: 'Melanoma'},
+								{text: 'Ovarian'},
+								{text: 'Pediatric'},
+								{text: 'Post-Clinical'},
+								{text: 'Pre-Clinical'},
+								{text: 'Prostate'},
+								{text: 'Rare'},
+								{text: 'Sarcoma'},
+								{text: 'Skin'},
+								{text: 'Thyroid'},
+								{text: 'Tumor'}
+							 ];
+
+		var result = tags.filter(function(t){
+			return t.text.toLowerCase().startsWith(query.toLowerCase());
+		});
+		
+		return result;
+	};
 }]]></client_script>
         <controller_as>c</controller_as>
         <css/>
@@ -57,7 +89,7 @@
         <sys_created_on>2018-10-17 20:16:40</sys_created_on>
         <sys_customer_update>false</sys_customer_update>
         <sys_id>ae23f05cdb592300b86770c08c961938</sys_id>
-        <sys_mod_count>48</sys_mod_count>
+        <sys_mod_count>88</sys_mod_count>
         <sys_name>[crs] KD Article</sys_name>
         <sys_package display_value="CRS Knowledge Database" source="x_26385_crs_kd">404e613b4f9213007221e321a310c738</sys_package>
         <sys_policy/>
@@ -65,9 +97,14 @@
         <sys_scope display_value="CRS Knowledge Database">404e613b4f9213007221e321a310c738</sys_scope>
         <sys_update_name>sp_widget_ae23f05cdb592300b86770c08c961938</sys_update_name>
         <sys_updated_by>yuw5@nih.gov</sys_updated_by>
-        <sys_updated_on>2018-10-22 19:42:51</sys_updated_on>
+        <sys_updated_on>2018-10-26 19:58:01</sys_updated_on>
         <template><![CDATA[<div id="crs-article">
   <div class="container">
+    <div class="row row-space">
+      <div class="history-block">
+      	<a ng-href="crs_kd?xpage=kd_search&kb_knowledge_base={{c.knowledge_id}}&hasFilter={{c.hasFilter}}"><i class="fa fa-arrow-left" aria-hidden="true"></i> Back to search</a>
+  		</div>
+    </div>
     <div class="row row-space">
           <div class="col-md-9 article-block">
 						<div class="block-header">
@@ -84,7 +121,13 @@
                 Tags:
               </div>
               <div class="tag-area">
-                <tags-input ng-model="tags"></tags-input>
+                <tags-input ng-model="tags" replace-spaces-with-dashes=false>
+                	<auto-complete source="c.loadDictionary($query)"
+                     min-length="0"
+                     load-on-focus="false"
+                     load-on-empty="false"
+                     max-results-to-show="10"></auto-complete>
+                </tags-input>
               </div>
             </div>
           </div>
@@ -100,6 +143,38 @@
           </div>
 
 		</div>
+    <!-- attachment -->
+    <div class="row row-space">
+      <div class="col-md-9 upload-block">
+        <div class="upload-header">
+          <h4>Upload Files</h4>
+        </div>      
+        <div class="upload-body">
+          <div class="upload-form">
+            <h4>File to upload</h4> 
+            <div style="width:100%;"><input type="file" class="form-control" style="cursor: pointer;"></div>
+            
+            <div style="width:100%; margin-top: 5px;overflow:auto;">
+              <div class="col-md-6">
+                <h5>Maximum upload size 30 MB</h5>
+              </div>
+              <div class="col-md-6" style="text-align:right;padding-right:0px;">
+                <button type="button" class="btn btn-primary">Upload</button></div> 
+              </div>
+          </div>
+          <div class="file-list">
+            <div class="file-block">
+              <a href=""><i class="fa fa-file-pdf-o" aria-hidden="true"></i> Surgery Instruction.pdf</a>
+              <a class="btn-remove" ng-click="c.removeAttachment()" role="link">×</a>
+            </div>
+            <div class="file-block"> 
+              <a href=""><i class="fa fa-file-pdf-o" aria-hidden="true"></i> ABY-029.pdf</a> 
+              <a class="btn-remove" ng-click="c.removeAttachment()" role="link">×</a>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
     <!-- comment section -->
     <div class="row row-space">
       <div class="col-md-9 feedback-block">

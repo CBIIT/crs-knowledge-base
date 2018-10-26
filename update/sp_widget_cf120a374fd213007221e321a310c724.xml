@@ -2,7 +2,7 @@
 <record_update table="sp_widget">
     <sp_widget action="INSERT_OR_UPDATE">
         <category>custom</category>
-        <client_script><![CDATA[function($scope, $location, $http,NERDSearchBasicArticleByCriteria) {
+        <client_script><![CDATA[function($rootScope, $scope, $location, $http,NERDSearchBasicArticleByCriteria) {
 	/* widget controller */
 	
 	
@@ -54,11 +54,117 @@
 			c.selectedCategories = {};
 			var idx = 0;
 			c.resultLen = 0;
+			var tmp_doc = "";
+			var tmp_fiscalYear = "";
+			var tmp_cancerSite = "";
+			var tmp_researchType = "";
 			c.data.tabs.forEach(function(t){
 				  t.isOpen = true;
 					c.selectedCategories[t.name] = idx++;
 					c.resultLen += t.list.length;
+				  var schema = t.schema;
+				  if(schema["doc"]){
+						t.list.forEach(function(elem){
+							tmp_doc += "," + elem[schema["doc"]];
+						});
+					}
+					if(schema["fiscalYear"]){
+						t.list.forEach(function(elem){
+							tmp_fiscalYear += "," + elem[schema["fiscalYear"]];
+						});
+					}
+					if(schema["cancerSite"]){
+						t.list.forEach(function(elem){
+							tmp_cancerSite += "," + elem[schema["cancerSite"]];
+						});
+					}
+					if(schema["researchType"]){
+						t.list.forEach(function(elem){
+							tmp_researchType += "," + elem[schema["researchType"]];
+						});
+					}
+				  
 			});
+			var tmp_cache = {};
+			if(tmp_doc !== ""){
+				tmp_doc.substring(1).split(",").forEach(function(elem){
+					if(tmp_cache[elem]){
+						tmp_cache[elem]++;
+					}
+					else{
+						tmp_cache[elem] =1;
+					}
+				});
+			}
+			c.data.doc.forEach(function(elem){
+				if(tmp_cache[elem.id]){
+					elem.count = tmp_cache[elem.id];
+				}
+				else{
+					elem.count = 0;
+				}
+			});
+			
+			tmp_cache = {};
+			if(tmp_fiscalYear !== ""){
+				tmp_fiscalYear.substring(1).split(",").forEach(function(elem){
+					if(tmp_cache[elem]){
+						tmp_cache[elem]++;
+					}
+					else{
+						tmp_cache[elem] =1;
+					}
+				});
+			}
+			c.data.fiscalYear.forEach(function(elem){
+				if(tmp_cache[elem.id]){
+					elem.count = tmp_cache[elem.id];
+				}
+				else{
+					elem.count = 0;
+				}
+			});
+			
+			tmp_cache = {};
+			if(tmp_cancerSite !== ""){
+				tmp_cancerSite.substring(1).split(",").forEach(function(elem){
+					if(tmp_cache[elem]){
+						tmp_cache[elem]++;
+					}
+					else{
+						tmp_cache[elem] =1;
+					}
+				});
+			}
+			c.data.cancerSite.forEach(function(elem){
+				if(tmp_cache[elem.id]){
+					elem.count = tmp_cache[elem.id];
+				}
+				else{
+					elem.count = 0;
+				}
+			});
+			
+			tmp_cache = {};
+			if(tmp_researchType !== ""){
+				tmp_researchType.substring(1).split(",").forEach(function(elem){
+					if(tmp_cache[elem]){
+						tmp_cache[elem]++;
+					}
+					else{
+						tmp_cache[elem] =1;
+					}
+				});
+			}
+			c.data.researchType.forEach(function(elem){
+				if(tmp_cache[elem.id]){
+					elem.count = tmp_cache[elem.id];
+				}
+				else{
+					elem.count = 0;
+				}
+			});
+			
 			document.getElementById("cb_selectAll").checked = false;
 			//c.searchResults = r.data.searchResults;
 			c.selectedCount = 0;
@@ -73,9 +179,36 @@
 		});
 	};
 	
-	c.showContent = function(template_id,doc_id){
-		//$('#document_content').modal('show');
-		window.displayData(doc_id,template_id);
+	c.gotoDetail = function(sys_id,template_id){
+		var hasFilter = false;
+		//save searchCriteria to global scope
+		if(c.data.searchString && c.data.searchString !== ""){
+			hasFilter = true;
+			$rootScope.searchString = c.data.searchString;
+		}
+		if(c.data.selectedYear.length > 0){
+			hasFilter = true;
+			$rootScope.selectedYear = c.data.selectedYear;
+		}
+		if(c.data.selectedDoc.length > 0){
+			hasFilter = true;
+			$rootScope.selectedDoc = c.data.selectedDoc;
+		}
+		if(c.data.selectedCancerSite.length > 0){
+			hasFilter = true;
+			$rootScope.selectedCancerSite = c.data.selectedCancerSite;
+		}
+		if(c.data.selectedResearchType.length > 0){
+			hasFilter = true;
+			$rootScope.selectedResearchType = c.data.selectedResearchType;
+		}
+		//redirect to detail page
+		s.xpage = 'kd_article';
+		s.aid = sys_id;
+		s.tid = template_id;
+		s.hasFilter = hasFilter?'1':'0';
+		$location.search(s).replace();
+		//ng-href="crs_kd?xpage=kd_article&aid={{result.sys_id}}&tid={{result.template}}";
 	}
 	
 	c.updateFilter = function(cat){
@@ -140,7 +273,6 @@
 				c.isExportable = false;
 			}
 		}
-		console.log(c.selectedCount);
 	}
 	
 	c.updateKnowledgeBaseData = function(item){
@@ -171,10 +303,10 @@
 	
 	c.updateCancerSiteData = function(item){
 		if(item.selected){
-			c.data.selectedCancerSite.push(item.name);
+			c.data.selectedCancerSite.push(item.id);
 		}
 		else{
-			var idx = c.data.selectedCancerSite.indexOf(item.name);
+			var idx = c.data.selectedCancerSite.indexOf(item.id);
 			if (idx > -1) {
 				c.data.selectedCancerSite.splice(idx, 1);
 			}
@@ -188,7 +320,7 @@
 		if(selectAll.checked){
 			var tmp = [];
 			c.data.cancerSite.map(function(obj){
-				tmp.push(obj.name);
+				tmp.push(obj.id);
 			});
 			c.data.selectedCancerSite = tmp;
 		}
@@ -197,10 +329,10 @@
 	
 	c.updateResearchTypeData = function(item){
 		if(item.selected){
-			c.data.selectedResearchType.push(item.name);
+			c.data.selectedResearchType.push(item.id);
 		}
 		else{
-			var idx = c.data.selectedResearchType.indexOf(item.name);
+			var idx = c.data.selectedResearchType.indexOf(item.id);
 			if (idx > -1) {
 				c.data.selectedResearchType.splice(idx, 1);
 			}
@@ -214,7 +346,7 @@
 		if(selectAll.checked){
 			var tmp = [];
 			c.data.researchType.map(function(obj){
-				tmp.push(obj.name);
+				tmp.push(obj.id);
 			});
 			c.data.selectedResearchType = tmp;
 		}
@@ -223,10 +355,10 @@
 	
 	c.updateDocData = function(item){
 		if(item.selected){
-			c.data.selectedDoc.push(item.name);
+			c.data.selectedDoc.push(item.id);
 		}
 		else{
-			var idx = c.data.selectedDoc.indexOf(item.name);
+			var idx = c.data.selectedDoc.indexOf(item.id);
 			if (idx > -1) {
 				c.data.selectedDoc.splice(idx, 1);
 			}
@@ -240,7 +372,7 @@
 		if(selectAll.checked){
 			var tmp = [];
 			c.data.doc.map(function(obj){
-				tmp.push(obj.name);
+				tmp.push(obj.id);
 			});
 			c.data.selectedDoc = tmp;
 		}
@@ -249,10 +381,10 @@
 	
 	c.updateYearData = function(item){
 		if(item.selected){
-			c.data.selectedYear.push(item.name);
+			c.data.selectedYear.push(item.id);
 		}
 		else{
-			var idx = c.data.selectedYear.indexOf(item.name);
+			var idx = c.data.selectedYear.indexOf(item.id);
 			if (idx > -1) {
 				c.data.selectedYear.splice(idx, 1);
 			}
@@ -266,7 +398,7 @@
 		if(selectAll.checked){
 			var tmp = [];
 			c.data.fiscalYear.map(function(obj){
-				tmp.push(obj.name);
+				tmp.push(obj.id);
 			});
 			c.data.selectedYear = tmp;
 		}
@@ -441,6 +573,14 @@
 		c.data.searchString = s.search;
 		c.search();
 	}
+	else if(s.hasFilter && s.hasFilter == '1'){
+		c.data.searchString = $rootScope.searchString;
+		c.data.selectedYear = $rootScope.selectedYear?$rootScope.selectedYear : [];
+		c.data.selectedDoc = $rootScope.selectedDoc?$rootScope.selectedDoc : [];
+		c.data.selectedCancerSite = $rootScope.selectedCancerSite?$rootScope.selectedCancerSite : [];
+		c.data.selectedResearchType = $rootScope.selectedResearchType?$rootScope.selectedResearchType : [];
+		c.search();
+	}
 	
 }]]></client_script>
         <controller_as>c</controller_as>
@@ -573,7 +713,7 @@
         <sys_created_on>2018-06-01 19:53:54</sys_created_on>
         <sys_customer_update>false</sys_customer_update>
         <sys_id>cf120a374fd213007221e321a310c724</sys_id>
-        <sys_mod_count>849</sys_mod_count>
+        <sys_mod_count>914</sys_mod_count>
         <sys_name>[crs] KD Search</sys_name>
         <sys_package display_value="CRS Knowledge Database" source="x_26385_crs_kd">404e613b4f9213007221e321a310c738</sys_package>
         <sys_policy/>
@@ -581,7 +721,7 @@
         <sys_scope display_value="CRS Knowledge Database">404e613b4f9213007221e321a310c738</sys_scope>
         <sys_update_name>sp_widget_cf120a374fd213007221e321a310c724</sys_update_name>
         <sys_updated_by>yuw5@nih.gov</sys_updated_by>
-        <sys_updated_on>2018-10-23 20:03:54</sys_updated_on>
+        <sys_updated_on>2018-10-25 19:07:54</sys_updated_on>
         <template><![CDATA[<div class="container">
   <div class="row">
         <div class="col-md-3">
@@ -628,7 +768,7 @@
                               <input type="checkbox" id="selectAll_ResearchType" class="chekbox-input ng-pristine ng-untouched ng-valid ng-empty" ng-click="c.selectAll_ResearchType()" ng-checked="c.data.selectedResearchType.length != 0  && c.data.selectedResearchType.length == c.data.researchType.length">&nbsp;All
                             </li>
                             <li class="dropdown-options" ng-repeat="cat in c.data.researchType">
-                              <input type="checkbox" class="chekbox-input ng-pristine ng-untouched ng-valid ng-empty" ng-model="cat.selected" ng-click="c.updateResearchTypeData(cat)" value="{{cat.id}}" role="checkbox" aria-invalid="false" ng-checked="true" ng-checked="c.data.selectedResearchType.indexOf(cat.name) > -1">&nbsp;{{cat.name}} ({{cat.count}})
+                              <input type="checkbox" class="chekbox-input ng-pristine ng-untouched ng-valid ng-empty" ng-model="cat.selected" ng-click="c.updateResearchTypeData(cat)" value="{{cat.id}}" role="checkbox" aria-invalid="false" ng-checked="true" ng-checked="c.data.selectedResearchType.indexOf(cat.id) > -1">&nbsp;{{cat.name}} ({{cat.count}})
                             </li>
                           </ul>
                         </div>
@@ -639,7 +779,7 @@
                               <input type="checkbox" id="selectAll_Doc" class="chekbox-input ng-pristine ng-untouched ng-valid ng-empty" ng-click="c.selectAll_Doc()" ng-checked="c.data.selectedDoc.length != 0  && c.data.selectedDoc.length == c.data.doc.length">&nbsp;All
                             </li>
                             <li class="dropdown-options" ng-repeat="cat in c.data.doc">
-                              <input type="checkbox" class="chekbox-input ng-pristine ng-untouched ng-valid ng-empty" ng-model="cat.selected" ng-click="c.updateDocData(cat)" value="{{cat.id}}" role="checkbox" aria-invalid="false" ng-checked="true" ng-checked="c.data.selectedDoc.indexOf(cat.name) > -1">&nbsp;{{cat.name}} ({{cat.count}})
+                              <input type="checkbox" class="chekbox-input ng-pristine ng-untouched ng-valid ng-empty" ng-model="cat.selected" ng-click="c.updateDocData(cat)" value="{{cat.id}}" role="checkbox" aria-invalid="false" ng-checked="true" ng-checked="c.data.selectedDoc.indexOf(cat.id) > -1">&nbsp;{{cat.name}} ({{cat.count}})
                             </li>
                           </ul>
                         </div>
@@ -650,7 +790,7 @@
                               <input type="checkbox" id="selectAll_Year" class="chekbox-input ng-pristine ng-untouched ng-valid ng-empty" ng-click="c.selectAll_Year()" ng-checked="c.data.selectedYear.length != 0  && c.data.selectedYear.length == c.data.fiscalYear.length">&nbsp;All
                             </li>
                             <li class="dropdown-options" ng-repeat="cat in c.data.fiscalYear">
-                              <input type="checkbox" class="chekbox-input ng-pristine ng-untouched ng-valid ng-empty" ng-model="cat.selected" ng-click="c.updateYearData(cat)" value="{{cat.id}}" role="checkbox" aria-invalid="false" ng-checked="true" ng-checked="c.data.selectedYear.indexOf(cat.name) > -1">&nbsp;{{cat.name}} ({{cat.count}})
+                              <input type="checkbox" class="chekbox-input ng-pristine ng-untouched ng-valid ng-empty" ng-model="cat.selected" ng-click="c.updateYearData(cat)" value="{{cat.id}}" role="checkbox" aria-invalid="false" ng-checked="true" ng-checked="c.data.selectedYear.indexOf(cat.id) > -1">&nbsp;{{cat.name}} ({{cat.count}})
                             </li>
                           </ul>
                         </div>
@@ -685,7 +825,7 @@
                 </div>
 
 
-                <div class="panel panel-default">
+                <div class="panel panel-default panel-relative">
 
                     <div class="panel-head panel-relative">
                       <div class="panel-title">
@@ -714,12 +854,32 @@
                     </div>
                   
                     <div class="panel-head panel-relative">
-                      <div class="panel-title">
+                      <div class="filter-select">
                         <span class="panel-bar">
                           <input type="checkbox" class="checkbox checkbox-all" id="cb_selectAll" name="selectAll" value="all"> Select All
                         </span>
                       </div>
-                      <div class="button-group panel-bar-filter">
+                      <div class="col-md-8 filter-block">
+                        <ul class="filter-options-list" ng-show="c.data.selectedCancerSite.length > 0 || c.data.selectedResearchType.length > 0 || c.data.selectedDoc.length > 0 || c.data.selectedYear.length > 0">
+                          <li class="filter-item" role="button" ng-repeat="t in c.data.selectedCancerSite">
+                            <span>{{t.substring(1,t.length-1)}}</span>
+                            <a class="remove-button" role="link" ng-click="c.updateCancerSiteData({'id':t})">×</a>
+                          </li>
+                          <li class="filter-item" role="button" ng-repeat="t in c.data.selectedResearchType">
+                            <span>{{t.substring(1,t.length-1)}}</span>
+                            <a class="remove-button" role="link" ng-click="c.updateResearchTypeData({'id':t})">×</a>
+                          </li>
+                          <li class="filter-item" role="button" ng-repeat="t in c.data.selectedDoc">
+                            <span>{{t.substring(1,t.length-1)}}</span>
+                            <a class="remove-button" role="link" ng-click="c.updateDocData({'id':t})">×</a>
+                          </li>
+                          <li class="filter-item" role="button" ng-repeat="t in c.data.selectedYear">
+                            <span>{{t.substring(1,t.length-1)}}</span>
+                            <a class="remove-button" role="link" ng-click="c.updateYearData({'id':t})">×</a>
+                          </li>
+                        </ul>
+                      </div>
+                      <div class="button-group">
                         <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown"><span class="filter-btn-label">Category  </span> <span class="caret"></span></button>
                         <ul class="dropdown-menu">
                           <li class="dropdown-options" ng-repeat="cat in c.data.tabs"><input type="checkbox" class="chekbox-input ng-pristine ng-untouched ng-valid ng-empty" ng-model="cat.selected" ng-click="c.updateFilter(cat)" value="{{cat.name}}" role="checkbox" aria-invalid="false" ng-checked="true">&nbsp;{{cat.name}}</li>
@@ -727,7 +887,7 @@
                       </div>
                     </div>
 
-                    <div class="panel-body">
+                    <div class="panel-body panel-relative">
                       <uib-accordion close-others="false">
                         <div uib-accordion-group ng-repeat="tab in c.data.tabs" ng-if="tab.show" class="panel-default" is-open="tab.isOpen">
                           <uib-accordion-heading>
@@ -743,7 +903,7 @@
                               <!--
 																	<a class="kb-title" ng-click="c.showContent(result.template,result.sys_id)" >{{result.short_description}}</a>
 															-->
-															<a class="kb-title ng-binding" ng-href="crs_kd?xpage=kd_article&aid={{result.sys_id}}&tid={{result.template}}" role="link" href="crs_kd?xpage=kd_article&aid={{result.sys_id}}&tid={{result.template}}">{{result.title}}</a>
+															<a class="kb-title ng-binding" ng-click="c.gotoDetail(result.sys_id, result.template)" role="link">{{result.title}}</a>
                               <br>
                               <div class="kb-ref">
                                 <span>{{result.kb_knowledge_base}} > {{result.kb_category}}</span>
@@ -752,7 +912,7 @@
 
                                 Author: {{result.author}}
                                 <span class="dot-divider" aria-hidden="true"> • </span>
-                                Fiscal Year: {{result.fYear}}
+                                Fiscal Year: {{result.fYear.substring(1, 5)}}
                                 <!--
 																{{result.sys_view_count}} Views
                                 <span class="dot" aria-hidden="true"> • </span>

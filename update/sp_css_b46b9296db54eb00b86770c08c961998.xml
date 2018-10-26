@@ -144,15 +144,28 @@ div.page, section.page {&#13;
 &#13;
 .panel-relative{&#13;
 	position:relative;&#13;
+  	width:100%;&#13;
+    float:left;&#13;
 }&#13;
 &#13;
 .panel-relative .panel-title{&#13;
-	display:inline-block;&#13;
+  display:inline-block;&#13;
+  width:100%;&#13;
+}&#13;
+&#13;
+.filter-select{&#13;
+  width:100px;&#13;
+  float:left;&#13;
+  padding:6px 0px;&#13;
 }&#13;
 &#13;
 .filter-btn-label{&#13;
 	font-size:14px;&#13;
   margin-right:10px;&#13;
+}&#13;
+.button-group{&#13;
+  float:right;&#13;
+  position:relative;&#13;
 }&#13;
 &#13;
 .panel-action{&#13;
@@ -336,6 +349,22 @@ div.page, section.page {&#13;
 .dropdown-menu{&#13;
 	min-width:200px;&#13;
 }&#13;
+.filter-block{&#13;
+  padding:6px 0px 0px 0px;&#13;
+}&#13;
+&#13;
+.filter-options-list{&#13;
+  padding: 0px;&#13;
+}&#13;
+&#13;
+.filter-item{&#13;
+  list-style: none;&#13;
+  padding:0px 5px;&#13;
+  border: 1px solid #ddd;&#13;
+  border-radius: 5px;&#13;
+  margin:0px 5px 5px 0px;&#13;
+  float:left;&#13;
+}&#13;
 &#13;
 .checkbox-item{&#13;
 	margin-top:0px;&#13;
@@ -362,6 +391,11 @@ div.page, section.page {&#13;
 }&#13;
 .row-space{&#13;
   &#13;
+}&#13;
+.history-block{&#13;
+  padding-left: 15px;&#13;
+  margin-top:15px;&#13;
+  margin-left:15px;&#13;
 }&#13;
 .article-block{&#13;
   border: 1px solid #ddd;&#13;
@@ -429,6 +463,49 @@ div.page, section.page {&#13;
   width:94%;&#13;
   display:inline-block;&#13;
 }&#13;
+.upload-block{&#13;
+  border: 1px solid #ddd;&#13;
+  border-radius: 5px;&#13;
+  background-color: #fff;&#13;
+  padding: 0px;&#13;
+  margin-top: 15px;&#13;
+  margin-left: 15px;&#13;
+}&#13;
+.upload-header{&#13;
+  color: #3a3f51;&#13;
+  background-color: #f5f5f5;&#13;
+  border-color: #ddd;&#13;
+  padding: 10px 15px;&#13;
+  border-bottom: 1px solid #ddd;&#13;
+  border-top-right-radius: 5px;&#13;
+  border-top-left-radius: 5px;&#13;
+}&#13;
+.upload-body{&#13;
+  padding:0px 15px 15px 15px;&#13;
+}&#13;
+.upload-form{&#13;
+  border-bottom: 1px solid #ddd;&#13;
+  padding-bottom:10px;&#13;
+}&#13;
+.file-list{&#13;
+  overflow:auto;&#13;
+}&#13;
+.file-block{&#13;
+  float: left;&#13;
+  border: 1px solid #ddd;&#13;
+  border-radius: 5px;&#13;
+  margin: 10px 10px 0px 0px;&#13;
+  padding:5px;&#13;
+}&#13;
+.btn-remove{&#13;
+  margin-left:10px;&#13;
+  padding: 0px 5px;&#13;
+}&#13;
+.btn-remove:hover{&#13;
+  color:white;&#13;
+  border-radius:5px;&#13;
+  background-color: #C6375D;&#13;
+}&#13;
 .comment-header{&#13;
  	color: #3a3f51;&#13;
     background-color: #f5f5f5;&#13;
@@ -446,7 +523,7 @@ div.page, section.page {&#13;
   border-bottom: 1px solid #ddd;&#13;
   padding-bottom:10px;&#13;
 }&#13;
-.comment-label{&#13;
+.file-label,.comment-label{&#13;
   border-bottom: 1px solid #ddd;&#13;
 }&#13;
 .comment-list{&#13;
@@ -512,6 +589,11 @@ div.page, section.page {&#13;
     color: #135B5D;&#13;
     text-align: center;&#13;
     width: 100%;&#13;
+}&#13;
+/* angular native css */&#13;
+tags-input .autocomplete .suggestion-item.selected, tags-input .autocomplete .suggestion-item.selected em {&#13;
+    color: #fff;&#13;
+    background-color: #428bca;&#13;
 }</css>
         <name>NERD_CSS</name>
         <sys_class_name>sp_css</sys_class_name>
@@ -519,7 +601,7 @@ div.page, section.page {&#13;
         <sys_created_on>2018-09-04 15:57:11</sys_created_on>
         <sys_customer_update>false</sys_customer_update>
         <sys_id>b46b9296db54eb00b86770c08c961998</sys_id>
-        <sys_mod_count>51</sys_mod_count>
+        <sys_mod_count>81</sys_mod_count>
         <sys_name>NERD_CSS</sys_name>
         <sys_package display_value="CRS Knowledge Database" source="x_26385_crs_kd">404e613b4f9213007221e321a310c738</sys_package>
         <sys_policy/>
@@ -527,6 +609,6 @@ div.page, section.page {&#13;
         <sys_scope display_value="CRS Knowledge Database">404e613b4f9213007221e321a310c738</sys_scope>
         <sys_update_name>sp_css_b46b9296db54eb00b86770c08c961998</sys_update_name>
         <sys_updated_by>yuw5@nih.gov</sys_updated_by>
-        <sys_updated_on>2018-10-23 20:11:36</sys_updated_on>
+        <sys_updated_on>2018-10-26 19:57:35</sys_updated_on>
     </sp_css>
 </record_update>
