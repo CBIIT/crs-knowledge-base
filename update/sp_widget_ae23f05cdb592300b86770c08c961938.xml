@@ -2,7 +2,7 @@
 <record_update table="sp_widget">
     <sp_widget action="INSERT_OR_UPDATE">
         <category>custom</category>
-        <client_script><![CDATA[function($scope,$location, NERDSearchBasicArticleByID) {
+        <client_script><![CDATA[function($scope,$location, NERDSearchBasicArticleByID, NERDComment, NERDTag, NERDFile) {
   /* widget controller */
   var c = this;
 	var s = $location.search();
@@ -10,6 +10,9 @@
 				   };
 	c.knowledge_id = s.kb_knowledge_base;
 	c.hasFilter = s.hasFilter;
+	c.upload_status = "upload";
+	c.errorMessage = false;
+	c.file2upload = '';
 	var sessionId = c.data.info.sessionId;
 	var data = {};
 	var columns = [];
@@ -22,12 +25,106 @@
 		$scope.data = res.data.result;
 		$scope.title = $scope.data['Title'];
 		$scope.columns = template[params.template_id];
-		$scope.tags = [{text: 'Brain Cancer'},
-									 {text: 'Clinical'},
-									 {text: 'Tumors'}];
+		$scope.tags = c.parseTags($scope.data.tags);
+		
+		$scope.comments = c.parseComments($scope.data.comments);
+		$scope.attachments = $scope.data['attachments'];
 	}, function(error){
 		console.log(error);
 	});
+	
+	var fileInput  = document.getElementById("file2upload");
+
+	fileInput.addEventListener( "change", function( event ) {
+		c.file2upload = this.value;
+		$scope.$apply();
+	});
+	
+	function readFile(file, callback) {
+		var fileReader = new FileReader();
+		fileReader.onload = function() {
+			var result = fileReader.result.replace('data:application/pdf;base64,', '');
+			callback(result);
+		}
+		fileReader.readAsDataURL(file); //file must be base64
+	}
+	
+	c.upload = function(){
+		c.upload_status = 'uploading...';
+		
+		var input = $('#file2upload')[0];
+		var file = input.files[0];
+		
+		if(file.type !== 'application/pdf'){
+			console.log("please upload a pdf file.");
+			c.errorMessage = true;
+			c.upload_status = 'upload';
+		}
+		else if(file.size >= 31457280){
+			console.log("File size should not exceed 30 MB.");
+			c.errorMessage = true;
+			c.upload_status = 'upload';
+		}
+		else{
+		  readFile(file, function(base64) {
+				var filename = file.name;
+				var attach = {
+								sys_id: params.doc_id,
+								tmp_id: params.template_id,
+								fileName: filename,
+								fileContents : base64
+							};
+				NERDFile.uploadPDF(attach, sessionId).then(function(res){
+					if(res){
+						c.upload_status = 'upload';
+						c.errorMesage = false;
+						$scope.attachments = res.data.result;
+						$scope.$apply();
+					}
+				}, function(error){
+						console.log(error);
+				});
+			});	
+		}
+	};
+	
+	c.removeAttachment = function(attach_sys_id){
+		var attach = {
+			sys_id: params.doc_id,
+			tmp_id: params.template_id
+		};
+		attach.attachment_sys_id = attach_sys_id;
+		NERDFile.removePDF(attach, sessionId).then(function(res){
+			if(res){
+				$scope.attachments = res.data.result;
+				$scope.$apply();
+			}
+		}, function(error){
+			console.log(error);
+		});
+	};
+	
+	c.tagAdding = function(tag){
+		//post to server
+		NERDTag.addTag(params.doc_id , params.template_id, tag.text, sessionId).then(function(res){
+			var tags = res.data.result;
+			$scope.tags = c.parseTags(tags);
+			$scope.$apply();
+		}, function(error){
+			console.log(error);
+		});
+	};
+	
+	c.tagRemoving = function(tag){
+		//post to server
+		NERDTag.removeTag(params.doc_id , params.template_id, tag.text, sessionId).then(function(res){
+			var tags = res.data.result;
+			$scope.tags = c.parseTags(tags);
+			$scope.$apply();
+		}, function(error){
+			console.log(error);
+		});
+	};
 	
 	c.loadDictionary = function(query){
 		var tags = [{text: 'Basic'},
@@ -59,6 +156,47 @@
 		
 		return result;
 	};
+	
+	c.addComment = function(){
+		//post to server
+		NERDComment.addComment(params.doc_id , params.template_id, c.comment, sessionId).then(function(res){
+			var comments = res.data.result;
+			$scope.comments = c.parseComments(comments);
+			c.comment = '';
+			$scope.$apply();
+		}, function(error){
+			console.log(error);
+		});
+	};
+	
+	c.parseTags = function(tags){
+		var result = [];
+		if(tags !== ''){
+			tags.split(",").forEach(function(elem){
+				result.push({text: elem.substring(1, elem.length - 1)});
+			});
+		}
+		return result;
+	};
+	
+	c.parseComments = function(comments){
+		if(comments.trim() == '') return [];
+		var tmp = comments.split("\n\n");
+	  var result = [];
+		tmp.forEach(function(t){
+			if(t =='') return;
+			var idx = t.indexOf("\n");
+			var info = t.substring(0, idx);
+			var idx_1 = info.indexOf("-"), idx_2 = info.indexOf("(");
+			var dict = {};
+			dict.name = info.substring(idx_1+2, idx_2);
+			dict.time = info.substring(0, idx_1);
+			dict.comment = t.substring(idx+1);
+			result.push(dict);
+		});
+		return result;
+	}
+	
 }]]></client_script>
         <controller_as>c</controller_as>
         <css/>
@@ -89,7 +227,7 @@
         <sys_created_on>2018-10-17 20:16:40</sys_created_on>
         <sys_customer_update>false</sys_customer_update>
         <sys_id>ae23f05cdb592300b86770c08c961938</sys_id>
-        <sys_mod_count>88</sys_mod_count>
+        <sys_mod_count>174</sys_mod_count>
         <sys_name>[crs] KD Article</sys_name>
         <sys_package display_value="CRS Knowledge Database" source="x_26385_crs_kd">404e613b4f9213007221e321a310c738</sys_package>
         <sys_policy/>
@@ -97,7 +235,7 @@
         <sys_scope display_value="CRS Knowledge Database">404e613b4f9213007221e321a310c738</sys_scope>
         <sys_update_name>sp_widget_ae23f05cdb592300b86770c08c961938</sys_update_name>
         <sys_updated_by>yuw5@nih.gov</sys_updated_by>
-        <sys_updated_on>2018-10-26 19:58:01</sys_updated_on>
+        <sys_updated_on>2018-10-29 22:29:14</sys_updated_on>
         <template><![CDATA[<div id="crs-article">
   <div class="container">
     <div class="row row-space">
@@ -121,7 +259,7 @@
                 Tags:
               </div>
               <div class="tag-area">
-                <tags-input ng-model="tags" replace-spaces-with-dashes=false>
+                <tags-input ng-model="tags" replace-spaces-with-dashes=false on-tag-adding="c.tagAdding($tag)" on-tag-removing="c.tagRemoving($tag)">
                 	<auto-complete source="c.loadDictionary($query)"
                      min-length="0"
                      load-on-focus="false"
@@ -132,13 +270,12 @@
             </div>
           </div>
 
-          <div class="col-md-2 attch-block">
+          <div class="col-md-2 attch-block" ng-show="attachments.length > 0">
              <div class="section-header">
                Attachments
             </div>
             <div class="section-content">
-              <a href="">Surgery Instruction.pdf</a>
-              <a href="">ABY-029.pdf</a>
+              <a target="_blank" href="sys_attachment.do?view=true&sys_id={{file.attach_sys_id}}" ng-repeat="file in attachments"><i class="fa fa-file-pdf-o" aria-hidden="true"></i> {{file.file_name}}</a>
             </div>
           </div>
 
@@ -152,24 +289,21 @@
         <div class="upload-body">
           <div class="upload-form">
             <h4>File to upload</h4> 
-            <div style="width:100%;"><input type="file" class="form-control" style="cursor: pointer;"></div>
+            <div style="width:100%;"><input type="file" id="file2upload" class="form-control" style="cursor: pointer;"></div>
             
             <div style="width:100%; margin-top: 5px;overflow:auto;">
-              <div class="col-md-6">
-                <h5>Maximum upload size 30 MB</h5>
+              <div class="col-md-6" style="padding-left:0px;">
+                <h5 ng-if="!c.errorMessage">PDF only, Maximum upload size 30 MB</h5>
+                <h5 ng-if="c.errorMessage" style="color: red;">PDF only, Maximum upload size 30 MB</h5>
               </div>
               <div class="col-md-6" style="text-align:right;padding-right:0px;">
-                <button type="button" class="btn btn-primary">Upload</button></div> 
+                <button type="button" class="btn btn-primary" ng-click="c.upload()" ng-disabled="c.upload_status == 'uploading...' || c.file2upload == ''">{{c.upload_status}}</button></div> 
               </div>
           </div>
           <div class="file-list">
-            <div class="file-block">
-              <a href=""><i class="fa fa-file-pdf-o" aria-hidden="true"></i> Surgery Instruction.pdf</a>
-              <a class="btn-remove" ng-click="c.removeAttachment()" role="link">×</a>
-            </div>
-            <div class="file-block"> 
-              <a href=""><i class="fa fa-file-pdf-o" aria-hidden="true"></i> ABY-029.pdf</a> 
-              <a class="btn-remove" ng-click="c.removeAttachment()" role="link">×</a>
+            <div class="file-block" ng-repeat="attach in attachments">
+              <a target="_blank" href="sys_attachment.do?view=true&sys_id={{attach.attach_sys_id}}"><i class="fa fa-file-pdf-o" aria-hidden="true"></i> {{attach.file_name}}</a>
+              <a class="btn-remove" ng-click="c.removeAttachment(attach.attach_sys_id)" role="link">×</a>
             </div>
           </div>
         </div>
@@ -184,24 +318,19 @@
         <div class="comment-body">
           <div class="comment-submit">
             <h4>Add a comment</h4> 
-            <div style="width:100%;"><textarea name="comment" rows="3" ng-model="comment" style="width:100%;border-color:#ddd;border-radius:5px;"></textarea></div>
-            <div style="width:100%; text-align:right;"><button type="button" class="btn btn-primary">Submit</button></div> 
+            <div style="width:100%;"><textarea name="comment" rows="3" ng-model="c.comment" style="width:100%;border-color:#ddd;border-radius:5px;"></textarea></div>
+            <div style="width:100%; text-align:right;"><button type="button" class="btn btn-primary" ng-disabled="c.comment == undefined || c.comment == ''" ng-click="c.addComment()">Submit</button></div> 
           </div>
           <div class="comment-label">
-            <h4>Comments (3)</h4> 
+            <h4>Comments ({{comments.length}})</h4> 
           </div>
           <div class="comment-list">
-            <div class="comment-row"> 
-              <p style="font-weight: bold" class="author pad-right kb-comments-list ng-binding"> Michael Lichten <span class="published pad-right"> - 7/18/2018</span> </p> 
-              <p class="break-word kb-comments-list ng-binding" style="white-space: pre-wrap">Would be great if a PDF version of this page was available.</p> 
-             </div>
-            <div class="comment-row"> 
-              <p style="font-weight: bold" class="author pad-right kb-comments-list ng-binding"> Jone Smith <span class="published pad-right"> - 6/18/2018</span> </p> 
-              <p class="break-word kb-comments-list ng-binding" style="white-space: pre-wrap">Would be great if a PDF version of this page was available.</p> 
-             </div>
-            <div class="comment-row"> 
-              <p style="font-weight: bold" class="author pad-right kb-comments-list ng-binding"> James Smith <span class="published pad-right"> - 5/18/2018</span> </p> 
-              <p class="break-word kb-comments-list ng-binding" style="white-space: pre-wrap">Would be great if a PDF version of this page was available.</p> 
+            <div class="comment-row" ng-show = "comments.length == 0"> 
+              <p class="break-word kb-comments-list ng-binding" style="white-space: pre-wrap">No comments.</p> 
+            </div>
+            <div class="comment-row" ng-repeat = "row in comments"> 
+              <p style="font-weight: bold" class="author pad-right kb-comments-list ng-binding"> {{row.name}} <span class="published pad-right"> - {{row.time}}</span> </p> 
+              <p class="break-word kb-comments-list ng-binding" style="white-space: pre-wrap">{{row.comment}}</p> 
              </div>
           </div>
         </div>
