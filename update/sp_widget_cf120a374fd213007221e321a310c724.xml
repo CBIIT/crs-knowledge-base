@@ -179,7 +179,7 @@
 		});
 	};
 	
-	c.gotoDetail = function(sys_id,template_id){
+	c.gotoDetail = function(sys_id,template_id, cat){
 		var hasFilter = false;
 		//save searchCriteria to global scope
 		if(c.data.searchString && c.data.searchString !== ""){
@@ -205,6 +205,7 @@
 		//redirect to detail page
 		s.xpage = 'kd_article';
 		s.aid = sys_id;
+		s.cat = cat;
 		s.tid = template_id;
 		s.hasFilter = hasFilter?'1':'0';
 		$location.search(s).replace();
@@ -605,9 +606,7 @@
 																																																						 "researchType":"x_26385_crs_kd_u_kb_research_type",
 																																																						 "doc":"x_26385_crs_kd_u_kb_doc",
 																																																						 "fiscalYear":"x_26385_crs_kd_u_kb_fiscal_year"}},
-												'Miscellaneous': {template_table: 'u_kb_template_miscellaneous', filters:{"cancerSite":"x_26385_crs_kd_u_kb_cancer_type",
-																																																						 "researchType":"x_26385_crs_kd_u_kb_research_type",
-																																																						 "fiscalYear":"x_26385_crs_kd_u_kb_fiscal_year"}}
+												'GPRA': {template_table: 'u_kb_template_gpra', filters:{"fiscalYear":"x_26385_crs_kd_u_kb_fiscal_year"}}
 							};
 	data.knowledgeBases = [];
 	var gr = new GlideRecord('kb_knowledge_base');
@@ -669,16 +668,24 @@
 				articleResult.kb_knowledge_base = gr.getDisplayValue('kb_knowledge_base');
 				articleResult.kb_category = gr.getDisplayValue('kb_category');
 				articleResult.author = gr.getDisplayValue('author');
-				articleResult.sys_updated_on = gr.sys_updated_on.toString();
-				articleResult.published = gr.published.toString();
-				articleResult.sys_view_count = gr.sys_view_count.toString();
+				//articleResult.sys_updated_on = gr.sys_updated_on.toString();
+				//articleResult.published = gr.published.toString();
+				//articleResult.sys_view_count = gr.sys_view_count.toString();
 				articleResult.title = gr.x_26385_crs_kd_u_kb_title.toString();
-				articleResult.x_26385_crs_kd_u_kb_cancer_site_type = gr.x_26385_crs_kd_u_kb_cancer_site_type.toString();
-				articleResult.x_26385_crs_kd_u_kb_research_type = gr.x_26385_crs_kd_u_kb_research_type.toString();
-				articleResult.x_26385_crs_kd_u_kb_doc = gr.x_26385_crs_kd_u_kb_doc.toString();
-				articleResult.x_26385_crs_kd_u_kb_fiscal_year = gr.x_26385_crs_kd_u_kb_fiscal_year.toString();
+				if(filters["cancerSite"]){
+					articleResult.x_26385_crs_kd_u_kb_cancer_site_type = gr.x_26385_crs_kd_u_kb_cancer_site_type.toString();
+				}
+				if(filters["researchType"]){
+					articleResult.x_26385_crs_kd_u_kb_research_type = gr.x_26385_crs_kd_u_kb_research_type.toString();
+				}
+				if(filters["doc"]){
+					articleResult.x_26385_crs_kd_u_kb_doc = gr.x_26385_crs_kd_u_kb_doc.toString();
+				}
+				if(filters["fiscalYear"]){
+					articleResult.x_26385_crs_kd_u_kb_fiscal_year = gr.x_26385_crs_kd_u_kb_fiscal_year.toString();
+					articleResult.fYear = articleResult.x_26385_crs_kd_u_kb_fiscal_year;
+				}
 				articleResult.url = 'kb_view.do?sys_kb_id=' + articleResult.sys_id;
-				articleResult.fYear = articleResult.x_26385_crs_kd_u_kb_fiscal_year;
 				articleResult.template = tmpl;
 				values.push(articleResult);
 				for(k in filters){
@@ -713,7 +720,7 @@
         <sys_created_on>2018-06-01 19:53:54</sys_created_on>
         <sys_customer_update>false</sys_customer_update>
         <sys_id>cf120a374fd213007221e321a310c724</sys_id>
-        <sys_mod_count>914</sys_mod_count>
+        <sys_mod_count>920</sys_mod_count>
         <sys_name>[crs] KD Search</sys_name>
         <sys_package display_value="CRS Knowledge Database" source="x_26385_crs_kd">404e613b4f9213007221e321a310c738</sys_package>
         <sys_policy/>
@@ -721,7 +728,7 @@
         <sys_scope display_value="CRS Knowledge Database">404e613b4f9213007221e321a310c738</sys_scope>
         <sys_update_name>sp_widget_cf120a374fd213007221e321a310c724</sys_update_name>
         <sys_updated_by>yuw5@nih.gov</sys_updated_by>
-        <sys_updated_on>2018-10-25 19:07:54</sys_updated_on>
+        <sys_updated_on>2018-10-30 22:48:18</sys_updated_on>
         <template><![CDATA[<div class="container">
   <div class="row">
         <div class="col-md-3">
@@ -903,7 +910,7 @@
                               <!--
 																	<a class="kb-title" ng-click="c.showContent(result.template,result.sys_id)" >{{result.short_description}}</a>
 															-->
-															<a class="kb-title ng-binding" ng-click="c.gotoDetail(result.sys_id, result.template)" role="link">{{result.title}}</a>
+															<a class="kb-title ng-binding" ng-click="c.gotoDetail(result.sys_id, result.template, tab.name)" role="link">{{result.title}}</a>
                               <br>
                               <div class="kb-ref">
                                 <span>{{result.kb_knowledge_base}} > {{result.kb_category}}</span>

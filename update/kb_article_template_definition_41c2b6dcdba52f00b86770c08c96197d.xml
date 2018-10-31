@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<record_update sys_domain="global" table="kb_article_template_definition">
+    <kb_article_template_definition action="INSERT_OR_UPDATE">
+        <active>true</active>
+        <article_template/>
+        <column_label>Summary</column_label>
+        <column_type>html</column_type>
+        <mandatory>false</mandatory>
+        <order>3</order>
+        <sys_class_name>kb_article_template_definition</sys_class_name>
+        <sys_created_by>yuw5@nih.gov</sys_created_by>
+        <sys_created_on>2018-10-30 15:50:02</sys_created_on>
+        <sys_customer_update>false</sys_customer_update>
+        <sys_domain>global</sys_domain>
+        <sys_id>41c2b6dcdba52f00b86770c08c96197d</sys_id>
+        <sys_mod_count>0</sys_mod_count>
+        <sys_name>Summary</sys_name>
+        <sys_package display_value="CRS Knowledge Database" source="x_26385_crs_kd">404e613b4f9213007221e321a310c738</sys_package>
+        <sys_policy/>
+        <sys_replace_on_upgrade>false</sys_replace_on_upgrade>
+        <sys_scope display_value="CRS Knowledge Database">404e613b4f9213007221e321a310c738</sys_scope>
+        <sys_update_name>kb_article_template_definition_41c2b6dcdba52f00b86770c08c96197d</sys_update_name>
+        <sys_updated_by>yuw5@nih.gov</sys_updated_by>
+        <sys_updated_on>2018-10-30 15:50:02</sys_updated_on>
+        <table_column>u_kb_summary</table_column>
+    </kb_article_template_definition>
+</record_update>

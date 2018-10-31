@@ -12,7 +12,8 @@
 	var template = {"u_kb_template_top_accomplishment":['Title','Cancer Site/Type','Research Type','Description','References','Involved organization', 'DOC', 'Fiscal Year'],
 					 "u_kb_template_collaboration_report":['Title','Type','NIH Partners','Federal Partners','Description'],
 					 "u_kb_template_significant_item": ['Title','Cancer Site/Type', 'Congressional Language','Background','Recent Accomplishments','New Opportunities'],
-					 "u_kb_template_triennial_report": ['Title','Background','Methods','Results', 'Conclusions']
+					 "u_kb_template_triennial_report": ['Title','Background','Methods','Results', 'Conclusions'],
+					 "u_kb_template_gpra": ['Title','Description','Summary','Background','Target Context and Conditions', 'Fiscal Year']
 				   };
 	
 	var data_columns = {
@@ -24,7 +25,7 @@
 								"Fiscal Year":"x_26385_crs_kd_u_kb_fiscal_year",
                                 "Involved organization":"x_26385_crs_kd_u_kb_involved_organization",
                                 "References":"x_26385_crs_kd_u_kb_references",
-                                "Research Type":"x_26385_crs_kd_u_kb_research_type",
+                                "Research Type":"x_26385_crs_kd_u_kb_research_type"
                 },
                 "u_kb_template_collaboration_report":{
                                 "Title":"title",
@@ -47,6 +48,14 @@
                                 "Conclusions":"u_kb_conclusions",
                                 "Methods":"u_kb_methods",
                                 "Results":"u_kb_results"
+                },
+		        "u_kb_template_gpra":{
+                                "Title":"x_26385_crs_kd_u_kb_title",
+                                "Description":"x_26385_crs_kd_u_kb_description",
+                                "Summary":"x_26385_crs_kd_u_kb_summary",
+								"Background":"x_26385_crs_kd_u_kb_background",
+                                "Target Context and Conditions":"x_26385_crs_kd_u_kb_target_context_and_conditions",
+                                "Fiscal Year":"x_26385_crs_kd_u_kb_fiscal_year"
                 }
 };
  
@@ -113,7 +122,7 @@
         <sys_created_on>2018-06-26 20:52:59</sys_created_on>
         <sys_customer_update>false</sys_customer_update>
         <sys_id>d3bf36f3dbfa57009b0a74131f961981</sys_id>
-        <sys_mod_count>18</sys_mod_count>
+        <sys_mod_count>19</sys_mod_count>
         <sys_name>getDocumentById</sys_name>
         <sys_package display_value="CRS Knowledge Database" source="x_26385_crs_kd">404e613b4f9213007221e321a310c738</sys_package>
         <sys_policy/>
@@ -121,7 +130,7 @@
         <sys_scope display_value="CRS Knowledge Database">404e613b4f9213007221e321a310c738</sys_scope>
         <sys_update_name>sys_ws_operation_d3bf36f3dbfa57009b0a74131f961981</sys_update_name>
         <sys_updated_by>yuw5@nih.gov</sys_updated_by>
-        <sys_updated_on>2018-10-29 21:50:46</sys_updated_on>
+        <sys_updated_on>2018-10-30 23:13:15</sys_updated_on>
         <web_service_definition display_value="export">01e1bbe7db6a53005358dc50cf961994</web_service_definition>
         <web_service_version/>
     </sys_ws_operation>

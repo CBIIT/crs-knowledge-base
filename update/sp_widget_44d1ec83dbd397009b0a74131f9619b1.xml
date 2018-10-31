@@ -2,7 +2,7 @@
 <record_update table="sp_widget">
     <sp_widget action="INSERT_OR_UPDATE">
         <category>custom</category>
-        <client_script><![CDATA[function($location) {
+        <client_script><![CDATA[function($scope, $location) {
   var c = this;
   var s = $location.search();
   var redirect = false;
@@ -11,11 +11,14 @@
     c.xpage = "main";
   }
 	else if(s.xpage && s.xpage == 'kd_article'){
-		c.xpage = "article"
+		c.xpage = "article";
+		c.cat = s.cat;
 	}
 	else{
 		c.xpage = "home";
 	}
+	
+	
 	
 	//Search on enter key pressed
 	c.inputOnkeypress = function(){
@@ -60,7 +63,7 @@
         <sys_created_on>2018-07-18 21:58:33</sys_created_on>
         <sys_customer_update>false</sys_customer_update>
         <sys_id>44d1ec83dbd397009b0a74131f9619b1</sys_id>
-        <sys_mod_count>71</sys_mod_count>
+        <sys_mod_count>99</sys_mod_count>
         <sys_name>[crs] KD Home</sys_name>
         <sys_package display_value="CRS Knowledge Database" source="x_26385_crs_kd">404e613b4f9213007221e321a310c738</sys_package>
         <sys_policy/>
@@ -68,7 +71,7 @@
         <sys_scope display_value="CRS Knowledge Database">404e613b4f9213007221e321a310c738</sys_scope>
         <sys_update_name>sp_widget_44d1ec83dbd397009b0a74131f9619b1</sys_update_name>
         <sys_updated_by>yuw5@nih.gov</sys_updated_by>
-        <sys_updated_on>2018-10-25 14:37:17</sys_updated_on>
+        <sys_updated_on>2018-10-30 23:07:34</sys_updated_on>
         <template><![CDATA[<div id="crs-kd-home">
 	<div id="search-area" class="container" ng-if="c.xpage == 'home'">
     <div class="searchBox">
@@ -116,7 +119,9 @@
          <li><i class="fa fa-chevron-right"></i></li> 
          <li><a ng-href="crs_kd?xpage=kd_search" class="ng-binding" role="link" href="crs_kd?xpage=kd_search">Basic Knowledge Base</a></li>
          <li><i class="fa fa-chevron-right"></i></li> 
-         <li><a ng-href="crs_kd?xpage=kd_search" class="ng-binding" role="link" href="crs_kd?xpage=kd_search">Top Accomplishments</a></li>
+         <li>
+           <a ng-href="crs_kd?xpage=kd_search" class="ng-binding" role="link" href="crs_kd?xpage=kd_search">{{c.cat}}</a>
+         </li>
         </ul>
       </div>
     </div>

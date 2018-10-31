@@ -12,17 +12,17 @@
         <owner_condition/>
         <sys_class_name>ua_table_licensing_config</sys_class_name>
         <sys_created_by>yuw5@nih.gov</sys_created_by>
-        <sys_created_on>2018-10-16 19:28:42</sys_created_on>
+        <sys_created_on>2018-10-30 22:00:48</sys_created_on>
         <sys_customer_update>false</sys_customer_update>
-        <sys_id>d29e537fdbc92f40b86770c08c96196d</sys_id>
+        <sys_id>07a700e8dba92f00b86770c08c9619bd</sys_id>
         <sys_mod_count>0</sys_mod_count>
         <sys_name>u_kb_template_gpra</sys_name>
         <sys_package display_value="CRS Knowledge Database" source="x_26385_crs_kd">404e613b4f9213007221e321a310c738</sys_package>
         <sys_policy/>
         <sys_replace_on_upgrade>false</sys_replace_on_upgrade>
         <sys_scope display_value="CRS Knowledge Database">404e613b4f9213007221e321a310c738</sys_scope>
-        <sys_update_name>ua_table_licensing_config_d29e537fdbc92f40b86770c08c96196d</sys_update_name>
+        <sys_update_name>ua_table_licensing_config_07a700e8dba92f00b86770c08c9619bd</sys_update_name>
         <sys_updated_by>yuw5@nih.gov</sys_updated_by>
-        <sys_updated_on>2018-10-16 19:28:42</sys_updated_on>
+        <sys_updated_on>2018-10-30 22:00:48</sys_updated_on>
     </ua_table_licensing_config>
 </record_update>
