@@ -14,6 +14,10 @@
 	c.isExportable = true;
 	c.selectedCount = 0;
 	
+	c.data.maxSize = 5;
+	c.data.pageSize = {};
+	c.data.bigCurrentPage = {};
+	
 	c.data.tabs = c.data.searchResults;
 	c.selectedCategories = {};
 	var index = 0;
@@ -22,15 +26,13 @@
 		t.isOpen = true;
 		c.selectedCategories[t.name] = index++;
 		c.resultLen += t.list.length;
+		c.data.pageSize[t.name] = 10;
+		c.data.bigCurrentPage[t.name] = 1;
 	});
 	document.getElementById("cb_selectAll").checked = false;
 	//c.searchResults = r.data.searchResults;
 	c.selectedCount = 0;
 	c.isExportable = false;
-
-	c.data.maxSize = 5;
-	c.data.pageSize = 10;
-	c.data.bigCurrentPage = 1;
 	
 	c.pageChanged = function() {
     
@@ -83,7 +85,8 @@
 							tmp_researchType += "," + elem[schema["researchType"]];
 						});
 					}
-				  
+				  c.data.pageSize[t.name] = 10;
+					c.data.bigCurrentPage[t.name] = 1;
 			});
 			var tmp_cache = {};
 			if(tmp_doc !== ""){
@@ -171,8 +174,8 @@
 			c.isExportable = false;
 			
 			c.data.maxSize = 5;
-			c.data.pageSize = 10;
-			c.data.bigCurrentPage = 1;
+			//c.data.pageSize = 10;
+			//c.data.bigCurrentPage = 1;
 			$scope.$apply();
 		}, function(error){
 			console.log(error);
@@ -619,6 +622,7 @@
 	
 	gr = new GlideRecord('kb_category');
 	gr.addQuery('parent_id', kb_id);
+	gr.orderBy('sys_created_on');
 	gr.query();
 	var categories = [];
 	while (gr.next()) {
@@ -720,7 +724,7 @@
         <sys_created_on>2018-06-01 19:53:54</sys_created_on>
         <sys_customer_update>false</sys_customer_update>
         <sys_id>cf120a374fd213007221e321a310c724</sys_id>
-        <sys_mod_count>920</sys_mod_count>
+        <sys_mod_count>924</sys_mod_count>
         <sys_name>[crs] KD Search</sys_name>
         <sys_package display_value="CRS Knowledge Database" source="x_26385_crs_kd">404e613b4f9213007221e321a310c738</sys_package>
         <sys_policy/>
@@ -728,7 +732,7 @@
         <sys_scope display_value="CRS Knowledge Database">404e613b4f9213007221e321a310c738</sys_scope>
         <sys_update_name>sp_widget_cf120a374fd213007221e321a310c724</sys_update_name>
         <sys_updated_by>yuw5@nih.gov</sys_updated_by>
-        <sys_updated_on>2018-10-30 22:48:18</sys_updated_on>
+        <sys_updated_on>2018-11-02 21:17:29</sys_updated_on>
         <template><![CDATA[<div class="container">
   <div class="row">
         <div class="col-md-3">
@@ -903,7 +907,7 @@
                             </div>
                           </uib-accordion-heading>
                           <ul class="list-group">
-                            <li class="list-group-item item-row" ng-repeat="result in tab.list" ng-show="$index >= (c.data.bigCurrentPage -1) * c.data.pageSize && $index < c.data.bigCurrentPage * c.data.pageSize">
+                            <li class="list-group-item item-row" ng-repeat="result in tab.list" ng-show="$index >= (c.data.bigCurrentPage[tab.name] -1) * c.data.pageSize[tab.name] && $index < c.data.bigCurrentPage[tab.name] * c.data.pageSize[tab.name]">
                               <input type="checkbox" ng-model="cb_checkbox" ng-change="c.change(cb_checkbox)" class="checkbox content-checkbox" id="cb_{{result.sys_id}}" name="selections" value="{{result.sys_id}},{{result.kb_knowledge_base}},{{result.kb_category}}" >
                               <i class="glyphicon glyphicon-file"></i>
 
@@ -932,11 +936,11 @@
                             </li>
                           </ul>
                           <div class="tab-paging-section">
-                            <ul ng-show="(tab.list.length / c.data.pageSize) > 1"  uib-pagination total-items="tab.list.length" items-per-page="c.data.pageSize" ng-model="c.data.bigCurrentPage" max-size="c.data.maxSize" class="pagination-sm" ng-change="c.pageChanged()" direction-links="false" boundary-links="true" force-ellipses="true">
+                            <ul ng-show="(tab.list.length / c.data.pageSize[tab.name]) > 1"  uib-pagination total-items="tab.list.length" items-per-page="c.data.pageSize[tab.name]" ng-model="c.data.bigCurrentPage[tab.name]" max-size="c.data.maxSize" class="pagination-sm" ng-change="c.pageChanged()" direction-links="false" boundary-links="true" force-ellipses="true">
                             </ul>
                             <div class="tab-paging-setting">
                               <label for="my_pageSize" class="label-hidden">pageSize:</label>
-                              <select class="form-control" id="my_pageSize" ng-model="c.data.pageSize" ng-init="c.data.pageSize = '10'">
+                              <select class="form-control" id="my_pageSize" ng-model="c.data.pageSize[tab.name]" ng-init="c.data.pageSize[tab.name] = '10'">
                                 <option value="5">5</option>
                                 <option value="10">10</option>
                                 <option value="15">15</option>
