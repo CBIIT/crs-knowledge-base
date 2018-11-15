@@ -15,7 +15,9 @@
 									 'DOC', 
 									 'Fiscal Year'],
 									"u_kb_template_gpra": 
-									['Description',
+									['DOC',
+									 'Contacts',
+									 'Description',
 									 'Summary',
 									 'Background',
 									 'Target Context and Conditions', 
@@ -68,13 +70,13 @@
 		var input = $('#file2upload')[0];
 		var file = input.files[0];
 		
-		if(file.type !== 'application/pdf'){
-			console.log("please upload a pdf file.");
+		if(file.type !== 'application/pdf' && file.type !== 'application/vnd.ms-powerpoint' && file.type !== 'application/vnd.openxmlformats-officedocument.presentationml.presentation'){
+			console.log("please upload a pdf or powerpoint file.");
 			c.errorMessage = true;
 			c.upload_status = 'upload';
 		}
-		else if(file.size >= 31457280){
-			console.log("File size should not exceed 30 MB.");
+		else if(file.size > 20971520){
+			console.log("File size should not exceed 20 MB.");
 			c.errorMessage = true;
 			c.upload_status = 'upload';
 		}
@@ -85,6 +87,7 @@
 								sys_id: params.doc_id,
 								tmp_id: params.template_id,
 								fileName: filename,
+								fileType: file.type,
 								fileContents : base64
 							};
 				NERDFile.uploadPDF(attach, sessionId).then(function(res){
@@ -244,7 +247,7 @@
         <sys_created_on>2018-10-17 20:16:40</sys_created_on>
         <sys_customer_update>false</sys_customer_update>
         <sys_id>ae23f05cdb592300b86770c08c961938</sys_id>
-        <sys_mod_count>178</sys_mod_count>
+        <sys_mod_count>198</sys_mod_count>
         <sys_name>[crs] KD Article</sys_name>
         <sys_package display_value="CRS Knowledge Database" source="x_26385_crs_kd">404e613b4f9213007221e321a310c738</sys_package>
         <sys_policy/>
@@ -252,12 +255,12 @@
         <sys_scope display_value="CRS Knowledge Database">404e613b4f9213007221e321a310c738</sys_scope>
         <sys_update_name>sp_widget_ae23f05cdb592300b86770c08c961938</sys_update_name>
         <sys_updated_by>yuw5@nih.gov</sys_updated_by>
-        <sys_updated_on>2018-10-31 14:55:15</sys_updated_on>
+        <sys_updated_on>2018-11-15 21:22:06</sys_updated_on>
         <template><![CDATA[<div id="crs-article">
   <div class="container">
     <div class="row row-space">
       <div class="history-block">
-      	<a ng-href="crs_kd?xpage=kd_search&kb_knowledge_base={{c.knowledge_id}}&hasFilter={{c.hasFilter}}"><i class="fa fa-arrow-left" aria-hidden="true"></i> Back to search</a>
+      	<a ng-href="nerd?xpage=kd_search&kb_knowledge_base={{c.knowledge_id}}&hasFilter={{c.hasFilter}}"><i class="fa fa-arrow-left" aria-hidden="true"></i> Back to search</a>
   		</div>
     </div>
     <div class="row row-space">
@@ -281,6 +284,7 @@
                      min-length="0"
                      load-on-focus="false"
                      load-on-empty="false"
+                     select-first-match="false"
                      max-results-to-show="10"></auto-complete>
                 </tags-input>
               </div>
@@ -292,7 +296,8 @@
                Attachments
             </div>
             <div class="section-content">
-              <a target="_blank" href="sys_attachment.do?view=true&sys_id={{file.attach_sys_id}}" ng-repeat="file in attachments"><i class="fa fa-file-pdf-o" aria-hidden="true"></i> {{file.file_name}}</a>
+              <a target="_blank" href="sys_attachment.do?view=true&sys_id={{file.attach_sys_id}}" ng-repeat="file in attachments">
+                <i ng-class="file.file_type == 'application/pdf' ? 'fa fa-file-pdf-o' : 'fa fa-file-powerpoint-o'" aria-hidden="true"></i> {{file.file_name}}</a>
             </div>
           </div>
 
@@ -310,8 +315,8 @@
             
             <div style="width:100%; margin-top: 5px;overflow:auto;">
               <div class="col-md-6" style="padding-left:0px;">
-                <h5 ng-if="!c.errorMessage">PDF only, Maximum upload size 30 MB</h5>
-                <h5 ng-if="c.errorMessage" style="color: red;">PDF only, Maximum upload size 30 MB</h5>
+                <h5 ng-if="!c.errorMessage">PDF/PPT only, Maximum upload size 20 MB</h5>
+                <h5 ng-if="c.errorMessage" style="color: red;">PDF/PPT only, Maximum upload size 20 MB</h5>
               </div>
               <div class="col-md-6" style="text-align:right;padding-right:0px;">
                 <button type="button" class="btn btn-primary" ng-click="c.upload()" ng-disabled="c.upload_status == 'uploading...' || c.file2upload == ''">{{c.upload_status}}</button></div> 
@@ -319,7 +324,10 @@
           </div>
           <div class="file-list">
             <div class="file-block" ng-repeat="attach in attachments">
-              <a target="_blank" href="sys_attachment.do?view=true&sys_id={{attach.attach_sys_id}}"><i class="fa fa-file-pdf-o" aria-hidden="true"></i> {{attach.file_name}}</a>
+              <a ng-if="attach.file_type == 'application/pdf'" target="_blank" href="sys_attachment.do?view=true&sys_id={{attach.attach_sys_id}}">
+                <i class="fa fa-file-pdf-o" aria-hidden="true"></i> {{attach.file_name}}</a>
+              <a ng-if="attach.file_type == 'application/vnd.ms-powerpoint' || attach.file_type == 'application/vnd.openxmlformats-officedocument.presentationml.presentation'" target="_blank" href="sys_attachment.do?view=true&sys_id={{attach.attach_sys_id}}">
+                <i class="fa fa-file-powerpoint-o" aria-hidden="true"></i> {{attach.file_name}}</a>
               <a class="btn-remove" ng-click="c.removeAttachment(attach.attach_sys_id)" role="link">×</a>
             </div>
           </div>

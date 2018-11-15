@@ -24,7 +24,7 @@
 																																																						 "researchType":"x_26385_crs_kd_u_kb_research_type",
 																																																						 "doc":"x_26385_crs_kd_u_kb_doc",
 																																																						 "fiscalYear":"x_26385_crs_kd_u_kb_fiscal_year"},
-				 'GPRA': {"fiscalYear":"x_26385_crs_kd_u_kb_fiscal_year"}
+				 'GPRA': {"doc":"x_26385_crs_kd_u_kb_doc", "fiscalYear":"x_26385_crs_kd_u_kb_fiscal_year"}
 	};
 		
 		// The Knowledge Base IDs to be used in search filters
@@ -57,31 +57,52 @@
 			gr.addQuery('IR_AND_QUERY', filter.searchString);
 		}
 
-		if (schema["researchType"] && filter.selectedResearchType.length > 0) {
-			var researhQuery = gr.addQuery('x_26385_crs_kd_u_kb_research_type', 'CONTAINS', filter.selectedResearchType[0]);
-			for(var i = 1; i< filter.selectedResearchType.length ; i++){
-				researhQuery.addOrCondition('x_26385_crs_kd_u_kb_research_type', 'CONTAINS', filter.selectedResearchType[i]);
+		if (filter.selectedResearchType.length > 0) {
+			if(schema["researchType"]){
+				var researhQuery = gr.addQuery('x_26385_crs_kd_u_kb_research_type', 'CONTAINS', filter.selectedResearchType[0]);
+				for(var i = 1; i< filter.selectedResearchType.length ; i++){
+					researhQuery.addOrCondition('x_26385_crs_kd_u_kb_research_type', 'CONTAINS', filter.selectedResearchType[i]);
+				}
+			}
+			else{
+				return;
+			}
+			
+		}
+
+		if (filter.selectedCancerSite.length > 0) {
+			if(schema["cancerSite"]){
+				var cancerQuery = gr.addQuery('x_26385_crs_kd_u_kb_cancer_site_type', 'CONTAINS', filter.selectedCancerSite[0]);
+				for(var j = 1; j< filter.selectedCancerSite.length ; j++){
+					cancerQuery.addOrCondition('x_26385_crs_kd_u_kb_cancer_site_type', 'CONTAINS', filter.selectedCancerSite[j]);
+				}
+			}
+			else{
+				return;
 			}
 		}
 
-		if (schema["cancerSite"] && filter.selectedCancerSite.length > 0) {
-			var cancerQuery = gr.addQuery('x_26385_crs_kd_u_kb_cancer_site_type', 'CONTAINS', filter.selectedCancerSite[0]);
-			for(var j = 1; j< filter.selectedCancerSite.length ; j++){
-				cancerQuery.addOrCondition('x_26385_crs_kd_u_kb_cancer_site_type', 'CONTAINS', filter.selectedCancerSite[j]);
+		if (filter.selectedDoc.length > 0) {
+			if(schema["doc"]){
+				var docQuery = gr.addQuery('x_26385_crs_kd_u_kb_doc', 'CONTAINS', filter.selectedDoc[0]);
+				for(var k = 1; k< filter.selectedDoc.length ; k++){
+					docQuery.addOrCondition('x_26385_crs_kd_u_kb_doc', 'CONTAINS', filter.selectedDoc[k]);
+				}
+			}
+			else{
+				return;
 			}
 		}
 
-		if (schema["doc"] && filter.selectedDoc.length > 0) {
-			var docQuery = gr.addQuery('x_26385_crs_kd_u_kb_doc', 'CONTAINS', filter.selectedDoc[0]);
-			for(var k = 1; k< filter.selectedDoc.length ; k++){
-				docQuery.addOrCondition('x_26385_crs_kd_u_kb_doc', 'CONTAINS', filter.selectedDoc[k]);
+		if (filter.selectedYear.length > 0) {
+			if(schema["fiscalYear"]){
+				var yearQuery = gr.addQuery('x_26385_crs_kd_u_kb_fiscal_year', 'CONTAINS', filter.selectedYear[0]);
+				for(var m = 1; m< filter.selectedYear.length ; m++){
+					yearQuery.addOrCondition('x_26385_crs_kd_u_kb_fiscal_year', 'CONTAINS', filter.selectedYear[m]);
+				}
 			}
-		}
-
-		if (schema["fiscalYear"] && filter.selectedYear.length > 0) {
-			var yearQuery = gr.addQuery('x_26385_crs_kd_u_kb_fiscal_year', 'CONTAINS', filter.selectedYear[0]);
-			for(var m = 1; m< filter.selectedYear.length ; m++){
-				yearQuery.addOrCondition('x_26385_crs_kd_u_kb_fiscal_year', 'CONTAINS', filter.selectedYear[m]);
+			else{
+				return;
 			}
 		}
 
@@ -142,7 +163,7 @@
         <sys_created_on>2018-10-15 15:25:30</sys_created_on>
         <sys_customer_update>false</sys_customer_update>
         <sys_id>845c59e7dbc9eb40b86770c08c9619ab</sys_id>
-        <sys_mod_count>39</sys_mod_count>
+        <sys_mod_count>45</sys_mod_count>
         <sys_name>searchBasicArticleByCriteria</sys_name>
         <sys_package display_value="CRS Knowledge Database" source="x_26385_crs_kd">404e613b4f9213007221e321a310c738</sys_package>
         <sys_policy/>
@@ -150,7 +171,7 @@
         <sys_scope display_value="CRS Knowledge Database">404e613b4f9213007221e321a310c738</sys_scope>
         <sys_update_name>sys_ws_operation_845c59e7dbc9eb40b86770c08c9619ab</sys_update_name>
         <sys_updated_by>yuw5@nih.gov</sys_updated_by>
-        <sys_updated_on>2018-10-31 18:41:45</sys_updated_on>
+        <sys_updated_on>2018-11-15 16:26:04</sys_updated_on>
         <web_service_definition display_value="export">01e1bbe7db6a53005358dc50cf961994</web_service_definition>
         <web_service_version/>
     </sys_ws_operation>

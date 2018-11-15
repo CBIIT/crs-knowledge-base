@@ -64,108 +64,8 @@
 				  t.isOpen = true;
 					c.selectedCategories[t.name] = idx++;
 					c.resultLen += t.list.length;
-				  var schema = t.schema;
-				  if(schema["doc"]){
-						t.list.forEach(function(elem){
-							tmp_doc += "," + elem[schema["doc"]];
-						});
-					}
-					if(schema["fiscalYear"]){
-						t.list.forEach(function(elem){
-							tmp_fiscalYear += "," + elem[schema["fiscalYear"]];
-						});
-					}
-					if(schema["cancerSite"]){
-						t.list.forEach(function(elem){
-							tmp_cancerSite += "," + elem[schema["cancerSite"]];
-						});
-					}
-					if(schema["researchType"]){
-						t.list.forEach(function(elem){
-							tmp_researchType += "," + elem[schema["researchType"]];
-						});
-					}
 				  c.data.pageSize[t.name] = 10;
 					c.data.bigCurrentPage[t.name] = 1;
-			});
-			var tmp_cache = {};
-			if(tmp_doc !== ""){
-				tmp_doc.substring(1).split(",").forEach(function(elem){
-					if(tmp_cache[elem]){
-						tmp_cache[elem]++;
-					}
-					else{
-						tmp_cache[elem] =1;
-					}
-				});
-			}
-			c.data.doc.forEach(function(elem){
-				if(tmp_cache[elem.id]){
-					elem.count = tmp_cache[elem.id];
-				}
-				else{
-					elem.count = 0;
-				}
-			});
-			
-			tmp_cache = {};
-			if(tmp_fiscalYear !== ""){
-				tmp_fiscalYear.substring(1).split(",").forEach(function(elem){
-					if(tmp_cache[elem]){
-						tmp_cache[elem]++;
-					}
-					else{
-						tmp_cache[elem] =1;
-					}
-				});
-			}
-			c.data.fiscalYear.forEach(function(elem){
-				if(tmp_cache[elem.id]){
-					elem.count = tmp_cache[elem.id];
-				}
-				else{
-					elem.count = 0;
-				}
-			});
-			
-			tmp_cache = {};
-			if(tmp_cancerSite !== ""){
-				tmp_cancerSite.substring(1).split(",").forEach(function(elem){
-					if(tmp_cache[elem]){
-						tmp_cache[elem]++;
-					}
-					else{
-						tmp_cache[elem] =1;
-					}
-				});
-			}
-			c.data.cancerSite.forEach(function(elem){
-				if(tmp_cache[elem.id]){
-					elem.count = tmp_cache[elem.id];
-				}
-				else{
-					elem.count = 0;
-				}
-			});
-			
-			tmp_cache = {};
-			if(tmp_researchType !== ""){
-				tmp_researchType.substring(1).split(",").forEach(function(elem){
-					if(tmp_cache[elem]){
-						tmp_cache[elem]++;
-					}
-					else{
-						tmp_cache[elem] =1;
-					}
-				});
-			}
-			c.data.researchType.forEach(function(elem){
-				if(tmp_cache[elem.id]){
-					elem.count = tmp_cache[elem.id];
-				}
-				else{
-					elem.count = 0;
-				}
 			});
 			
 			document.getElementById("cb_selectAll").checked = false;
@@ -609,7 +509,7 @@
 																																																						 "researchType":"x_26385_crs_kd_u_kb_research_type",
 																																																						 "doc":"x_26385_crs_kd_u_kb_doc",
 																																																						 "fiscalYear":"x_26385_crs_kd_u_kb_fiscal_year"}},
-												'GPRA': {template_table: 'u_kb_template_gpra', filters:{"fiscalYear":"x_26385_crs_kd_u_kb_fiscal_year"}}
+												'GPRA': {template_table: 'u_kb_template_gpra', filters:{"doc":"x_26385_crs_kd_u_kb_doc","fiscalYear":"x_26385_crs_kd_u_kb_fiscal_year"}}
 							};
 	data.knowledgeBases = [];
 	var gr = new GlideRecord('kb_knowledge_base');
@@ -724,7 +624,7 @@
         <sys_created_on>2018-06-01 19:53:54</sys_created_on>
         <sys_customer_update>false</sys_customer_update>
         <sys_id>cf120a374fd213007221e321a310c724</sys_id>
-        <sys_mod_count>924</sys_mod_count>
+        <sys_mod_count>927</sys_mod_count>
         <sys_name>[crs] KD Search</sys_name>
         <sys_package display_value="CRS Knowledge Database" source="x_26385_crs_kd">404e613b4f9213007221e321a310c738</sys_package>
         <sys_policy/>
@@ -732,7 +632,7 @@
         <sys_scope display_value="CRS Knowledge Database">404e613b4f9213007221e321a310c738</sys_scope>
         <sys_update_name>sp_widget_cf120a374fd213007221e321a310c724</sys_update_name>
         <sys_updated_by>yuw5@nih.gov</sys_updated_by>
-        <sys_updated_on>2018-11-02 21:17:29</sys_updated_on>
+        <sys_updated_on>2018-11-15 16:49:26</sys_updated_on>
         <template><![CDATA[<div class="container">
   <div class="row">
         <div class="col-md-3">

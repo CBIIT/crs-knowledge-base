@@ -12,6 +12,7 @@
 
     var data = request.body.data;
 	var fileName = data.fileName;
+	var fileType = data.fileType;
 	var fileContents = data.fileContents;
 	var sys_id = data.sys_id;
 	var tmp_id = data.tmp_id;
@@ -19,10 +20,11 @@
     var attachement = new GlideSysAttachment();
 	var gr = new GlideRecord(tmp_id);
 	var record = gr.get(sys_id);
-	var attachment_sys_id = attachement.writeBase64(gr, fileName , "application/pdf", fileContents);
+	var attachment_sys_id = attachement.writeBase64(gr, fileName , fileType, fileContents);
 	
 	var att = new GlideRecord('sys_attachment');
     att.addQuery('table_sys_id', sys_id);
+	att.addQuery('content_type','STARTSWITH','application/');
 	att.addQuery('table_name', tmp_id);
 	att.query();
 
@@ -31,6 +33,7 @@
 		var tmp = {};
 		tmp.attach_sys_id = att.sys_id.toString();
 		tmp.file_name = att.file_name.toString();
+		tmp.file_type = att.content_type.toString();
 		attachments.push(tmp);
 	}
 	
@@ -50,7 +53,7 @@
         <sys_created_on>2018-10-29 20:51:16</sys_created_on>
         <sys_customer_update>false</sys_customer_update>
         <sys_id>370eaec8db69eb00b86770c08c9619fd</sys_id>
-        <sys_mod_count>2</sys_mod_count>
+        <sys_mod_count>5</sys_mod_count>
         <sys_name>uploadPDF</sys_name>
         <sys_package display_value="CRS Knowledge Database" source="x_26385_crs_kd">404e613b4f9213007221e321a310c738</sys_package>
         <sys_policy/>
@@ -58,7 +61,7 @@
         <sys_scope display_value="CRS Knowledge Database">404e613b4f9213007221e321a310c738</sys_scope>
         <sys_update_name>sys_ws_operation_370eaec8db69eb00b86770c08c9619fd</sys_update_name>
         <sys_updated_by>yuw5@nih.gov</sys_updated_by>
-        <sys_updated_on>2018-10-29 22:25:04</sys_updated_on>
+        <sys_updated_on>2018-11-15 21:11:45</sys_updated_on>
         <web_service_definition display_value="export">01e1bbe7db6a53005358dc50cf961994</web_service_definition>
         <web_service_version/>
     </sys_ws_operation>
