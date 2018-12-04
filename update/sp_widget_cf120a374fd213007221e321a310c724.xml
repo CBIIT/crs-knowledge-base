@@ -640,17 +640,48 @@
 				for(k in filters){
 					var v = articleResult[filters[k]];
 					if(v != ''){
-						v.split(",").forEach(function(elem){
-							if(cache[k].indexOf(elem) == -1){
-								cache[k].push(elem);
-								data.tmp[k].push(elem);
-								data.count[k][elem] = 1;
-							}
-							else{
-								data.count[k][elem] ++;
-							}
-						});
+						if(k == 'doc'){
+							v.split(",").forEach(function(elem){
+								var idx = elem.indexOf('-');
+								if(idx == -1){
+									if(cache[k].indexOf(elem) == -1){
+										cache[k].push(elem);
+										data.tmp[k].push(elem);
+										data.count[k][elem] = 1;
+									}
+									else{
+										data.count[k][elem] ++;
+									}
+								}
+								else{
+									var em = elem.substring(0,idx) + '}';
+									if(cache[k].indexOf(em) == -1){
+										cache[k].push(em);
+										data.tmp[k].push(em);
+										data.count[k][em] = 1;
+									}
+									else{
+										data.count[k][em] ++;
+									}
+								}
+								
+							});
+						}
+						else{
+							v.split(",").forEach(function(elem){
+								if(cache[k].indexOf(elem) == -1){
+									cache[k].push(elem);
+									data.tmp[k].push(elem);
+									data.count[k][elem] = 1;
+								}
+								else{
+									data.count[k][elem] ++;
+								}
+							});
+						}
+						
 					}
+					
 					
 				}
 			}
@@ -669,7 +700,7 @@
         <sys_created_on>2018-06-01 19:53:54</sys_created_on>
         <sys_customer_update>false</sys_customer_update>
         <sys_id>cf120a374fd213007221e321a310c724</sys_id>
-        <sys_mod_count>961</sys_mod_count>
+        <sys_mod_count>963</sys_mod_count>
         <sys_name>[crs] KD Search</sys_name>
         <sys_package display_value="CRS Knowledge Database" source="x_26385_crs_kd">404e613b4f9213007221e321a310c738</sys_package>
         <sys_policy/>
@@ -677,7 +708,7 @@
         <sys_scope display_value="CRS Knowledge Database">404e613b4f9213007221e321a310c738</sys_scope>
         <sys_update_name>sp_widget_cf120a374fd213007221e321a310c724</sys_update_name>
         <sys_updated_by>yuw5@nih.gov</sys_updated_by>
-        <sys_updated_on>2018-12-03 17:46:16</sys_updated_on>
+        <sys_updated_on>2018-12-04 22:12:38</sys_updated_on>
         <template><![CDATA[<div class="container">
   <div class="row">
         <div class="col-md-3">
