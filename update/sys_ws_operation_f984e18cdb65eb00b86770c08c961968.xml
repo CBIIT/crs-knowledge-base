@@ -11,18 +11,29 @@
         <operation_script><![CDATA[(function process(/*RESTAPIRequest*/ request, /*RESTAPIResponse*/ response) {
 
     var sys_id = request.body.data.sysId;
-	var template_id = request.body.data.tmpId;
 	var comment = request.body.data.comment;
 	
-	var article = new GlideRecord(template_id);
-	article.addQuery('sys_id', sys_id);
-	article.query();
-	article.next();
-	article.x_26385_crs_kd_u_kb_comments = comment;
-	article.update();
-	var result = article.x_26385_crs_kd_u_kb_comments.getJournalEntry(-1);
-	
-	return result;
+	var cm = new GlideRecord('x_26385_crs_kd_comments');
+	cm.initialize(); 
+	cm.userid = gs.getUserID(); 
+	cm.username = gs.getUserDisplayName();
+	cm.comment = comment;
+	cm.status = '1';
+	cm.article_number = sys_id;
+	cm.insert();
+	var cmt = new GlideRecord('x_26385_crs_kd_comments');
+	cmt.addQuery('status','1'); //1 - new, 0 - archived
+	cmt.addQuery('article_number',sys_id);
+	cmt.query();
+	var comments = [];
+	while(cmt.next()){
+		comments.push({sys_id: cmt.sys_id.toString(),	
+					  userID:cmt.userid.toString(),
+					  userName:cmt.username.toString(),
+					  comment:cmt.comment.toString(),
+					  time: cmt.sys_created_on.toString()});
+	}
+	return comments;
 	
 })(request, response);]]></operation_script>
         <operation_uri>/api/x_26385_crs_kd/export/addComment</operation_uri>
@@ -38,7 +49,7 @@
         <sys_created_on>2018-10-29 15:30:13</sys_created_on>
         <sys_customer_update>false</sys_customer_update>
         <sys_id>f984e18cdb65eb00b86770c08c961968</sys_id>
-        <sys_mod_count>4</sys_mod_count>
+        <sys_mod_count>7</sys_mod_count>
         <sys_name>addComment</sys_name>
         <sys_package display_value="CRS Knowledge Database" source="x_26385_crs_kd">404e613b4f9213007221e321a310c738</sys_package>
         <sys_policy/>
@@ -46,7 +57,7 @@
         <sys_scope display_value="CRS Knowledge Database">404e613b4f9213007221e321a310c738</sys_scope>
         <sys_update_name>sys_ws_operation_f984e18cdb65eb00b86770c08c961968</sys_update_name>
         <sys_updated_by>yuw5@nih.gov</sys_updated_by>
-        <sys_updated_on>2018-10-29 17:47:27</sys_updated_on>
+        <sys_updated_on>2018-11-27 18:56:21</sys_updated_on>
         <web_service_definition display_value="export">01e1bbe7db6a53005358dc50cf961994</web_service_definition>
         <web_service_version/>
     </sys_ws_operation>

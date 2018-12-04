@@ -3,14 +3,25 @@
     <sp_angular_provider action="INSERT_OR_UPDATE">
         <name>NERDComment</name>
         <script><![CDATA[function NERDComment($http){
-	this.addComment = function(sysId, tmpId, comment, sessionId){
+	this.addComment = function(sysId, comment, sessionId){
 		return new Promise(function(resolve, reject){
 			$http({
 				 url: '/api/x_26385_crs_kd/export/addComment',
 				 method : "POST",
 				 beforeSend: function(xhr){ xhr.setRequestHeader('X-UserToken', sessionId); },
 				 headers: {'Content-Type': 'application/json'},
-				 data: {sysId: sysId, tmpId: tmpId, comment: comment} 				
+				 data: {sysId: sysId, comment: comment} 				
+			}).then(resolve, reject);
+		});
+	};
+	this.deleteComment = function(sysId, sessionId){
+		return new Promise(function(resolve, reject){
+			$http({
+				 url: '/api/x_26385_crs_kd/export/deleteComment',
+				 method : "POST",
+				 beforeSend: function(xhr){ xhr.setRequestHeader('X-UserToken', sessionId); },
+				 headers: {'Content-Type': 'application/json'},
+				 data: {sysId: sysId} 				
 			}).then(resolve, reject);
 		});
 	};
@@ -20,7 +31,7 @@
         <sys_created_on>2018-10-29 15:30:46</sys_created_on>
         <sys_customer_update>false</sys_customer_update>
         <sys_id>4fc3658cdb65eb00b86770c08c961961</sys_id>
-        <sys_mod_count>0</sys_mod_count>
+        <sys_mod_count>3</sys_mod_count>
         <sys_name>NERDComment</sys_name>
         <sys_package display_value="CRS Knowledge Database" source="x_26385_crs_kd">404e613b4f9213007221e321a310c738</sys_package>
         <sys_policy/>
@@ -28,7 +39,7 @@
         <sys_scope display_value="CRS Knowledge Database">404e613b4f9213007221e321a310c738</sys_scope>
         <sys_update_name>sp_angular_provider_4fc3658cdb65eb00b86770c08c961961</sys_update_name>
         <sys_updated_by>yuw5@nih.gov</sys_updated_by>
-        <sys_updated_on>2018-10-29 15:30:46</sys_updated_on>
+        <sys_updated_on>2018-11-27 18:45:44</sys_updated_on>
         <type>service</type>
     </sp_angular_provider>
 </record_update>

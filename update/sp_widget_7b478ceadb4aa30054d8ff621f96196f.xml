@@ -1,0 +1,101 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<record_update table="sp_widget">
+    <sp_widget action="INSERT_OR_UPDATE">
+        <category>custom</category>
+        <client_script><![CDATA[function() {
+  /* widget controller */
+  var c = this;
+	c.tab1 = {};
+	c.tab2 = {};
+	c.tab3 = {};
+	c.tab4 = {};
+	c.tab1.isOpen = true;
+	c.tab2.isOpen = true;
+	c.tab3.isOpen = true;
+	c.tab4.isOpen = true;
+}]]></client_script>
+        <controller_as>c</controller_as>
+        <css/>
+        <data_table>sp_instance</data_table>
+        <demo_data/>
+        <description/>
+        <docs/>
+        <field_list/>
+        <has_preview>false</has_preview>
+        <id>crs-kd-glossary</id>
+        <internal>false</internal>
+        <link/>
+        <name>[crs] KD Glossary</name>
+        <option_schema/>
+        <public>false</public>
+        <roles/>
+        <script><![CDATA[(function() {  /* populate the 'data' object */  /* e.g., data.table = $sp.getValue('table'); */})();]]></script>
+        <servicenow>false</servicenow>
+        <sys_class_name>sp_widget</sys_class_name>
+        <sys_created_by>yuw5@nih.gov</sys_created_by>
+        <sys_created_on>2018-11-30 23:38:28</sys_created_on>
+        <sys_customer_update>false</sys_customer_update>
+        <sys_id>7b478ceadb4aa30054d8ff621f96196f</sys_id>
+        <sys_mod_count>10</sys_mod_count>
+        <sys_name>[crs] KD Glossary</sys_name>
+        <sys_package display_value="CRS Knowledge Database" source="x_26385_crs_kd">404e613b4f9213007221e321a310c738</sys_package>
+        <sys_policy/>
+        <sys_replace_on_upgrade>false</sys_replace_on_upgrade>
+        <sys_scope display_value="CRS Knowledge Database">404e613b4f9213007221e321a310c738</sys_scope>
+        <sys_update_name>sp_widget_7b478ceadb4aa30054d8ff621f96196f</sys_update_name>
+        <sys_updated_by>yuw5@nih.gov</sys_updated_by>
+        <sys_updated_on>2018-12-01 00:19:11</sys_updated_on>
+        <template><![CDATA[<div id="crs-article">
+  <div class="container">
+    <div class="row row-space">
+          <div class="col-md-12">
+             <p class="label-header">
+               Glossary
+            </p>
+            <uib-accordion close-others="false">
+              <div uib-accordion-group class="panel-default" is-open="c.tab1.isOpen">
+                <uib-accordion-heading>
+                  <div>
+                    Categories <i class="pull-right" ng-class="{'fa fa-minus-square': c.tab1.isOpen, 'fa fa-plus-square': !c.tab1.isOpen}"></i>
+                  </div>
+                </uib-accordion-heading>
+                The type of information collected.
+              </div>
+            </uib-accordion>
+            <uib-accordion close-others="false">
+              <div uib-accordion-group class="panel-default" is-open="c.tab2.isOpen">
+                <uib-accordion-heading>
+                  <div>
+                    Top Accomplishments <i class="pull-right" ng-class="{'fa fa-minus-square': c.tab2.isOpen, 'fa fa-plus-square': !c.tab2.isOpen}"></i>
+                  </div>
+                </uib-accordion-heading>
+                 Descriptions of scientific advances made with NCI support; submitted by NCI DOCs annually.
+              </div>
+            </uib-accordion>
+            <uib-accordion close-others="false">
+              <div uib-accordion-group class="panel-default" is-open="c.tab3.isOpen">
+                <uib-accordion-heading>
+                  <div>
+                    GPRA <i class="pull-right" ng-class="{'fa fa-minus-square': c.tab3.isOpen, 'fa fa-plus-square': !c.tab3.isOpen}"></i>
+                  </div>
+                </uib-accordion-heading>
+                A listing of activities related to NCI performance assessments, collected and provided to NIH for reporting per the Government Performance and Results Act (https://dpcpsi.nih.gov/oepr/performance_reporting).
+              </div>
+            </uib-accordion>
+            <uib-accordion close-others="false">
+              <div uib-accordion-group class="panel-default" is-open="c.tab4.isOpen">
+                <uib-accordion-heading>
+                  <div>
+                    Miscellaneous <i class="pull-right" ng-class="{'fa fa-minus-square': c.tab4.isOpen, 'fa fa-plus-square': !c.tab4.isOpen}"></i>
+                  </div>
+                </uib-accordion-heading>
+                A collection of information from various sources. Includes brief summaries of notable scientific findings (and their scientific context at time of publication) as reported in published literature.
+              </div>
+            </uib-accordion>
+          </div>
+
+		</div>
+  </div>
+</div>]]></template>
+    </sp_widget>
+</record_update>

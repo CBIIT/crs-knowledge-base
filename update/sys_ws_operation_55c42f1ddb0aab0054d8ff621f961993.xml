@@ -1,0 +1,62 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<record_update table="sys_ws_operation">
+    <sys_ws_operation action="INSERT_OR_UPDATE">
+        <active>true</active>
+        <consumes>application/json,application/xml,text/xml</consumes>
+        <consumes_customized>false</consumes_customized>
+        <default_operation_uri/>
+        <enforce_acl>cf9d01d3e73003009d6247e603f6a990</enforce_acl>
+        <http_method>POST</http_method>
+        <name>deleteComment</name>
+        <operation_script><![CDATA[(function process(/*RESTAPIRequest*/ request, /*RESTAPIResponse*/ response) {
+
+    var sys_id = request.body.data.sysId;
+	
+	var cm = new GlideRecord('x_26385_crs_kd_comments');
+	cm.addQuery('sys_id',sys_id);
+	cm.query();
+	cm.next();
+	cm.status = '0'; //1 - new, 0 - archived
+	cm.update();
+	var cmt = new GlideRecord('x_26385_crs_kd_comments');
+	cmt.addQuery('status','1'); //1 - new, 0 - archived
+	cmt.addQuery('article_number',cm.article_number.toString());
+	cmt.query();
+	var comments = [];
+	while(cmt.next()){
+		comments.push({
+					  sys_id: cmt.sys_id.toString(),	
+					  userID:cmt.userid.toString(),
+					  userName:cmt.username.toString(),
+					  comment:cmt.comment.toString(),
+					  time: cmt.sys_created_on.toString()});
+	}
+	return comments;
+
+})(request, response);]]></operation_script>
+        <operation_uri>/api/x_26385_crs_kd/export/deleteComment</operation_uri>
+        <produces>application/json,application/xml,text/xml</produces>
+        <produces_customized>false</produces_customized>
+        <relative_path>/deleteComment</relative_path>
+        <request_example/>
+        <requires_acl_authorization>false</requires_acl_authorization>
+        <requires_authentication>true</requires_authentication>
+        <short_description/>
+        <sys_class_name>sys_ws_operation</sys_class_name>
+        <sys_created_by>yuw5@nih.gov</sys_created_by>
+        <sys_created_on>2018-11-27 18:40:19</sys_created_on>
+        <sys_customer_update>false</sys_customer_update>
+        <sys_id>55c42f1ddb0aab0054d8ff621f961993</sys_id>
+        <sys_mod_count>1</sys_mod_count>
+        <sys_name>deleteComment</sys_name>
+        <sys_package display_value="CRS Knowledge Database" source="x_26385_crs_kd">404e613b4f9213007221e321a310c738</sys_package>
+        <sys_policy/>
+        <sys_replace_on_upgrade>false</sys_replace_on_upgrade>
+        <sys_scope display_value="CRS Knowledge Database">404e613b4f9213007221e321a310c738</sys_scope>
+        <sys_update_name>sys_ws_operation_55c42f1ddb0aab0054d8ff621f961993</sys_update_name>
+        <sys_updated_by>yuw5@nih.gov</sys_updated_by>
+        <sys_updated_on>2018-11-27 18:56:13</sys_updated_on>
+        <web_service_definition display_value="export">01e1bbe7db6a53005358dc50cf961994</web_service_definition>
+        <web_service_version/>
+    </sys_ws_operation>
+</record_update>

@@ -16,15 +16,22 @@
 	var selectedDocs = request.queryParams.selectedDocs;
 	var selectedCancerSites = request.queryParams.selectedCancerSites;
 	var selectedResearchTypes = request.queryParams.selectedResearchTypes;
+	var selectedSpecialTopics = request.queryParams.selectedSpecialTopics;
     
 	var infos_category = {'Top Accomplishments':'u_kb_template_top_accomplishment',
 							 'GPRA': 'u_kb_template_gpra'};
 	
 	var info_schema = {'Top Accomplishments': {"cancerSite":"x_26385_crs_kd_u_kb_cancer_site_type",
 																																																						 "researchType":"x_26385_crs_kd_u_kb_research_type",
+											   
+											                         "specialTopic":"x_26385_crs_kd_u_kb_special_topic",
 																																																						 "doc":"x_26385_crs_kd_u_kb_doc",
 																																																						 "fiscalYear":"x_26385_crs_kd_u_kb_fiscal_year"},
-				 'GPRA': {"doc":"x_26385_crs_kd_u_kb_doc", "fiscalYear":"x_26385_crs_kd_u_kb_fiscal_year"}
+				 'GPRA': {"researchType":"x_26385_crs_kd_u_kb_research_type",
+											   
+											                         "specialTopic":"x_26385_crs_kd_u_kb_special_topic",
+																																																						 "doc":"x_26385_crs_kd_u_kb_doc",
+																																																						 "fiscalYear":"x_26385_crs_kd_u_kb_fiscal_year"}
 	};
 		
 		// The Knowledge Base IDs to be used in search filters
@@ -42,6 +49,7 @@
 	filter.selectedCancerSite  = selectedCancerSites == ""? [] : selectedCancerSites.toString().split(",");
 	filter.selectedResearchType = selectedResearchTypes == ""? [] : selectedResearchTypes.toString().split(",");
 	filter.selectedYear = selectedYears == ""? [] : selectedYears.toString().split(",");
+	filter.selectedSpecialTopic = selectedSpecialTopics == ""? [] : selectedSpecialTopics.toString().split(",");
 
 	filter.searchString = searchString.toString();
 		
@@ -62,6 +70,19 @@
 				var researhQuery = gr.addQuery('x_26385_crs_kd_u_kb_research_type', 'CONTAINS', filter.selectedResearchType[0]);
 				for(var i = 1; i< filter.selectedResearchType.length ; i++){
 					researhQuery.addOrCondition('x_26385_crs_kd_u_kb_research_type', 'CONTAINS', filter.selectedResearchType[i]);
+				}
+			}
+			else{
+				return;
+			}
+			
+		}
+		
+		if (filter.selectedSpecialTopic.length > 0) {
+			if(schema["specialTopic"]){
+				var researhQuery = gr.addQuery('x_26385_crs_kd_u_kb_special_topic', 'CONTAINS', filter.selectedSpecialTopic[0]);
+				for(var i = 1; i< filter.selectedSpecialTopic.length ; i++){
+					researhQuery.addOrCondition('x_26385_crs_kd_u_kb_special_topic', 'CONTAINS', filter.selectedSpecialTopic[i]);
 				}
 			}
 			else{
@@ -133,6 +154,9 @@
 				articleResult.x_26385_crs_kd_u_kb_fiscal_year = gr.x_26385_crs_kd_u_kb_fiscal_year.toString();
 				articleResult.fYear = articleResult.x_26385_crs_kd_u_kb_fiscal_year;
 			}
+			if(schema["specialTopic"]){
+				articleResult.x_26385_crs_kd_u_kb_special_topic = gr.x_26385_crs_kd_u_kb_special_topic.toString();
+			}
 			articleResult.url = 'kb_view.do?sys_kb_id=' + articleResult.sys_id;
 			articleResult.template = infos_category[articleResult.kb_category];
 			values.push(articleResult);
@@ -163,7 +187,7 @@
         <sys_created_on>2018-10-15 15:25:30</sys_created_on>
         <sys_customer_update>false</sys_customer_update>
         <sys_id>845c59e7dbc9eb40b86770c08c9619ab</sys_id>
-        <sys_mod_count>45</sys_mod_count>
+        <sys_mod_count>46</sys_mod_count>
         <sys_name>searchBasicArticleByCriteria</sys_name>
         <sys_package display_value="CRS Knowledge Database" source="x_26385_crs_kd">404e613b4f9213007221e321a310c738</sys_package>
         <sys_policy/>
@@ -171,7 +195,7 @@
         <sys_scope display_value="CRS Knowledge Database">404e613b4f9213007221e321a310c738</sys_scope>
         <sys_update_name>sys_ws_operation_845c59e7dbc9eb40b86770c08c9619ab</sys_update_name>
         <sys_updated_by>yuw5@nih.gov</sys_updated_by>
-        <sys_updated_on>2018-11-15 16:26:04</sys_updated_on>
+        <sys_updated_on>2018-11-26 15:53:05</sys_updated_on>
         <web_service_definition display_value="export">01e1bbe7db6a53005358dc50cf961994</web_service_definition>
         <web_service_version/>
     </sys_ws_operation>

@@ -1,0 +1,130 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<record_update table="sp_widget">
+    <sp_widget action="INSERT_OR_UPDATE">
+        <category>custom</category>
+        <client_script><![CDATA[function() {  /* widget controller */  var c = this;}]]></client_script>
+        <controller_as>c</controller_as>
+        <css/>
+        <data_table>sp_instance</data_table>
+        <demo_data/>
+        <description/>
+        <docs/>
+        <field_list/>
+        <has_preview>false</has_preview>
+        <id>crs-kd-faqs</id>
+        <internal>false</internal>
+        <link/>
+        <name>[crs] KD FAQs</name>
+        <option_schema/>
+        <public>false</public>
+        <roles/>
+        <script><![CDATA[(function() {  /* populate the 'data' object */  /* e.g., data.table = $sp.getValue('table'); */})();]]></script>
+        <servicenow>false</servicenow>
+        <sys_class_name>sp_widget</sys_class_name>
+        <sys_created_by>yuw5@nih.gov</sys_created_by>
+        <sys_created_on>2018-11-30 23:37:32</sys_created_on>
+        <sys_customer_update>false</sys_customer_update>
+        <sys_id>da17002edb4aa30054d8ff621f9619e3</sys_id>
+        <sys_mod_count>22</sys_mod_count>
+        <sys_name>[crs] KD FAQs</sys_name>
+        <sys_package display_value="CRS Knowledge Database" source="x_26385_crs_kd">404e613b4f9213007221e321a310c738</sys_package>
+        <sys_policy/>
+        <sys_replace_on_upgrade>false</sys_replace_on_upgrade>
+        <sys_scope display_value="CRS Knowledge Database">404e613b4f9213007221e321a310c738</sys_scope>
+        <sys_update_name>sp_widget_da17002edb4aa30054d8ff621f9619e3</sys_update_name>
+        <sys_updated_by>yuw5@nih.gov</sys_updated_by>
+        <sys_updated_on>2018-12-01 00:12:14</sys_updated_on>
+        <template><![CDATA[<div id="crs-article">
+  <div class="container">
+    <div class="row row-space">
+          <div class="col-md-12">
+             <p class="label-header">
+               FAQs
+            </p>
+            <uib-accordion close-others="false">
+              <div uib-accordion-group class="panel-default" is-open="tab1.isOpen">
+                <uib-accordion-heading>
+                  <div>
+                    I can’t find the information I’m looking for. What do I do? <i class="pull-right" ng-class="{'fa fa-minus-square': tab1.isOpen, 'fa fa-plus-square': !tab1.isOpen}"></i>
+                  </div>
+                </uib-accordion-heading>
+                Answer: NERD contains a limited amount of information and is not an exhaustive source.
+              </div>
+            </uib-accordion>
+            <uib-accordion close-others="false">
+              <div uib-accordion-group class="panel-default" is-open="tab2.isOpen">
+                <uib-accordion-heading>
+                  <div>
+                    Why is the information limited to specific sources? <i class="pull-right" ng-class="{'fa fa-minus-square': tab2.isOpen, 'fa fa-plus-square': !tab2.isOpen}"></i>
+                  </div>
+                </uib-accordion-heading>
+                Answer: We’re in the process of building NERD and will consider adding additional information on a case-by-case basis. Please contact ######### if you think additional information should be in NERD.
+              </div>
+            </uib-accordion>
+            <uib-accordion close-others="false">
+              <div uib-accordion-group class="panel-default" is-open="tab3.isOpen">
+                <uib-accordion-heading>
+                  <div>
+                    Can I add content? <i class="pull-right" ng-class="{'fa fa-minus-square': tab3.isOpen, 'fa fa-plus-square': !tab3.isOpen}"></i>
+                  </div>
+                </uib-accordion-heading>
+                Answer: Not at this time. Please contact ######### if you have information that you think should be in NERD.
+              </div>
+            </uib-accordion>
+            <uib-accordion close-others="false">
+              <div uib-accordion-group class="panel-default" is-open="tab4.isOpen">
+                <uib-accordion-heading>
+                  <div>
+                    What if I have edits to a specific entry? <i class="pull-right" ng-class="{'fa fa-minus-square': tab4.isOpen, 'fa fa-plus-square': !tab4.isOpen}"></i>
+                  </div>
+                </uib-accordion-heading>
+                Answer: Please send your edits to #########. Please use “NERD edits” in your email subject line.
+              </div>
+            </uib-accordion>
+            <uib-accordion close-others="false">
+              <div uib-accordion-group class="panel-default" is-open="tab5.isOpen">
+                <uib-accordion-heading>
+                  <div>
+                    I have more questions. Who can I contact? <i class="pull-right" ng-class="{'fa fa-minus-square': tab5.isOpen, 'fa fa-plus-square': !tab5.isOpen}"></i>
+                  </div>
+                </uib-accordion-heading>
+                Answer: Please contact #########.
+              </div>
+            </uib-accordion>
+            <uib-accordion close-others="false">
+              <div uib-accordion-group class="panel-default" is-open="tab6.isOpen">
+                <uib-accordion-heading>
+                  <div>
+                    Who has access to NERD? <i class="pull-right" ng-class="{'fa fa-minus-square': tab6.isOpen, 'fa fa-plus-square': !tab6.isOpen}"></i>
+                  </div>
+                </uib-accordion-heading>
+                Answer: Select individuals from OD offices and centers can search NERD. CRS is managing entry input in the initial phase. Please contact ######### for help.
+              </div>
+            </uib-accordion>
+            <uib-accordion close-others="false">
+              <div uib-accordion-group class="panel-default" is-open="tab7.isOpen">
+                <uib-accordion-heading>
+                  <div>
+                    How often is NERD updated? <i class="pull-right" ng-class="{'fa fa-minus-square': tab7.isOpen, 'fa fa-plus-square': !tab7.isOpen}"></i>
+                  </div>
+                </uib-accordion-heading>
+                Answer: Whenever possible. In late 2018, we are in building mode and entering beta-testing phase.
+              </div>
+            </uib-accordion>
+            <uib-accordion close-others="false">
+              <div uib-accordion-group class="panel-default" is-open="tab8.isOpen">
+                <uib-accordion-heading>
+                  <div>
+                    What is the long-term plan for NERD? <i class="pull-right" ng-class="{'fa fa-minus-square': tab8.isOpen, 'fa fa-plus-square': !tab8.isOpen}"></i>
+                  </div>
+                </uib-accordion-heading>
+                Answer: We will continue to build up the content in NERD, including data elements from other offices.
+              </div>
+            </uib-accordion>
+          </div>
+
+		</div>
+  </div>
+</div>]]></template>
+    </sp_widget>
+</record_update>

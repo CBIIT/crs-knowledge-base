@@ -48,7 +48,8 @@
 								  selectedYears: c.data.selectedYear.length > 0 ? c.data.selectedYear.join(",") : "",
 									selectedDocs: c.data.selectedDoc.length > 0 ? c.data.selectedDoc.join(",") : "",
 									selectedCancerSites: c.data.selectedCancerSite.length > 0 ? c.data.selectedCancerSite.join(",") : "",
-									selectedResearchTypes: c.data.selectedResearchType.length > 0 ? c.data.selectedResearchType.join(",") : ""
+									selectedResearchTypes: c.data.selectedResearchType.length > 0 ? c.data.selectedResearchType.join(",") : "",
+			            selectedSpecialTopics: c.data.selectedSpecialTopic.length > 0 ? c.data.selectedSpecialTopic.join(",") : ""
 								 };
 		
 		NERDSearchBasicArticleByCriteria.getList(params,c.data.sessionId).then(function(res){
@@ -56,10 +57,6 @@
 			c.selectedCategories = {};
 			var idx = 0;
 			c.resultLen = 0;
-			var tmp_doc = "";
-			var tmp_fiscalYear = "";
-			var tmp_cancerSite = "";
-			var tmp_researchType = "";
 			c.data.tabs.forEach(function(t){
 				  t.isOpen = true;
 					c.selectedCategories[t.name] = idx++;
@@ -105,6 +102,10 @@
 			hasFilter = true;
 			$rootScope.selectedResearchType = c.data.selectedResearchType;
 		}
+		if(c.data.selectedSpecialTopic.length > 0){
+			hasFilter = true;
+			$rootScope.selectedSpecialTopic = c.data.selectedSpecialTopic;
+		}
 		//redirect to detail page
 		s.xpage = 'kd_article';
 		s.aid = sys_id;
@@ -132,7 +133,7 @@
 		c.data.selectedDoc = [];
 	  c.data.selectedCancerSite = [];
 		c.data.selectedResearchType = [];
-		
+		c.data.selectedSpecialTopic = [];
 		c.search();
 	};
 	
@@ -253,6 +254,32 @@
 				tmp.push(obj.id);
 			});
 			c.data.selectedResearchType = tmp;
+		}
+		c.search();
+	}
+	
+	c.updateSpecialTopicData = function(item){
+		if(item.selected){
+			c.data.selectedSpecialTopic.push(item.id);
+		}
+		else{
+			var idx = c.data.selectedSpecialTopic.indexOf(item.id);
+			if (idx > -1) {
+				c.data.selectedSpecialTopic.splice(idx, 1);
+			}
+		}
+		c.search();
+	}
+	
+	c.selectAll_SpecialTopic = function(){
+		var selectAll = document.getElementById("selectAll_SpecialTopic");
+		c.data.selectedSpecialTopic = [];
+		if(selectAll.checked){
+			var tmp = [];
+			c.data.specialTopic.map(function(obj){
+				tmp.push(obj.id);
+			});
+			c.data.selectedSpecialTopic = tmp;
 		}
 		c.search();
 	}
@@ -466,6 +493,12 @@
 	cache.forEach(function(elem){
 		c.data.researchType.push({id: elem, name: elem.substring(1, elem.length -1), count: c.data.count.researchType[elem]});
 	});
+	c.data.specialTopic = [];
+	cache = c.data.tmp.specialTopic;
+	cache.sort();
+	cache.forEach(function(elem){
+		c.data.specialTopic.push({id: elem, name: elem.substring(1, elem.length -1), count: c.data.count.specialTopic[elem]});
+	});
 	c.data.fiscalYear = [];
 	cache = c.data.tmp.fiscalYear;
 	cache.sort();
@@ -483,6 +516,7 @@
 		c.data.selectedDoc = $rootScope.selectedDoc?$rootScope.selectedDoc : [];
 		c.data.selectedCancerSite = $rootScope.selectedCancerSite?$rootScope.selectedCancerSite : [];
 		c.data.selectedResearchType = $rootScope.selectedResearchType?$rootScope.selectedResearchType : [];
+		c.data.selectedSpecialTopic = $rootScope.selectedSpecialTopic?$rootScope.selectedSpecialTopic : [];
 		c.search();
 	}
 	
@@ -508,8 +542,12 @@
 	var infos_category = {'Top Accomplishments': {template_table: 'u_kb_template_top_accomplishment', filters:{"cancerSite":"x_26385_crs_kd_u_kb_cancer_site_type",
 																																																						 "researchType":"x_26385_crs_kd_u_kb_research_type",
 																																																						 "doc":"x_26385_crs_kd_u_kb_doc",
+																																																						 "specialTopic":"x_26385_crs_kd_u_kb_special_topic",
 																																																						 "fiscalYear":"x_26385_crs_kd_u_kb_fiscal_year"}},
-												'GPRA': {template_table: 'u_kb_template_gpra', filters:{"doc":"x_26385_crs_kd_u_kb_doc","fiscalYear":"x_26385_crs_kd_u_kb_fiscal_year"}}
+												'GPRA': {template_table: 'u_kb_template_gpra', filters:{"doc":"x_26385_crs_kd_u_kb_doc",
+																																								"researchType":"x_26385_crs_kd_u_kb_research_type",
+																																								"specialTopic":"x_26385_crs_kd_u_kb_special_topic",
+																																								"fiscalYear":"x_26385_crs_kd_u_kb_fiscal_year"}}
 							};
 	data.knowledgeBases = [];
 	var gr = new GlideRecord('kb_knowledge_base');
@@ -542,16 +580,20 @@
 	data.tmp.researchType = [];
 	data.count.researchType = {};
 	cache.researchType = [];
+	data.tmp.specialTopic = [];
+	data.count.specialTopic = {};
+	cache.specialTopic = [];
 	data.tmp.fiscalYear = [];
 	data.count.fiscalYear = {};
 	cache.fiscalYear = [];
 	
 	data.searchResults = [];
 	
-	data.filters  = ['doc','cancerSite','researchType','fiscalYear'];
+	data.filters  = ['doc','cancerSite','researchType','specialTopic','fiscalYear'];
 	data.selectedDoc = [];
 	data.selectedCancerSite  = [];
 	data.selectedResearchType = [];
+	data.selectedSpecialTopic = [];
 	data.selectedYear = [];
 
 	
@@ -584,6 +626,9 @@
 				}
 				if(filters["doc"]){
 					articleResult.x_26385_crs_kd_u_kb_doc = gr.x_26385_crs_kd_u_kb_doc.toString();
+				}
+				if(filters["specialTopic"]){
+					articleResult.x_26385_crs_kd_u_kb_special_topic = gr.x_26385_crs_kd_u_kb_special_topic.toString();
 				}
 				if(filters["fiscalYear"]){
 					articleResult.x_26385_crs_kd_u_kb_fiscal_year = gr.x_26385_crs_kd_u_kb_fiscal_year.toString();
@@ -624,7 +669,7 @@
         <sys_created_on>2018-06-01 19:53:54</sys_created_on>
         <sys_customer_update>false</sys_customer_update>
         <sys_id>cf120a374fd213007221e321a310c724</sys_id>
-        <sys_mod_count>927</sys_mod_count>
+        <sys_mod_count>961</sys_mod_count>
         <sys_name>[crs] KD Search</sys_name>
         <sys_package display_value="CRS Knowledge Database" source="x_26385_crs_kd">404e613b4f9213007221e321a310c738</sys_package>
         <sys_policy/>
@@ -632,7 +677,7 @@
         <sys_scope display_value="CRS Knowledge Database">404e613b4f9213007221e321a310c738</sys_scope>
         <sys_update_name>sp_widget_cf120a374fd213007221e321a310c724</sys_update_name>
         <sys_updated_by>yuw5@nih.gov</sys_updated_by>
-        <sys_updated_on>2018-11-15 16:49:26</sys_updated_on>
+        <sys_updated_on>2018-12-03 17:46:16</sys_updated_on>
         <template><![CDATA[<div class="container">
   <div class="row">
         <div class="col-md-3">
@@ -657,8 +702,8 @@
                       </div>                       
                     </div>
 
-                    <div class="form-group"ng-if="c.data.filters.includes('cancerSite') || c.data.filters.includes('researchType') || c.data.filters.includes('doc')">
-                      <div class="control-label" for="cancerSiteSelect">Filters:
+                    <div class="form-group">
+                      <div class="control-label" for="cancerSiteSelect">Filters: <span class="tooltip-icon" uib-tooltip="Search tags across this Knowledge Base." tooltip-placement="right" tooltip-class="tooltipClass"><i class="fa fa-question-circle" aria-hidden="true"></i></span>
                       </div>
                       <div class="facet-scroll"> 
                         <div class="filter-section" ng-if="c.data.filters.includes('cancerSite')">
@@ -680,6 +725,17 @@
                             </li>
                             <li class="dropdown-options" ng-repeat="cat in c.data.researchType">
                               <input type="checkbox" class="chekbox-input ng-pristine ng-untouched ng-valid ng-empty" ng-model="cat.selected" ng-click="c.updateResearchTypeData(cat)" value="{{cat.id}}" role="checkbox" aria-invalid="false" ng-checked="true" ng-checked="c.data.selectedResearchType.indexOf(cat.id) > -1">&nbsp;{{cat.name}} ({{cat.count}})
+                            </li>
+                          </ul>
+                        </div>
+                        <div class="filter-section" ng-if="c.data.filters.includes('specialTopic')">
+                          <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown"><span class="filter-btn-label">Special Topic  </span> <span class="caret"></span></button>
+                          <ul class="dropdown-menu" style="width:100%;">
+                            <li class="dropdown-options">
+                              <input type="checkbox" id="selectAll_SpecialTopic" class="chekbox-input ng-pristine ng-untouched ng-valid ng-empty" ng-click="c.selectAll_SpecialTopic()" ng-checked="c.data.selectedSpecialTopic.length != 0  && c.data.selectedSpecialTopic.length == c.data.specialTopic.length">&nbsp;All
+                            </li>
+                            <li class="dropdown-options" ng-repeat="cat in c.data.specialTopic">
+                              <input type="checkbox" class="chekbox-input ng-pristine ng-untouched ng-valid ng-empty" ng-model="cat.selected" ng-click="c.updateSpecialTopicData(cat)" value="{{cat.id}}" role="checkbox" aria-invalid="false" ng-checked="true" ng-checked="c.data.selectedSpecialTopic.indexOf(cat.id) > -1">&nbsp;{{cat.name}} ({{cat.count}})
                             </li>
                           </ul>
                         </div>
@@ -745,12 +801,17 @@
                       <div class="panel-action" ng-if="c.isExportable">
                         <button class="btn btn-link" ng-click="c.export2Excel()">
                           <span class="glyphicon glyphicon-share"></span>
-                     			Export to Excel
+                     			Export to Excel 
                         </button>
                         <button class="btn btn-link" ng-click="c.export2Word()">
                           <span class="glyphicon glyphicon-share"></span>
                      			Export to Word
                         </button>
+                        <span class="tooltip-icon" 
+                              uib-tooltip="To export results, first click “Select All” box or select the box next to desired individual entries. Then click the Export to [Excel or Word] button." 
+                              tooltip-placement="top" tooltip-class="tooltipClass">
+                          <i class="fa fa-question-circle" aria-hidden="true"></i>
+                        </span>
                       </div>
                       <div class="panel-action" ng-if="!c.isExportable">
                         <button class="btn btn-disable">
@@ -761,6 +822,11 @@
                           <span class="glyphicon glyphicon-share"></span>
                      			Export to Word
                         </button>
+                        <span class="tooltip-icon" 
+                              uib-tooltip="To export results, first click “Select All” box or select the box next to desired individual entries. Then click the Export to [Excel or Word] button." 
+                              tooltip-placement="top" tooltip-class="tooltipClass">
+                          <i class="fa fa-question-circle" aria-hidden="true"></i>
+                        </span>
                       </div>
                     </div>
                   
@@ -771,7 +837,7 @@
                         </span>
                       </div>
                       <div class="col-md-8 filter-block">
-                        <ul class="filter-options-list" ng-show="c.data.selectedCancerSite.length > 0 || c.data.selectedResearchType.length > 0 || c.data.selectedDoc.length > 0 || c.data.selectedYear.length > 0">
+                        <ul class="filter-options-list" ng-show="c.data.selectedCancerSite.length > 0 || c.data.selectedResearchType.length > 0 || c.data.selectedSpecialTopic.length > 0 || c.data.selectedDoc.length > 0 || c.data.selectedYear.length > 0">
                           <li class="filter-item" role="button" ng-repeat="t in c.data.selectedCancerSite">
                             <span>{{t.substring(1,t.length-1)}}</span>
                             <a class="remove-button" role="link" ng-click="c.updateCancerSiteData({'id':t})">×</a>
@@ -779,6 +845,10 @@
                           <li class="filter-item" role="button" ng-repeat="t in c.data.selectedResearchType">
                             <span>{{t.substring(1,t.length-1)}}</span>
                             <a class="remove-button" role="link" ng-click="c.updateResearchTypeData({'id':t})">×</a>
+                          </li>
+                          <li class="filter-item" role="button" ng-repeat="t in c.data.selectedSpecialTopic">
+                            <span>{{t.substring(1,t.length-1)}}</span>
+                            <a class="remove-button" role="link" ng-click="c.updateSpecialTopicData({'id':t})">×</a>
                           </li>
                           <li class="filter-item" role="button" ng-repeat="t in c.data.selectedDoc">
                             <span>{{t.substring(1,t.length-1)}}</span>
@@ -792,8 +862,21 @@
                       </div>
                       <div class="button-group">
                         <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown"><span class="filter-btn-label">Category  </span> <span class="caret"></span></button>
+                        <span class="tooltip-icon" 
+                              uib-tooltip="Categories are the type of information collected. " 
+                              tooltip-placement="top" tooltip-class="tooltipClass">
+                          <i class="fa fa-question-circle" aria-hidden="true"></i>
+                        </span>
                         <ul class="dropdown-menu">
-                          <li class="dropdown-options" ng-repeat="cat in c.data.tabs"><input type="checkbox" class="chekbox-input ng-pristine ng-untouched ng-valid ng-empty" ng-model="cat.selected" ng-click="c.updateFilter(cat)" value="{{cat.name}}" role="checkbox" aria-invalid="false" ng-checked="true">&nbsp;{{cat.name}}</li>
+                          <li class="dropdown-options" ng-repeat="cat in c.data.tabs"><input type="checkbox" class="chekbox-input ng-pristine ng-untouched ng-valid ng-empty" ng-model="cat.selected" ng-click="c.updateFilter(cat)" value="{{cat.name}}" role="checkbox" aria-invalid="false" ng-checked="true">&nbsp;{{cat.name}} 
+                          <!--
+                            <span class="tooltip-icon" 
+                              uib-tooltip="The miscellaneous category includes summaries of noteworthy science advancements. These are provided in the context of the time at publication; as time passes, their context and/or import in specific cancer fields may increase or diminish." 
+                                tooltip-placement="right" tooltip-class="tooltipClass">
+                              <i class="fa fa-question-circle" aria-hidden="true"></i>
+                            </span>
+													-->
+                          </li>
                         </ul>
                       </div>
                     </div>

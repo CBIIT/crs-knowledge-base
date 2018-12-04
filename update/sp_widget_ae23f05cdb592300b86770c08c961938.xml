@@ -9,13 +9,18 @@
 	var template = {"u_kb_template_top_accomplishment":
 									['Cancer Site/Type',
 									 'Research Type',
+									 'Special Topic',
 									 'Description',
 									 'References',
 									 'Involved organization', 
 									 'DOC', 
 									 'Fiscal Year'],
 									"u_kb_template_gpra": 
-									['DOC',
+									[
+									 'Measure ID',
+									 'Research Type',
+									 'Special Topic',
+									 'DOC',
 									 'Contacts',
 									 'Description',
 									 'Summary',
@@ -28,6 +33,9 @@
 	c.upload_status = "upload";
 	c.errorMessage = false;
 	c.file2upload = '';
+	c.isSu = c.data.isSuperuser;
+	c.currentUserID = c.data.info.userID;
+	console.log(c.currentUserID);
 	var sessionId = c.data.info.sessionId;
 	var data = {};
 	var columns = [];
@@ -42,7 +50,7 @@
 		$scope.columns = template[params.template_id];
 		$scope.tags = c.parseTags($scope.data.tags);
 		
-		$scope.comments = c.parseComments($scope.data.comments);
+		$scope.comments = $scope.data.comments;
 		$scope.attachments = $scope.data['attachments'];
 	}, function(error){
 		console.log(error);
@@ -75,8 +83,8 @@
 			c.errorMessage = true;
 			c.upload_status = 'upload';
 		}
-		else if(file.size > 20971520){
-			console.log("File size should not exceed 20 MB.");
+		else if(file.size > 18874368){
+			console.log("File size should not exceed 18 MB.");
 			c.errorMessage = true;
 			c.upload_status = 'upload';
 		}
@@ -143,27 +151,119 @@
 	};
 	
 	c.loadDictionary = function(query){
-		var tags = [{text: 'Basic'},
-								{text: 'Bladder'},
-								{text: 'Brain'},
-								{text: 'Cancer Control'},
-								{text: 'Central nervous system'},
-								{text: 'Cervical'},
-								{text: 'Endometrial'},
-								{text: 'Kidney'},
-								{text: 'Liver'},
-								{text: 'Lung'},
-								{text: 'Melanoma'},
-								{text: 'Ovarian'},
-								{text: 'Pediatric'},
-								{text: 'Post-Clinical'},
-								{text: 'Pre-Clinical'},
-								{text: 'Prostate'},
-								{text: 'Rare'},
-								{text: 'Sarcoma'},
-								{text: 'Skin'},
-								{text: 'Thyroid'},
-								{text: 'Tumor'}
+		var tags = [{text: '21st Century Cures Act'},
+								{text: 'Abortion'},
+								{text: 'Adolescent and Young Adult (AYA)'},
+								{text: 'Advocacy'},
+								{text: 'Aging'},
+								{text: 'Angiogenesis'},
+								{text: 'Animal Models'},
+								{text: 'Appropriations'},
+								{text: 'Asbestos'},
+								{text: 'Behavioral Research'},
+								{text: 'Big Data'},
+								{text: 'Biospecimens'},
+								{text: 'Blue Ribbon Panel'},
+								{text: 'BRAIN'},
+								{text: 'Breast Cancer Stamp'},
+								{text: 'Breast Density'},
+								{text: 'Bypass Budget'},
+								{text: 'Cancer Centers'},
+								{text: 'Cancer Clusters'},
+								{text: 'Carbon Ion Therapy'},
+								{text: 'Childhood Cancer Caucus'},
+								{text: 'Clinical Center'},
+								{text: 'Clinical Trials'},
+								{text: 'CMS'},
+								{text: 'Comparative Effectiveness Research'},
+								{text: 'Complementary and Alternative Medicine'},
+								{text: 'Conflict of Interest'},
+								{text: 'Congressional Report'},
+								{text: 'Contracts'},
+								{text: 'Cost of Care'},
+								{text: 'Deadly Cancers'},
+								{text: 'Diagnostics'},
+								{text: 'Distress Screening'},
+								{text: 'Down Syndrome'},
+								{text: 'Drug Development'},
+								{text: 'Drug Shortages'},
+								{text: 'Early Stage Investigators '},
+								{text: 'Environmental Carcinogens'},
+								{text: 'Ethics'},
+								{text: 'Exceptional Responders '},
+								{text: 'FDA'},
+								{text: 'FFRDC'},
+								{text: 'Funding'},
+								{text: 'Genomics'},
+								{text: 'Genomic Data Commons'},
+								{text: 'Global Health'},
+								{text: 'Glyphosphate'},
+								{text: 'Grants'},
+								{text: 'Health Economics'},
+								{text: 'Health Services Research'},
+								{text: 'HIV/AIDS'},
+								{text: 'HPV '},
+								{text: 'Imaging'},
+								{text: 'Immuno-oncology'},
+								{text: 'Immunotherapy'},
+								{text: 'Indirect Costs'},
+								{text: 'Information Management'},
+								{text: 'Information Technology'},
+								{text: 'International Agency for Research on Cancer (IARC)'},
+								{text: 'Legislative Proposals'},
+								{text: 'Lymphedema'},
+								{text: 'Mammography'},
+								{text: 'Medical Radiation'},
+								{text: 'Mesothelioma'},
+								{text: 'Microbiome'},
+								{text: 'Mitochondrial Disease'},
+								{text: 'Mobile Health (mHealth)'},
+								{text: 'Nanotechnology'},
+								{text: 'Natural Products'},
+								{text: 'NCORP'},
+								{text: 'NCTN'},
+								{text: 'Neurofibromatosis'},
+								{text: 'NIH Strategic Plan'},
+								{text: 'Obesity'},
+								{text: 'Open Access'},
+								{text: 'Other Transactions Authority (OTA)'},
+								{text: 'Oversight'},
+								{text: 'Palliative Care'},
+								{text: 'Partnership to Advance Cancer Health Equity'},
+								{text: 'PDAC'},
+								{text: 'Pediatric Drugs/Devices'},
+								{text: 'Pediatric Research Initiative'},
+								{text: 'Precision Medicine Initiative'},
+								{text: 'Precision/Personalized Medicine'},
+								{text: 'Priority Setting'},
+								{text: 'Quality of Care'},
+								{text: 'Radiation'},
+								{text: 'RECA'},
+								{text: 'RECA Case Review'},
+								{text: 'Recalcitrant Cancer Research Act (RCRA)'},
+								{text: 'Regenerative Medicine'},
+								{text: 'Registries'},
+								{text: 'Report Langauge'},
+								{text: 'Reproducibility'},
+								{text: 'Reproductive Health'},
+								{text: 'Return on Investment'},
+								{text: 'SBIR/STTR'},
+								{text: 'Screening'},
+								{text: 'SEER'},
+								{text: 'SPOREs'},
+								{text: 'State Funding'},
+								{text: 'Statistics/Trends'},
+								{text: 'Stem Cells'},
+								{text: 'Synthetic Biology'},
+								{text: 'Targeted Therapies'},
+								{text: 'TCGA'},
+								{text: 'Tech Transfer'},
+								{text: 'Tobacco'},
+								{text: 'Transition Planning'},
+								{text: 'Triple Negative Breast Cancer'},
+								{text: 'USPSTF'},
+								{text: 'Women’s Health '},
+								{text: 'SCLC'}
 							 ];
 
 		var result = tags.filter(function(t){
@@ -175,9 +275,21 @@
 	
 	c.addComment = function(){
 		//post to server
-		NERDComment.addComment(params.doc_id , params.template_id, c.comment, sessionId).then(function(res){
+		NERDComment.addComment(params.doc_id, c.comment, sessionId).then(function(res){
 			var comments = res.data.result;
-			$scope.comments = c.parseComments(comments);
+			$scope.comments = comments;
+			c.comment = '';
+			$scope.$apply();
+		}, function(error){
+			console.log(error);
+		});
+	};
+	
+	c.deleteComment = function(sys_id){
+		//post to server
+		NERDComment.deleteComment(sys_id, sessionId).then(function(res){
+			var comments = res.data.result;
+			$scope.comments = comments;
 			c.comment = '';
 			$scope.$apply();
 		}, function(error){
@@ -194,24 +306,6 @@
 		}
 		return result;
 	};
-	
-	c.parseComments = function(comments){
-		if(comments.trim() == '') return [];
-		var tmp = comments.split("\n\n");
-	  var result = [];
-		tmp.forEach(function(t){
-			if(t =='') return;
-			var idx = t.indexOf("\n");
-			var info = t.substring(0, idx);
-			var idx_1 = info.indexOf("-"), idx_2 = info.indexOf("(");
-			var dict = {};
-			dict.name = info.substring(idx_1+2, idx_2);
-			dict.time = info.substring(0, idx_1);
-			dict.comment = t.substring(idx+1);
-			result.push(dict);
-		});
-		return result;
-	}
 	
 	c.trustAsHtml = function(string) {
     return $sce.trustAsHtml(string);
@@ -235,9 +329,11 @@
         <roles/>
         <script><![CDATA[(function() {
   var session_id = gs.getSession().getSessionToken();
-	
+	var userID = gs.getUserID();
+	data.isSuperuser = gs.getUser().isMemberOf('NERD Superuser');
 	data.info = {
-		sessionId: session_id
+		sessionId: session_id,
+		userID: userID
 	};
 
 })();]]></script>
@@ -247,7 +343,7 @@
         <sys_created_on>2018-10-17 20:16:40</sys_created_on>
         <sys_customer_update>false</sys_customer_update>
         <sys_id>ae23f05cdb592300b86770c08c961938</sys_id>
-        <sys_mod_count>198</sys_mod_count>
+        <sys_mod_count>252</sys_mod_count>
         <sys_name>[crs] KD Article</sys_name>
         <sys_package display_value="CRS Knowledge Database" source="x_26385_crs_kd">404e613b4f9213007221e321a310c738</sys_package>
         <sys_policy/>
@@ -255,7 +351,7 @@
         <sys_scope display_value="CRS Knowledge Database">404e613b4f9213007221e321a310c738</sys_scope>
         <sys_update_name>sp_widget_ae23f05cdb592300b86770c08c961938</sys_update_name>
         <sys_updated_by>yuw5@nih.gov</sys_updated_by>
-        <sys_updated_on>2018-11-15 21:22:06</sys_updated_on>
+        <sys_updated_on>2018-11-27 19:36:29</sys_updated_on>
         <template><![CDATA[<div id="crs-article">
   <div class="container">
     <div class="row row-space">
@@ -274,7 +370,7 @@
                 <div ng-bind-html="c.trustAsHtml(data[item])" style="font-size:14px;"></div> 
               </div> 
             </div>
-            <div class="block-footer">
+            <div class="block-footer" ng-show="c.isSu">
               <div class="tag-label">
                 Tags:
               </div>
@@ -287,6 +383,16 @@
                      select-first-match="false"
                      max-results-to-show="10"></auto-complete>
                 </tags-input>
+              </div>
+            </div>
+            <div class="block-footer"  ng-show="!c.isSu && tags.length > 0">
+              <div class="tag-label">
+                Tags:
+              </div>
+              <div class="tag-area">
+                <ul class="tag-list-readonly">
+                  <li ng-repeat="tag in tags">{{tag.text}}</li>
+                </ul>
               </div>
             </div>
           </div>
@@ -315,8 +421,8 @@
             
             <div style="width:100%; margin-top: 5px;overflow:auto;">
               <div class="col-md-6" style="padding-left:0px;">
-                <h5 ng-if="!c.errorMessage">PDF/PPT only, Maximum upload size 20 MB</h5>
-                <h5 ng-if="c.errorMessage" style="color: red;">PDF/PPT only, Maximum upload size 20 MB</h5>
+                <h5 ng-if="!c.errorMessage">PDF/PPT only, Maximum upload size 18 MB</h5>
+                <h5 ng-if="c.errorMessage" style="color: red;">PDF/PPT only, Maximum upload size 18 MB</h5>
               </div>
               <div class="col-md-6" style="text-align:right;padding-right:0px;">
                 <button type="button" class="btn btn-primary" ng-click="c.upload()" ng-disabled="c.upload_status == 'uploading...' || c.file2upload == ''">{{c.upload_status}}</button></div> 
@@ -328,7 +434,7 @@
                 <i class="fa fa-file-pdf-o" aria-hidden="true"></i> {{attach.file_name}}</a>
               <a ng-if="attach.file_type == 'application/vnd.ms-powerpoint' || attach.file_type == 'application/vnd.openxmlformats-officedocument.presentationml.presentation'" target="_blank" href="sys_attachment.do?view=true&sys_id={{attach.attach_sys_id}}">
                 <i class="fa fa-file-powerpoint-o" aria-hidden="true"></i> {{attach.file_name}}</a>
-              <a class="btn-remove" ng-click="c.removeAttachment(attach.attach_sys_id)" role="link">×</a>
+              <a class="btn-remove" ng-click="c.removeAttachment(attach.attach_sys_id)" role="link" ng-show="c.isSu">×</a>
             </div>
           </div>
         </div>
@@ -354,7 +460,7 @@
               <p class="break-word kb-comments-list ng-binding" style="white-space: pre-wrap">No comments.</p> 
             </div>
             <div class="comment-row" ng-repeat = "row in comments"> 
-              <p style="font-weight: bold" class="author pad-right kb-comments-list ng-binding"> {{row.name}} <span class="published pad-right"> - {{row.time}}</span> </p> 
+              <p style="font-weight: bold" class="author pad-right kb-comments-list ng-binding"> {{row.userName}} <span class="published pad-right"> - {{row.time}}</span> <a class="btn-link" ng-click="c.deleteComment(row.sys_id)" role="link" ng-show="c.isSu || row.userID == c.currentUserID">Delete</a></p> 
               <p class="break-word kb-comments-list ng-binding" style="white-space: pre-wrap">{{row.comment}}</p> 
              </div>
           </div>

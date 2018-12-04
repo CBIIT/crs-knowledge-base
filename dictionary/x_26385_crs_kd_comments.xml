@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<database>
+    <element label="Comments" max_length="40" name="x_26385_crs_kd_comments" type="collection">
+        <element label="article number" max_length="100" name="article_number" type="string"/>
+        <element label="comment" max_length="5000" name="comment" type="string"/>
+        <element label="status" max_length="50" name="status" type="string"/>
+        <element label="userID" max_length="100" name="userid" type="string"/>
+        <element label="userName" max_length="100" name="username" type="string"/>
+    </element>
+</database>

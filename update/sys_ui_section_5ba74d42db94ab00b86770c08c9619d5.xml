@@ -5,13 +5,13 @@
             <element>kb_knowledge_base</element>
             <position>0</position>
             <sys_created_by>yuw5@nih.gov</sys_created_by>
-            <sys_created_on>2018-10-22 19:56:28</sys_created_on>
-            <sys_id>6f7ed2bddb516700b86770c08c961969</sys_id>
+            <sys_created_on>2018-12-04 21:08:31</sys_created_on>
+            <sys_id>165b847bdbc2a70054d8ff621f9619fa</sys_id>
             <sys_mod_count>0</sys_mod_count>
             <sys_ui_formatter/>
             <sys_ui_section caption="NULL" display_value="" name="u_kb_template_top_accomplishment" sys_domain="global" view="Default view">5ba74d42db94ab00b86770c08c9619d5</sys_ui_section>
             <sys_updated_by>yuw5@nih.gov</sys_updated_by>
-            <sys_updated_on>2018-10-22 19:56:28</sys_updated_on>
+            <sys_updated_on>2018-12-04 21:08:31</sys_updated_on>
             <sys_user/>
             <type/>
         </sys_ui_element>
@@ -19,139 +19,139 @@
             <element>kb_category</element>
             <position>1</position>
             <sys_created_by>yuw5@nih.gov</sys_created_by>
-            <sys_created_on>2018-10-22 19:56:28</sys_created_on>
-            <sys_id>ef7ed2bddb516700b86770c08c961969</sys_id>
+            <sys_created_on>2018-12-04 21:08:31</sys_created_on>
+            <sys_id>965b847bdbc2a70054d8ff621f9619fa</sys_id>
             <sys_mod_count>0</sys_mod_count>
             <sys_ui_formatter/>
             <sys_ui_section caption="NULL" display_value="" name="u_kb_template_top_accomplishment" sys_domain="global" view="Default view">5ba74d42db94ab00b86770c08c9619d5</sys_ui_section>
             <sys_updated_by>yuw5@nih.gov</sys_updated_by>
-            <sys_updated_on>2018-10-22 19:56:28</sys_updated_on>
-            <sys_user/>
-            <type/>
-        </sys_ui_element>
-        <sys_ui_element action="INSERT_OR_UPDATE">
-            <element>x_26385_crs_kd_u_kb_research_type</element>
-            <position>2</position>
-            <sys_created_by>yuw5@nih.gov</sys_created_by>
-            <sys_created_on>2018-10-22 19:56:28</sys_created_on>
-            <sys_id>637ed2bddb516700b86770c08c96196a</sys_id>
-            <sys_mod_count>0</sys_mod_count>
-            <sys_ui_formatter/>
-            <sys_ui_section caption="NULL" display_value="" name="u_kb_template_top_accomplishment" sys_domain="global" view="Default view">5ba74d42db94ab00b86770c08c9619d5</sys_ui_section>
-            <sys_updated_by>yuw5@nih.gov</sys_updated_by>
-            <sys_updated_on>2018-10-22 19:56:28</sys_updated_on>
+            <sys_updated_on>2018-12-04 21:08:31</sys_updated_on>
             <sys_user/>
             <type/>
         </sys_ui_element>
         <sys_ui_element action="INSERT_OR_UPDATE">
             <element>x_26385_crs_kd_u_kb_title</element>
-            <position>3</position>
+            <position>2</position>
             <sys_created_by>yuw5@nih.gov</sys_created_by>
-            <sys_created_on>2018-10-22 19:56:28</sys_created_on>
-            <sys_id>e37ed2bddb516700b86770c08c96196a</sys_id>
+            <sys_created_on>2018-12-04 21:08:31</sys_created_on>
+            <sys_id>1a5b847bdbc2a70054d8ff621f9619fa</sys_id>
             <sys_mod_count>0</sys_mod_count>
             <sys_ui_formatter/>
             <sys_ui_section caption="NULL" display_value="" name="u_kb_template_top_accomplishment" sys_domain="global" view="Default view">5ba74d42db94ab00b86770c08c9619d5</sys_ui_section>
             <sys_updated_by>yuw5@nih.gov</sys_updated_by>
-            <sys_updated_on>2018-10-22 19:56:28</sys_updated_on>
+            <sys_updated_on>2018-12-04 21:08:31</sys_updated_on>
+            <sys_user/>
+            <type/>
+        </sys_ui_element>
+        <sys_ui_element action="INSERT_OR_UPDATE">
+            <element>x_26385_crs_kd_u_kb_research_type</element>
+            <position>3</position>
+            <sys_created_by>yuw5@nih.gov</sys_created_by>
+            <sys_created_on>2018-12-04 21:08:31</sys_created_on>
+            <sys_id>9a5b847bdbc2a70054d8ff621f9619fa</sys_id>
+            <sys_mod_count>0</sys_mod_count>
+            <sys_ui_formatter/>
+            <sys_ui_section caption="NULL" display_value="" name="u_kb_template_top_accomplishment" sys_domain="global" view="Default view">5ba74d42db94ab00b86770c08c9619d5</sys_ui_section>
+            <sys_updated_by>yuw5@nih.gov</sys_updated_by>
+            <sys_updated_on>2018-12-04 21:08:31</sys_updated_on>
+            <sys_user/>
+            <type/>
+        </sys_ui_element>
+        <sys_ui_element action="INSERT_OR_UPDATE">
+            <element>x_26385_crs_kd_u_kb_special_topic</element>
+            <position>4</position>
+            <sys_created_by>yuw5@nih.gov</sys_created_by>
+            <sys_created_on>2018-12-04 21:08:31</sys_created_on>
+            <sys_id>1e5b847bdbc2a70054d8ff621f9619fa</sys_id>
+            <sys_mod_count>0</sys_mod_count>
+            <sys_ui_formatter/>
+            <sys_ui_section caption="NULL" display_value="" name="u_kb_template_top_accomplishment" sys_domain="global" view="Default view">5ba74d42db94ab00b86770c08c9619d5</sys_ui_section>
+            <sys_updated_by>yuw5@nih.gov</sys_updated_by>
+            <sys_updated_on>2018-12-04 21:08:31</sys_updated_on>
             <sys_user/>
             <type/>
         </sys_ui_element>
         <sys_ui_element action="INSERT_OR_UPDATE">
             <element>x_26385_crs_kd_u_kb_description</element>
-            <position>4</position>
+            <position>5</position>
             <sys_created_by>yuw5@nih.gov</sys_created_by>
-            <sys_created_on>2018-10-22 19:56:28</sys_created_on>
-            <sys_id>677ed2bddb516700b86770c08c96196a</sys_id>
+            <sys_created_on>2018-12-04 21:08:31</sys_created_on>
+            <sys_id>9e5b847bdbc2a70054d8ff621f9619fa</sys_id>
             <sys_mod_count>0</sys_mod_count>
             <sys_ui_formatter/>
             <sys_ui_section caption="NULL" display_value="" name="u_kb_template_top_accomplishment" sys_domain="global" view="Default view">5ba74d42db94ab00b86770c08c9619d5</sys_ui_section>
             <sys_updated_by>yuw5@nih.gov</sys_updated_by>
-            <sys_updated_on>2018-10-22 19:56:28</sys_updated_on>
+            <sys_updated_on>2018-12-04 21:08:31</sys_updated_on>
             <sys_user/>
             <type/>
         </sys_ui_element>
         <sys_ui_element action="INSERT_OR_UPDATE">
             <element>x_26385_crs_kd_u_kb_references</element>
-            <position>5</position>
+            <position>6</position>
             <sys_created_by>yuw5@nih.gov</sys_created_by>
-            <sys_created_on>2018-10-22 19:56:28</sys_created_on>
-            <sys_id>e77ed2bddb516700b86770c08c96196a</sys_id>
+            <sys_created_on>2018-12-04 21:08:31</sys_created_on>
+            <sys_id>125b847bdbc2a70054d8ff621f9619fb</sys_id>
             <sys_mod_count>0</sys_mod_count>
             <sys_ui_formatter/>
             <sys_ui_section caption="NULL" display_value="" name="u_kb_template_top_accomplishment" sys_domain="global" view="Default view">5ba74d42db94ab00b86770c08c9619d5</sys_ui_section>
             <sys_updated_by>yuw5@nih.gov</sys_updated_by>
-            <sys_updated_on>2018-10-22 19:56:28</sys_updated_on>
+            <sys_updated_on>2018-12-04 21:08:31</sys_updated_on>
             <sys_user/>
             <type/>
         </sys_ui_element>
         <sys_ui_element action="INSERT_OR_UPDATE">
             <element>x_26385_crs_kd_u_kb_involved_organization</element>
-            <position>6</position>
+            <position>7</position>
             <sys_created_by>yuw5@nih.gov</sys_created_by>
-            <sys_created_on>2018-10-22 19:56:28</sys_created_on>
-            <sys_id>6b7ed2bddb516700b86770c08c96196a</sys_id>
+            <sys_created_on>2018-12-04 21:08:31</sys_created_on>
+            <sys_id>925b847bdbc2a70054d8ff621f9619fb</sys_id>
             <sys_mod_count>0</sys_mod_count>
             <sys_ui_formatter/>
             <sys_ui_section caption="NULL" display_value="" name="u_kb_template_top_accomplishment" sys_domain="global" view="Default view">5ba74d42db94ab00b86770c08c9619d5</sys_ui_section>
             <sys_updated_by>yuw5@nih.gov</sys_updated_by>
-            <sys_updated_on>2018-10-22 19:56:28</sys_updated_on>
+            <sys_updated_on>2018-12-04 21:08:31</sys_updated_on>
             <sys_user/>
             <type/>
         </sys_ui_element>
         <sys_ui_element action="INSERT_OR_UPDATE">
             <element>x_26385_crs_kd_u_kb_doc</element>
-            <position>7</position>
+            <position>8</position>
             <sys_created_by>yuw5@nih.gov</sys_created_by>
-            <sys_created_on>2018-10-22 19:56:28</sys_created_on>
-            <sys_id>eb7ed2bddb516700b86770c08c96196a</sys_id>
+            <sys_created_on>2018-12-04 21:08:31</sys_created_on>
+            <sys_id>165b847bdbc2a70054d8ff621f9619fb</sys_id>
             <sys_mod_count>0</sys_mod_count>
             <sys_ui_formatter/>
             <sys_ui_section caption="NULL" display_value="" name="u_kb_template_top_accomplishment" sys_domain="global" view="Default view">5ba74d42db94ab00b86770c08c9619d5</sys_ui_section>
             <sys_updated_by>yuw5@nih.gov</sys_updated_by>
-            <sys_updated_on>2018-10-22 19:56:28</sys_updated_on>
+            <sys_updated_on>2018-12-04 21:08:31</sys_updated_on>
             <sys_user/>
             <type/>
         </sys_ui_element>
         <sys_ui_element action="INSERT_OR_UPDATE">
             <element>x_26385_crs_kd_u_kb_cancer_site_type</element>
-            <position>8</position>
+            <position>9</position>
             <sys_created_by>yuw5@nih.gov</sys_created_by>
-            <sys_created_on>2018-10-22 19:56:28</sys_created_on>
-            <sys_id>6f7ed2bddb516700b86770c08c96196a</sys_id>
+            <sys_created_on>2018-12-04 21:08:31</sys_created_on>
+            <sys_id>965b847bdbc2a70054d8ff621f9619fb</sys_id>
             <sys_mod_count>0</sys_mod_count>
             <sys_ui_formatter/>
             <sys_ui_section caption="NULL" display_value="" name="u_kb_template_top_accomplishment" sys_domain="global" view="Default view">5ba74d42db94ab00b86770c08c9619d5</sys_ui_section>
             <sys_updated_by>yuw5@nih.gov</sys_updated_by>
-            <sys_updated_on>2018-10-22 19:56:28</sys_updated_on>
+            <sys_updated_on>2018-12-04 21:08:31</sys_updated_on>
             <sys_user/>
             <type/>
         </sys_ui_element>
         <sys_ui_element action="INSERT_OR_UPDATE">
             <element>x_26385_crs_kd_u_kb_fiscal_year</element>
-            <position>9</position>
-            <sys_created_by>yuw5@nih.gov</sys_created_by>
-            <sys_created_on>2018-10-22 19:56:28</sys_created_on>
-            <sys_id>ef7ed2bddb516700b86770c08c96196a</sys_id>
-            <sys_mod_count>0</sys_mod_count>
-            <sys_ui_formatter/>
-            <sys_ui_section caption="NULL" display_value="" name="u_kb_template_top_accomplishment" sys_domain="global" view="Default view">5ba74d42db94ab00b86770c08c9619d5</sys_ui_section>
-            <sys_updated_by>yuw5@nih.gov</sys_updated_by>
-            <sys_updated_on>2018-10-22 19:56:28</sys_updated_on>
-            <sys_user/>
-            <type/>
-        </sys_ui_element>
-        <sys_ui_element action="INSERT_OR_UPDATE">
-            <element>x_26385_crs_kd_u_kb_comments</element>
             <position>10</position>
             <sys_created_by>yuw5@nih.gov</sys_created_by>
-            <sys_created_on>2018-10-29 16:47:11</sys_created_on>
-            <sys_id>4f463188dba5eb00b86770c08c961941</sys_id>
+            <sys_created_on>2018-12-04 21:08:31</sys_created_on>
+            <sys_id>1a5b847bdbc2a70054d8ff621f9619fb</sys_id>
             <sys_mod_count>0</sys_mod_count>
             <sys_ui_formatter/>
             <sys_ui_section caption="NULL" display_value="" name="u_kb_template_top_accomplishment" sys_domain="global" view="Default view">5ba74d42db94ab00b86770c08c9619d5</sys_ui_section>
             <sys_updated_by>yuw5@nih.gov</sys_updated_by>
-            <sys_updated_on>2018-10-29 16:47:11</sys_updated_on>
+            <sys_updated_on>2018-12-04 21:08:31</sys_updated_on>
             <sys_user/>
             <type/>
         </sys_ui_element>
@@ -159,13 +159,13 @@
             <element>x_26385_crs_kd_u_kb_tags</element>
             <position>11</position>
             <sys_created_by>yuw5@nih.gov</sys_created_by>
-            <sys_created_on>2018-10-29 18:50:00</sys_created_on>
-            <sys_id>ca625accdbe5eb00b86770c08c961974</sys_id>
+            <sys_created_on>2018-12-04 21:08:31</sys_created_on>
+            <sys_id>9a5b847bdbc2a70054d8ff621f9619fb</sys_id>
             <sys_mod_count>0</sys_mod_count>
             <sys_ui_formatter/>
             <sys_ui_section caption="NULL" display_value="" name="u_kb_template_top_accomplishment" sys_domain="global" view="Default view">5ba74d42db94ab00b86770c08c9619d5</sys_ui_section>
             <sys_updated_by>yuw5@nih.gov</sys_updated_by>
-            <sys_updated_on>2018-10-29 18:50:00</sys_updated_on>
+            <sys_updated_on>2018-12-04 21:08:31</sys_updated_on>
             <sys_user/>
             <type/>
         </sys_ui_element>
