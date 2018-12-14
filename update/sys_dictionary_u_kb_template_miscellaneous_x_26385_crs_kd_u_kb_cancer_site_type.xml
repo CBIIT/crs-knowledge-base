@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <record_update>
-    <sys_dictionary action="INSERT_OR_UPDATE" element="x_26385_crs_kd_u_kb_cancer_type" table="u_kb_template_miscellaneous">
+    <sys_dictionary action="INSERT_OR_UPDATE" element="x_26385_crs_kd_u_kb_cancer_site_type" table="u_kb_template_miscellaneous">
         <active>true</active>
         <array>false</array>
         <array_denormalized>false</array_denormalized>
@@ -15,7 +15,7 @@
         <choice/>
         <choice_field/>
         <choice_table/>
-        <column_label>Cancer Type</column_label>
+        <column_label>Cancer Site/Type</column_label>
         <comments/>
         <create_roles/>
         <default_value/>
@@ -28,7 +28,7 @@
         <dynamic_creation_script/>
         <dynamic_default_value/>
         <dynamic_ref_qual/>
-        <element>x_26385_crs_kd_u_kb_cancer_type</element>
+        <element>x_26385_crs_kd_u_kb_cancer_site_type</element>
         <element_reference>false</element_reference>
         <foreign_database/>
         <function_definition/>
@@ -53,18 +53,18 @@
         <staged>false</staged>
         <sys_class_name>sys_dictionary</sys_class_name>
         <sys_created_by>yuw5@nih.gov</sys_created_by>
-        <sys_created_on>2018-10-16 19:31:01</sys_created_on>
+        <sys_created_on>2018-12-11 16:41:50</sys_created_on>
         <sys_customer_update>false</sys_customer_update>
-        <sys_id>582fd37fdbc92f40b86770c08c961962</sys_id>
+        <sys_id>c871d7b9dbdeeb0054d8ff621f961925</sys_id>
         <sys_mod_count>0</sys_mod_count>
-        <sys_name>Cancer Type</sys_name>
+        <sys_name>Cancer Site/Type</sys_name>
         <sys_package display_value="CRS Knowledge Database" source="x_26385_crs_kd">404e613b4f9213007221e321a310c738</sys_package>
         <sys_policy/>
         <sys_replace_on_upgrade>false</sys_replace_on_upgrade>
         <sys_scope display_value="CRS Knowledge Database">404e613b4f9213007221e321a310c738</sys_scope>
-        <sys_update_name>sys_dictionary_u_kb_template_miscellaneous_x_26385_crs_kd_u_kb_cancer_type</sys_update_name>
+        <sys_update_name>sys_dictionary_u_kb_template_miscellaneous_x_26385_crs_kd_u_kb_cancer_site_type</sys_update_name>
         <sys_updated_by>yuw5@nih.gov</sys_updated_by>
-        <sys_updated_on>2018-10-16 19:31:01</sys_updated_on>
+        <sys_updated_on>2018-12-11 16:41:50</sys_updated_on>
         <table_reference>false</table_reference>
         <text_index>true</text_index>
         <u_model_id/>

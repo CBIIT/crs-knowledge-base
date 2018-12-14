@@ -15,14 +15,29 @@
 	var sys_id = data.sys_id;
 	var tmp_id = data.tmp_id;
 	
-    var attachment = new GlideSysAttachment();
+    //var attachment = new GlideSysAttachment();
+	//attachment.deleteAttachment(attachment_sys_id);
+	var gr = new GlideRecord('x_26385_crs_kd_deleted_attachments');
+	gr.initialize(); 
+	gr.table_sys_id = sys_id;
+	gr.attachment_sys_id = attachment_sys_id; 
+	gr.insert();
 	
-	attachment.deleteAttachment(attachment_sys_id);
+	var deletedAttachments = [];
+	var da = new GlideRecord('x_26385_crs_kd_deleted_attachments');
+	da.addQuery("table_sys_id", sys_id);
+	da.query();
+	while(da.next()){
+		deletedAttachments.push(da.attachment_sys_id.toString());
+	}
 	
 	var att = new GlideRecord('sys_attachment');
     att.addQuery('table_sys_id', sys_id);
 	att.addQuery('content_type','STARTSWITH','application/');
 	att.addQuery('table_name', tmp_id);
+	if(deletedAttachments.length > 0){
+		att.addQuery('sys_id','NOT IN',deletedAttachments.join(','));
+	}
 	att.query();
 
 	var attachments = [];
@@ -31,6 +46,7 @@
 		tmp.attach_sys_id = att.sys_id.toString();
 		tmp.file_name = att.file_name.toString();
 		tmp.file_type = att.content_type.toString();
+		tmp.created_by = att.sys_created_by.toString();
 		attachments.push(tmp);
 	}
 	
@@ -50,7 +66,7 @@
         <sys_created_on>2018-10-29 21:45:58</sys_created_on>
         <sys_customer_update>false</sys_customer_update>
         <sys_id>10d5fac4dba9eb00b86770c08c9619e9</sys_id>
-        <sys_mod_count>10</sys_mod_count>
+        <sys_mod_count>15</sys_mod_count>
         <sys_name>removePDF</sys_name>
         <sys_package display_value="CRS Knowledge Database" source="x_26385_crs_kd">404e613b4f9213007221e321a310c738</sys_package>
         <sys_policy/>
@@ -58,7 +74,7 @@
         <sys_scope display_value="CRS Knowledge Database">404e613b4f9213007221e321a310c738</sys_scope>
         <sys_update_name>sys_ws_operation_10d5fac4dba9eb00b86770c08c9619e9</sys_update_name>
         <sys_updated_by>yuw5@nih.gov</sys_updated_by>
-        <sys_updated_on>2018-11-15 21:23:36</sys_updated_on>
+        <sys_updated_on>2018-12-12 20:34:39</sys_updated_on>
         <web_service_definition display_value="export">01e1bbe7db6a53005358dc50cf961994</web_service_definition>
         <web_service_version/>
     </sys_ws_operation>

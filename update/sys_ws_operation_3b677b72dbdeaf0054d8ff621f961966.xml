@@ -7,9 +7,9 @@
         <default_operation_uri/>
         <enforce_acl>cf9d01d3e73003009d6247e603f6a990</enforce_acl>
         <http_method>POST</http_method>
-        <name>save2word</name>
+        <name>save2Excel</name>
         <operation_script><![CDATA[(function process(/*RESTAPIRequest*/ request, /*RESTAPIResponse*/ response) {
-	var data = request.body.data;
+var data = request.body.data;
 	var files = data.files;
 	var schemas = {"u_kb_template_top_accomplishment":{
 					"Cancer Site/Type": "x_26385_crs_kd_u_kb_cancer_site_type",
@@ -62,16 +62,12 @@
 
 		while (gr.next()) {
 			dt[gr.sys_id] = {};
-			for(var ckey in s){
-				var str = gr[s[ckey]].toString();
-				if(str.charAt(0) == '{'){
-					dt[gr.sys_id][ckey] = str.replace(/{/g, '').replace(/}/g, '');
-				}
-				else{
-					dt[gr.sys_id][ckey] = str;
-				}
-			}
-			dt[gr.sys_id].title = gr.x_26385_crs_kd_u_kb_title;
+			dt[gr.sys_id].title = gr.x_26385_crs_kd_u_kb_title.toString();
+			//dt[gr.sys_id].published = gr.published.toString();
+			dt[gr.sys_id].database = gr.getDisplayValue('kb_knowledge_base');
+			dt[gr.sys_id].category = gr.getDisplayValue('kb_category');
+			dt[gr.sys_id].x_26385_crs_kd_u_kb_research_type = gr.x_26385_crs_kd_u_kb_research_type.toString().replace(/{/g, '').replace(/}/g, '');
+			dt[gr.sys_id].x_26385_crs_kd_u_kb_fiscal_year = gr.x_26385_crs_kd_u_kb_fiscal_year.toString().replace(/{/g, '').replace(/}/g, '');
 		}
 	}
 	files.forEach(function(fs){
@@ -80,28 +76,28 @@
 	
 	response.setBody(body);	
 })(request, response);]]></operation_script>
-        <operation_uri>/api/x_26385_crs_kd/export/word</operation_uri>
+        <operation_uri>/api/x_26385_crs_kd/export/excel</operation_uri>
         <produces>application/json,application/xml,text/xml</produces>
         <produces_customized>false</produces_customized>
-        <relative_path>/word</relative_path>
+        <relative_path>/excel</relative_path>
         <request_example/>
         <requires_acl_authorization>false</requires_acl_authorization>
         <requires_authentication>true</requires_authentication>
         <short_description/>
         <sys_class_name>sys_ws_operation</sys_class_name>
-        <sys_created_by>admin</sys_created_by>
-        <sys_created_on>2018-06-13 20:26:53</sys_created_on>
+        <sys_created_by>yuw5@nih.gov</sys_created_by>
+        <sys_created_on>2018-12-14 22:08:53</sys_created_on>
         <sys_customer_update>false</sys_customer_update>
-        <sys_id>a73cb32fdb6a53005358dc50cf9619f8</sys_id>
-        <sys_mod_count>21</sys_mod_count>
-        <sys_name>save2word</sys_name>
+        <sys_id>3b677b72dbdeaf0054d8ff621f961966</sys_id>
+        <sys_mod_count>2</sys_mod_count>
+        <sys_name>save2Excel</sys_name>
         <sys_package display_value="CRS Knowledge Database" source="x_26385_crs_kd">404e613b4f9213007221e321a310c738</sys_package>
         <sys_policy/>
         <sys_replace_on_upgrade>false</sys_replace_on_upgrade>
         <sys_scope display_value="CRS Knowledge Database">404e613b4f9213007221e321a310c738</sys_scope>
-        <sys_update_name>sys_ws_operation_a73cb32fdb6a53005358dc50cf9619f8</sys_update_name>
+        <sys_update_name>sys_ws_operation_3b677b72dbdeaf0054d8ff621f961966</sys_update_name>
         <sys_updated_by>yuw5@nih.gov</sys_updated_by>
-        <sys_updated_on>2018-12-14 21:51:42</sys_updated_on>
+        <sys_updated_on>2018-12-14 22:18:57</sys_updated_on>
         <web_service_definition display_value="export">01e1bbe7db6a53005358dc50cf961994</web_service_definition>
         <web_service_version/>
     </sys_ws_operation>

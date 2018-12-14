@@ -19,7 +19,8 @@
 	var selectedSpecialTopics = request.queryParams.selectedSpecialTopics;
     
 	var infos_category = {'Top Accomplishments':'u_kb_template_top_accomplishment',
-							 'GPRA': 'u_kb_template_gpra'};
+							 'GPRA': 'u_kb_template_gpra',
+						  'Miscellaneous': 'u_kb_template_miscellaneous'};
 	
 	var info_schema = {'Top Accomplishments': {"cancerSite":"x_26385_crs_kd_u_kb_cancer_site_type",
 																																																						 "researchType":"x_26385_crs_kd_u_kb_research_type",
@@ -31,7 +32,11 @@
 											   
 											                         "specialTopic":"x_26385_crs_kd_u_kb_special_topic",
 																																																						 "doc":"x_26385_crs_kd_u_kb_doc",
-																																																						 "fiscalYear":"x_26385_crs_kd_u_kb_fiscal_year"}
+																																																						 "fiscalYear":"x_26385_crs_kd_u_kb_fiscal_year"},
+				 'Miscellaneous': {"cancerSite":"x_26385_crs_kd_u_kb_cancer_site_type",
+								   "researchType":"x_26385_crs_kd_u_kb_research_type",
+								   "specialTopic":"x_26385_crs_kd_u_kb_special_topic",
+								   "fiscalYear":"x_26385_crs_kd_u_kb_fiscal_year"}
 	};
 		
 		// The Knowledge Base IDs to be used in search filters
@@ -108,6 +113,7 @@
 				var docQuery = gr.addQuery('x_26385_crs_kd_u_kb_doc', 'CONTAINS', filter.selectedDoc[0]);
 				docQuery.addOrCondition('x_26385_crs_kd_u_kb_doc', 'CONTAINS', filter.selectedDoc[0].replace('}','-'));
 				for(var k = 1; k< filter.selectedDoc.length ; k++){
+					docQuery.addOrCondition('x_26385_crs_kd_u_kb_doc', 'CONTAINS', filter.selectedDoc[k]);
 					docQuery.addOrCondition('x_26385_crs_kd_u_kb_doc', 'CONTAINS', filter.selectedDoc[k].replace('}','-'));
 				}
 			}
@@ -135,7 +141,7 @@
 			var articleResult = {};
 			articleResult.sys_id = gr.sys_id.toString();
 // 			articleResult.short_description = gr.short_description.toString();
-			articleResult.kb_knowledge_base = gr.getDisplayValue('kb_knowledge_base');
+			//articleResult.kb_knowledge_base = gr.getDisplayValue('kb_knowledge_base');
 			articleResult.kb_category = gr.getDisplayValue('kb_category');
 			articleResult.author = gr.getDisplayValue('author');
 			//articleResult.sys_updated_on = gr.sys_updated_on.toString();
@@ -188,7 +194,7 @@
         <sys_created_on>2018-10-15 15:25:30</sys_created_on>
         <sys_customer_update>false</sys_customer_update>
         <sys_id>845c59e7dbc9eb40b86770c08c9619ab</sys_id>
-        <sys_mod_count>47</sys_mod_count>
+        <sys_mod_count>52</sys_mod_count>
         <sys_name>searchBasicArticleByCriteria</sys_name>
         <sys_package display_value="CRS Knowledge Database" source="x_26385_crs_kd">404e613b4f9213007221e321a310c738</sys_package>
         <sys_policy/>
@@ -196,7 +202,7 @@
         <sys_scope display_value="CRS Knowledge Database">404e613b4f9213007221e321a310c738</sys_scope>
         <sys_update_name>sys_ws_operation_845c59e7dbc9eb40b86770c08c9619ab</sys_update_name>
         <sys_updated_by>yuw5@nih.gov</sys_updated_by>
-        <sys_updated_on>2018-12-04 22:16:07</sys_updated_on>
+        <sys_updated_on>2018-12-14 21:44:15</sys_updated_on>
         <web_service_definition display_value="export">01e1bbe7db6a53005358dc50cf961994</web_service_definition>
         <web_service_version/>
     </sys_ws_operation>

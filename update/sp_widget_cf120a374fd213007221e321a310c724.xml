@@ -4,9 +4,8 @@
         <category>custom</category>
         <client_script><![CDATA[function($rootScope, $scope, $location, $http,NERDSearchBasicArticleByCriteria) {
 	/* widget controller */
-	
-	
-	$scope.$emit('crs.header.display', false);
+	//document.getElementById("progressing-bar").style.display = "flex";
+	//$scope.$emit('crs.header.display', false);
 	var c = this;
 	
 	var s = $location.search();
@@ -38,10 +37,8 @@
     
   };
 	
-	
-	
 	c.search = function() {
-		
+		document.getElementById("progressing-bar").style.display = "flex";
 		var params = {
 									searchString: c.data.searchString && c.data.searchString !== ""? c.data.searchString : "", 
 									knowledgeBaseID: c.data.selectedKnowledgeBase.id,
@@ -74,6 +71,7 @@
 			//c.data.pageSize = 10;
 			//c.data.bigCurrentPage = 1;
 			$scope.$apply();
+			document.getElementById("progressing-bar").style.display = "none";
 		}, function(error){
 			console.log(error);
 		});
@@ -336,17 +334,6 @@
 		c.search();
 	};
 	
-	/*
-	$scope.$on('$viewContentLoaded', function(event, viewName, viewContent) {
-		console.log("View Content Loaded ["+viewName+"] ",event);
-		
-		console.log(c.data.searchString);
-		if(c.data.searchString){
-			c.search();
-		}
-	});
-	*/
-	
 	var htmlToWord = (function() {
       var uri = 'data:text/html,';
       var template = '<html xmlns:office="urn:schemas-microsoft-com:office:office" xmlns:word="urn:schemas-microsoft-com:office:word" xmlns="http://www.w3.org/TR/REC-html40"><head><xml><word:WordDocument><word:View>Print</word:View><word:Zoom>90</word:Zoom><word:DoNotOptimizeForBrowser/></word:WordDocument></xml></head><body>{content}</body></html>';
@@ -376,61 +363,67 @@
     })()
 	
   c.export2Excel = function () {
-		var cache = [];
+		var req = {
+		 method: 'POST',
+		 url: '/api/x_26385_crs_kd/export/excel',
+		 headers: {
+			 'Content-Type': 'application/json'
+		 }
+		}
+		
+		req.data = {};
+		req.data.files = [];
 		document.getElementsByName('selections').forEach(function(obj){
 			if(obj.checked){
+				var fs = {};
 				var info = obj.value.split(',');
-				cache.push(info[0]);
+				fs.sys_id = info[0];
+				//fs.kb = info[1];
+				fs.category = info[2];
+				req.data.files.push(fs);
 			}
 		});
-		var data = [];
-		c.data.tabs.forEach(function(t){
-			if(t.show){
-				t.list.forEach(function(rs){
-					if(cache.indexOf(rs.sys_id) >= 0){
-						var tmp = {};
-						tmp["Date entered"] = rs.published;
-						tmp.Database = rs.kb_knowledge_base;
-						tmp.Category = rs.kb_category;
-						tmp.Title = rs.short_description;
-						if(c.data.filters.includes('research_type')){
-							tmp["Research Type"] = rs.x_26385_crs_kd_u_kb_research_type;
-						}
-						if(c.data.filters.includes('cancer_site')){
-							tmp["Cancer Site/Type"] = rs.x_26385_crs_kd_u_kb_cancer_site_type;
-						}
-						if(c.data.filters.includes('doc')){
-							tmp.Doc = rs.x_26385_crs_kd_u_kb_doc;
-						}
-						data.push(tmp);
-					}
-				});
-			}
+
+		$http(req).then(function(resp){
+			var content = resp.data.result.content;
+			var data = [];
+			content.forEach(function(ct){
+					var tmp = {};
+					//tmp["Date entered"] = ct.published;
+					tmp.Database = ct.database;
+					tmp.Category = ct.category;
+					tmp.Title = ct.title;
+					tmp["Research Type"] = ct.x_26385_crs_kd_u_kb_research_type;
+					tmp["Fiscal Year"] = ct.x_26385_crs_kd_u_kb_fiscal_year;
+					data.push(tmp);
+			});
 			
+			/* generate a worksheet */
+			var ws = XLSX.utils.json_to_sheet(data);
+
+			/* add to workbook */
+			var wb = XLSX.utils.book_new();
+			XLSX.utils.book_append_sheet(wb, ws, "sheet1");
+
+			/* write workbook and force a download */
+			var today = new Date();
+			var dd = today.getDate();
+			var mm = today.getMonth()+1;
+			var yyyy = today.getFullYear();
+
+			if(dd<10) {
+					dd = '0'+dd
+			} 
+
+			if(mm<10) {
+					mm = '0'+mm
+			} 
+
+			today = yyyy + "-"+ mm + "-" + dd;
+			XLSX.writeFile(wb, "NERD_report_"+today+".xlsx");
+		}, function(error_resp){
+			console.log(error_resp);
 		});
-		/* generate a worksheet */
-		var ws = XLSX.utils.json_to_sheet(data);
-
-		/* add to workbook */
-		var wb = XLSX.utils.book_new();
-		XLSX.utils.book_append_sheet(wb, ws, "sheet1");
-
-		/* write workbook and force a download */
-		var today = new Date();
-		var dd = today.getDate();
-		var mm = today.getMonth()+1;
-		var yyyy = today.getFullYear();
-
-		if(dd<10) {
-				dd = '0'+dd
-		} 
-
-		if(mm<10) {
-				mm = '0'+mm
-		} 
-
-		today = yyyy + "-"+ mm + "-" + dd;
-		XLSX.writeFile(wb, "NERD_report_"+today+".xlsx");
   }
 	
 	c.export2Word = function () {
@@ -449,7 +442,7 @@
 				var fs = {};
 				var info = obj.value.split(',');
 				fs.sys_id = info[0];
-				fs.kb = info[1];
+				//fs.kb = info[1];
 				fs.category = info[2];
 				req.data.files.push(fs);
 			}
@@ -519,7 +512,7 @@
 		c.data.selectedSpecialTopic = $rootScope.selectedSpecialTopic?$rootScope.selectedSpecialTopic : [];
 		c.search();
 	}
-	
+	document.getElementById("progressing-bar").style.display = "none";
 }]]></client_script>
         <controller_as>c</controller_as>
         <css>
@@ -547,6 +540,10 @@
 												'GPRA': {template_table: 'u_kb_template_gpra', filters:{"doc":"x_26385_crs_kd_u_kb_doc",
 																																								"researchType":"x_26385_crs_kd_u_kb_research_type",
 																																								"specialTopic":"x_26385_crs_kd_u_kb_special_topic",
+																																								"fiscalYear":"x_26385_crs_kd_u_kb_fiscal_year"}},
+												'Miscellaneous': {template_table: 'u_kb_template_miscellaneous', filters:{"cancerSite":"x_26385_crs_kd_u_kb_cancer_site_type",
+																																								"researchType":"x_26385_crs_kd_u_kb_research_type",
+																																								"specialTopic":"x_26385_crs_kd_u_kb_special_topic",
 																																								"fiscalYear":"x_26385_crs_kd_u_kb_fiscal_year"}}
 							};
 	data.knowledgeBases = [];
@@ -558,6 +555,8 @@
 	data.knowledgeBases.push({id: kb_id, name: gr.title.toString()});
 	data.selectedKnowledgeBase = {id: kb_id, name: gr.title.toString()};
 	
+	var categories = [];
+	/*
 	gr = new GlideRecord('kb_category');
 	gr.addQuery('parent_id', kb_id);
 	gr.orderBy('sys_created_on');
@@ -567,6 +566,11 @@
 		var obj = {};
 		categories.push({id: gr.sys_id.toString(), name: gr.label.toString()});
 	}
+	*/
+	
+	categories.push({name: 'Top Accomplishments'});
+	categories.push({name: 'GPRA'});
+	categories.push({name: 'Miscellaneous'});
 	
 	data.count = {};
 	cache = {};
@@ -611,7 +615,7 @@
 				var articleResult = {};
 				articleResult.sys_id = gr.sys_id.toString();
 				//articleResult.short_description = gr.short_description.toString();
-				articleResult.kb_knowledge_base = gr.getDisplayValue('kb_knowledge_base');
+				//articleResult.kb_knowledge_base = gr.getDisplayValue('kb_knowledge_base');
 				articleResult.kb_category = gr.getDisplayValue('kb_category');
 				articleResult.author = gr.getDisplayValue('author');
 				//articleResult.sys_updated_on = gr.sys_updated_on.toString();
@@ -634,7 +638,7 @@
 					articleResult.x_26385_crs_kd_u_kb_fiscal_year = gr.x_26385_crs_kd_u_kb_fiscal_year.toString();
 					articleResult.fYear = articleResult.x_26385_crs_kd_u_kb_fiscal_year;
 				}
-				articleResult.url = 'kb_view.do?sys_kb_id=' + articleResult.sys_id;
+				//articleResult.url = 'kb_view.do?sys_kb_id=' + articleResult.sys_id;
 				articleResult.template = tmpl;
 				values.push(articleResult);
 				for(k in filters){
@@ -700,7 +704,7 @@
         <sys_created_on>2018-06-01 19:53:54</sys_created_on>
         <sys_customer_update>false</sys_customer_update>
         <sys_id>cf120a374fd213007221e321a310c724</sys_id>
-        <sys_mod_count>963</sys_mod_count>
+        <sys_mod_count>997</sys_mod_count>
         <sys_name>[crs] KD Search</sys_name>
         <sys_package display_value="CRS Knowledge Database" source="x_26385_crs_kd">404e613b4f9213007221e321a310c738</sys_package>
         <sys_policy/>
@@ -708,7 +712,7 @@
         <sys_scope display_value="CRS Knowledge Database">404e613b4f9213007221e321a310c738</sys_scope>
         <sys_update_name>sp_widget_cf120a374fd213007221e321a310c724</sys_update_name>
         <sys_updated_by>yuw5@nih.gov</sys_updated_by>
-        <sys_updated_on>2018-12-04 22:12:38</sys_updated_on>
+        <sys_updated_on>2018-12-14 22:18:35</sys_updated_on>
         <template><![CDATA[<div class="container">
   <div class="row">
         <div class="col-md-3">
@@ -922,31 +926,25 @@
                           </uib-accordion-heading>
                           <ul class="list-group">
                             <li class="list-group-item item-row" ng-repeat="result in tab.list" ng-show="$index >= (c.data.bigCurrentPage[tab.name] -1) * c.data.pageSize[tab.name] && $index < c.data.bigCurrentPage[tab.name] * c.data.pageSize[tab.name]">
-                              <input type="checkbox" ng-model="cb_checkbox" ng-change="c.change(cb_checkbox)" class="checkbox content-checkbox" id="cb_{{result.sys_id}}" name="selections" value="{{result.sys_id}},{{result.kb_knowledge_base}},{{result.kb_category}}" >
-                              <i class="glyphicon glyphicon-file"></i>
-
-                              <!--
-																	<a class="kb-title" ng-click="c.showContent(result.template,result.sys_id)" >{{result.short_description}}</a>
-															-->
-															<a class="kb-title ng-binding" ng-click="c.gotoDetail(result.sys_id, result.template, tab.name)" role="link">{{result.title}}</a>
-                              <br>
-                              <div class="kb-ref">
-                                <span>{{result.kb_knowledge_base}} > {{result.kb_category}}</span>
+                              <div class="checkbox-side">
+                                <input type="checkbox" ng-model="cb_checkbox" ng-change="c.change(cb_checkbox)" class="checkbox content-checkbox" id="cb_{{result.sys_id}}" name="selections" value="{{result.sys_id}},{{result.kb_knowledge_base}},{{result.kb_category}}" >
                               </div>
-                              <div class="kb-about">
-
-                                Author: {{result.author}}
-                                <span class="dot-divider" aria-hidden="true"> • </span>
-                                Fiscal Year: {{result.fYear.substring(1, 5)}}
+                              <div class="content-side">
+                                <i class="glyphicon glyphicon-file"></i>
+                                <a class="kb-title ng-binding" ng-click="c.gotoDetail(result.sys_id, result.template, tab.name)" role="link">{{result.title}}</a>
+                                <br>
                                 <!--
-																{{result.sys_view_count}} Views
-                                <span class="dot" aria-hidden="true"> • </span>
-                                Updated: <sn-time-ago timestamp="::result.sys_updated_on"/>
-                                <span class="dot" aria-hidden="true"> • </span>
-                                Published: <sn-time-ago timestamp="::result.published"/>
-																-->
-
+                                <div class="kb-ref">
+                                  <span>{{result.kb_knowledge_base}} > {{result.kb_category}}</span>
+                                </div>
+                                -->
+                                <div class="kb-about">
+                                  Author: {{result.author}}
+                                  <span class="dot-divider" aria-hidden="true"> • </span>
+                                  Fiscal Year: {{result.fYear.substring(1, 5)}}
+                                </div>
                               </div>
+                              
                             </li>
                           </ul>
                           <div class="tab-paging-section">

@@ -113,6 +113,34 @@
             <sys_user/>
             <type/>
         </sys_ui_element>
+        <sys_ui_element action="INSERT_OR_UPDATE">
+            <element>x_26385_crs_kd_u_kb_cancer_site_type</element>
+            <position>8</position>
+            <sys_created_by>yuw5@nih.gov</sys_created_by>
+            <sys_created_on>2018-12-11 16:41:50</sys_created_on>
+            <sys_id>4071d7b9dbdeeb0054d8ff621f96192a</sys_id>
+            <sys_mod_count>0</sys_mod_count>
+            <sys_ui_formatter/>
+            <sys_ui_section caption="NULL" display_value="" name="u_kb_template_miscellaneous" sys_domain="global" view="Default view">d09fdf7fdbc92f40b86770c08c9619fc</sys_ui_section>
+            <sys_updated_by>yuw5@nih.gov</sys_updated_by>
+            <sys_updated_on>2018-12-11 16:41:50</sys_updated_on>
+            <sys_user/>
+            <type/>
+        </sys_ui_element>
+        <sys_ui_element action="INSERT_OR_UPDATE">
+            <element>x_26385_crs_kd_u_kb_tags</element>
+            <position>9</position>
+            <sys_created_by>yuw5@nih.gov</sys_created_by>
+            <sys_created_on>2018-12-11 16:50:58</sys_created_on>
+            <sys_id>f183533ddbdeeb0054d8ff621f961962</sys_id>
+            <sys_mod_count>0</sys_mod_count>
+            <sys_ui_formatter/>
+            <sys_ui_section caption="NULL" display_value="" name="u_kb_template_miscellaneous" sys_domain="global" view="Default view">d09fdf7fdbc92f40b86770c08c9619fc</sys_ui_section>
+            <sys_updated_by>yuw5@nih.gov</sys_updated_by>
+            <sys_updated_on>2018-12-11 16:50:58</sys_updated_on>
+            <sys_user/>
+            <type/>
+        </sys_ui_element>
         <sys_ui_section action="INSERT_OR_UPDATE">
             <caption/>
             <header>false</header>

@@ -10,10 +10,9 @@
         <name>getDocumentById</name>
         <operation_script><![CDATA[(function process(/*RESTAPIRequest*/ request, /*RESTAPIResponse*/ response) {
 	var template = {"u_kb_template_top_accomplishment":['Title','Cancer Site/Type','Research Type','Special Topic','Description','References','Involved organization', 'DOC', 'Fiscal Year'],
-					 "u_kb_template_collaboration_report":['Title','Type','NIH Partners','Federal Partners','Description'],
-					 "u_kb_template_significant_item": ['Title','Cancer Site/Type', 'Congressional Language','Background','Recent Accomplishments','New Opportunities'],
-					 "u_kb_template_triennial_report": ['Title','Background','Methods','Results', 'Conclusions'],
-					 "u_kb_template_gpra": ['Title','Measure ID','Research Type','Special Topic','DOC','Contacts','Description','Summary','Background','Target Context and Conditions', 'Fiscal Year']
+					 "u_kb_template_miscellaneous": ['Title','Cancer Site/Type', 'Research Type','Description','Special Topic','Fiscal Year'],
+					 "u_kb_template_gpra": ['Title','Measure ID','Research Type','Special Topic','DOC','Contacts','Description',
+											'Summary','Background','Target Context and Conditions', 'Fiscal Year']
 				   };
 	
 	var data_columns = {
@@ -28,27 +27,13 @@
                                 "Research Type":"x_26385_crs_kd_u_kb_research_type",
 					            "Special Topic":"x_26385_crs_kd_u_kb_special_topic"
                 },
-                "u_kb_template_collaboration_report":{
-                                "Title":"title",
-                                "Description":"u_kb_description",
-                                "Federal Partners":"u_kb_federal_partners",
-                                "NIH Partners":"u_kb_nih_partners",
-                                "Type":"u_kb_type"
-                },
-                "u_kb_template_significant_item":{
-                                "Title":"title",
-                                "Cancer Site/Type":"u_kb_cancer_site_type",
-                                "Background":"u_kb_background",
-                                "Congressional Language":"u_kb_congressional_language",
-                                "New Opportunities":"u_kb_new_opportunities",
-                                "Recent Accomplishments":"u_kb_recent_accomplishments"
-                },
-                "u_kb_template_triennial_report":{
-                                "Title":"title",
-                                "Background":"u_kb_background",
-                                "Conclusions":"u_kb_conclusions",
-                                "Methods":"u_kb_methods",
-                                "Results":"u_kb_results"
+                "u_kb_template_miscellaneous":{
+                                "Title":"x_26385_crs_kd_u_kb_title",
+								"Cancer Site/Type":"x_26385_crs_kd_u_kb_cancer_site_type", 
+								"Research Type":"x_26385_crs_kd_u_kb_research_type",
+					            "Special Topic":"x_26385_crs_kd_u_kb_special_topic",            
+								"Description":"x_26385_crs_kd_u_kb_description",
+                                "Fiscal Year":"x_26385_crs_kd_u_kb_fiscal_year"
                 },
 		        "u_kb_template_gpra":{
                                 "Title":"x_26385_crs_kd_u_kb_title",
@@ -107,17 +92,29 @@
 	result.comments = comments;
 	result.tags = item.x_26385_crs_kd_u_kb_tags.toString();
 	
+	var deletedAttachments = [];
+	var da = new GlideRecord('x_26385_crs_kd_deleted_attachments');
+	da.addQuery("table_sys_id", document_id);
+	da.query();
+	while(da.next()){
+		deletedAttachments.push(da.attachment_sys_id.toString());
+	}
+	
 	//get attachments
 	result.attachments = [];
 	var gr = new GlideRecord('sys_attachment');
 	  gr.addQuery("table_sys_id", document_id);
 	  gr.addQuery('content_type','STARTSWITH','application/');
+	  if(deletedAttachments.length > 0){
+		  gr.addQuery('sys_id','NOT IN',deletedAttachments.join(','));
+	  }
 	  gr.query();
 	  while (gr.next()){
 		var tmp = {};
 		tmp.attach_sys_id = gr.sys_id.toString();
 		tmp.file_name = gr.file_name.toString();
 		tmp.file_type = gr.content_type.toString();
+		tmp.created_by = gr.sys_created_by.toString();
 		result.attachments.push(tmp);
 	}
   
@@ -136,7 +133,7 @@
         <sys_created_on>2018-06-26 20:52:59</sys_created_on>
         <sys_customer_update>false</sys_customer_update>
         <sys_id>d3bf36f3dbfa57009b0a74131f961981</sys_id>
-        <sys_mod_count>26</sys_mod_count>
+        <sys_mod_count>30</sys_mod_count>
         <sys_name>getDocumentById</sys_name>
         <sys_package display_value="CRS Knowledge Database" source="x_26385_crs_kd">404e613b4f9213007221e321a310c738</sys_package>
         <sys_policy/>
@@ -144,7 +141,7 @@
         <sys_scope display_value="CRS Knowledge Database">404e613b4f9213007221e321a310c738</sys_scope>
         <sys_update_name>sys_ws_operation_d3bf36f3dbfa57009b0a74131f961981</sys_update_name>
         <sys_updated_by>yuw5@nih.gov</sys_updated_by>
-        <sys_updated_on>2018-11-27 18:56:36</sys_updated_on>
+        <sys_updated_on>2018-12-12 19:54:35</sys_updated_on>
         <web_service_definition display_value="export">01e1bbe7db6a53005358dc50cf961994</web_service_definition>
         <web_service_version/>
     </sys_ws_operation>

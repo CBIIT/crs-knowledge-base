@@ -26,6 +26,13 @@
 									 'Summary',
 									 'Background',
 									 'Target Context and Conditions', 
+									 'Fiscal Year'],
+									"u_kb_template_miscellaneous": 
+									[
+									 'Cancer Site/Type',
+									 'Research Type',
+									 'Description', 
+									 'Special Topic',
 									 'Fiscal Year']
 				   };
 	c.knowledge_id = s.kb_knowledge_base;
@@ -35,7 +42,8 @@
 	c.file2upload = '';
 	c.isSu = c.data.isSuperuser;
 	c.currentUserID = c.data.info.userID;
-	console.log(c.currentUserID);
+	c.currentUserName = c.data.info.userName;
+	//console.log(c.data.info);
 	var sessionId = c.data.info.sessionId;
 	var data = {};
 	var columns = [];
@@ -329,11 +337,13 @@
         <roles/>
         <script><![CDATA[(function() {
   var session_id = gs.getSession().getSessionToken();
+	var userName= gs.getUserName();
 	var userID = gs.getUserID();
 	data.isSuperuser = gs.getUser().isMemberOf('NERD Superuser');
 	data.info = {
 		sessionId: session_id,
-		userID: userID
+		userID: userID,
+		userName: userName
 	};
 
 })();]]></script>
@@ -343,7 +353,7 @@
         <sys_created_on>2018-10-17 20:16:40</sys_created_on>
         <sys_customer_update>false</sys_customer_update>
         <sys_id>ae23f05cdb592300b86770c08c961938</sys_id>
-        <sys_mod_count>252</sys_mod_count>
+        <sys_mod_count>260</sys_mod_count>
         <sys_name>[crs] KD Article</sys_name>
         <sys_package display_value="CRS Knowledge Database" source="x_26385_crs_kd">404e613b4f9213007221e321a310c738</sys_package>
         <sys_policy/>
@@ -351,7 +361,7 @@
         <sys_scope display_value="CRS Knowledge Database">404e613b4f9213007221e321a310c738</sys_scope>
         <sys_update_name>sp_widget_ae23f05cdb592300b86770c08c961938</sys_update_name>
         <sys_updated_by>yuw5@nih.gov</sys_updated_by>
-        <sys_updated_on>2018-11-27 19:36:29</sys_updated_on>
+        <sys_updated_on>2018-12-12 20:00:57</sys_updated_on>
         <template><![CDATA[<div id="crs-article">
   <div class="container">
     <div class="row row-space">
@@ -434,7 +444,7 @@
                 <i class="fa fa-file-pdf-o" aria-hidden="true"></i> {{attach.file_name}}</a>
               <a ng-if="attach.file_type == 'application/vnd.ms-powerpoint' || attach.file_type == 'application/vnd.openxmlformats-officedocument.presentationml.presentation'" target="_blank" href="sys_attachment.do?view=true&sys_id={{attach.attach_sys_id}}">
                 <i class="fa fa-file-powerpoint-o" aria-hidden="true"></i> {{attach.file_name}}</a>
-              <a class="btn-remove" ng-click="c.removeAttachment(attach.attach_sys_id)" role="link" ng-show="c.isSu">×</a>
+              <a class="btn-remove" ng-click="c.removeAttachment(attach.attach_sys_id)" role="link" ng-show="c.isSu || attach.created_by == c.currentUserName">×</a>
             </div>
           </div>
         </div>
