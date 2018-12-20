@@ -25,7 +25,7 @@
         <sys_created_on>2018-11-30 23:37:32</sys_created_on>
         <sys_customer_update>false</sys_customer_update>
         <sys_id>da17002edb4aa30054d8ff621f9619e3</sys_id>
-        <sys_mod_count>22</sys_mod_count>
+        <sys_mod_count>23</sys_mod_count>
         <sys_name>[crs] KD FAQs</sys_name>
         <sys_package display_value="CRS Knowledge Database" source="x_26385_crs_kd">404e613b4f9213007221e321a310c738</sys_package>
         <sys_policy/>
@@ -33,7 +33,7 @@
         <sys_scope display_value="CRS Knowledge Database">404e613b4f9213007221e321a310c738</sys_scope>
         <sys_update_name>sp_widget_da17002edb4aa30054d8ff621f9619e3</sys_update_name>
         <sys_updated_by>yuw5@nih.gov</sys_updated_by>
-        <sys_updated_on>2018-12-01 00:12:14</sys_updated_on>
+        <sys_updated_on>2018-12-20 21:44:17</sys_updated_on>
         <template><![CDATA[<div id="crs-article">
   <div class="container">
     <div class="row row-space">
@@ -58,7 +58,7 @@
                     Why is the information limited to specific sources? <i class="pull-right" ng-class="{'fa fa-minus-square': tab2.isOpen, 'fa fa-plus-square': !tab2.isOpen}"></i>
                   </div>
                 </uib-accordion-heading>
-                Answer: We’re in the process of building NERD and will consider adding additional information on a case-by-case basis. Please contact ######### if you think additional information should be in NERD.
+                Answer: We’re in the process of building NERD and will consider adding additional information on a case-by-case basis. Please contact <a href="mailto:NCINERDWebAdmin@mail.nih.gov ?subject=NERD Contact Us">NCINERDWebAdmin@mail.nih.gov</a> if you think additional information should be in NERD.
               </div>
             </uib-accordion>
             <uib-accordion close-others="false">
@@ -68,7 +68,7 @@
                     Can I add content? <i class="pull-right" ng-class="{'fa fa-minus-square': tab3.isOpen, 'fa fa-plus-square': !tab3.isOpen}"></i>
                   </div>
                 </uib-accordion-heading>
-                Answer: Not at this time. Please contact ######### if you have information that you think should be in NERD.
+                Answer: Not at this time. Please contact <a href="mailto:NCINERDWebAdmin@mail.nih.gov ?subject=NERD Contact Us">NCINERDWebAdmin@mail.nih.gov</a> if you have information that you think should be in NERD.
               </div>
             </uib-accordion>
             <uib-accordion close-others="false">
@@ -78,7 +78,7 @@
                     What if I have edits to a specific entry? <i class="pull-right" ng-class="{'fa fa-minus-square': tab4.isOpen, 'fa fa-plus-square': !tab4.isOpen}"></i>
                   </div>
                 </uib-accordion-heading>
-                Answer: Please send your edits to #########. Please use “NERD edits” in your email subject line.
+                Answer: Please send your edits to <a href="mailto:NCINERDWebAdmin@mail.nih.gov ?subject=NERD edits">NCINERDWebAdmin@mail.nih.gov</a>. Please use “NERD edits” in your email subject line.
               </div>
             </uib-accordion>
             <uib-accordion close-others="false">
@@ -88,7 +88,7 @@
                     I have more questions. Who can I contact? <i class="pull-right" ng-class="{'fa fa-minus-square': tab5.isOpen, 'fa fa-plus-square': !tab5.isOpen}"></i>
                   </div>
                 </uib-accordion-heading>
-                Answer: Please contact #########.
+                Answer: Please contact <a href="mailto:NCINERDWebAdmin@mail.nih.gov ?subject=NERD Contact Us">NCINERDWebAdmin@mail.nih.gov</a> .
               </div>
             </uib-accordion>
             <uib-accordion close-others="false">
@@ -98,7 +98,7 @@
                     Who has access to NERD? <i class="pull-right" ng-class="{'fa fa-minus-square': tab6.isOpen, 'fa fa-plus-square': !tab6.isOpen}"></i>
                   </div>
                 </uib-accordion-heading>
-                Answer: Select individuals from OD offices and centers can search NERD. CRS is managing entry input in the initial phase. Please contact ######### for help.
+                Answer: Select individuals from OD offices and centers can search NERD. CRS is managing entry input in the initial phase. Please contact <a href="mailto:NCINERDWebAdmin@mail.nih.gov ?subject=NERD Contact Us">NCINERDWebAdmin@mail.nih.gov</a> for help.
               </div>
             </uib-accordion>
             <uib-accordion close-others="false">
