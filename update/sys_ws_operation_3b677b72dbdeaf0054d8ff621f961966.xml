@@ -62,12 +62,80 @@ var data = request.body.data;
 
 		while (gr.next()) {
 			dt[gr.sys_id] = {};
-			dt[gr.sys_id].title = gr.x_26385_crs_kd_u_kb_title.toString();
+			dt[gr.sys_id].Title = gr.x_26385_crs_kd_u_kb_title.toString();
 			//dt[gr.sys_id].published = gr.published.toString();
-			dt[gr.sys_id].database = gr.getDisplayValue('kb_knowledge_base');
-			dt[gr.sys_id].category = gr.getDisplayValue('kb_category');
-			dt[gr.sys_id].x_26385_crs_kd_u_kb_research_type = gr.x_26385_crs_kd_u_kb_research_type.toString().replace(/{/g, '').replace(/}/g, '');
-			dt[gr.sys_id].x_26385_crs_kd_u_kb_fiscal_year = gr.x_26385_crs_kd_u_kb_fiscal_year.toString().replace(/{/g, '').replace(/}/g, '');
+			dt[gr.sys_id].Database = gr.getDisplayValue('kb_knowledge_base');
+			dt[gr.sys_id].Category = gr.getDisplayValue('kb_category');
+			
+			if(s["Cancer Site/Type"]){
+				dt[gr.sys_id]["Cancer Site/Type"] = gr.x_26385_crs_kd_u_kb_cancer_site_type.toString().replace(/{/g, '').replace(/}/g, '');
+			}
+			else{
+				dt[gr.sys_id]["Cancer Site/Type"] = "";
+			}
+			dt[gr.sys_id]["Research Type"] = gr.x_26385_crs_kd_u_kb_research_type.toString().replace(/{/g, '').replace(/}/g, '');
+			if(s["Special Topic"]){
+				dt[gr.sys_id]["Special Topic"] = gr.x_26385_crs_kd_u_kb_special_topic.toString().replace(/{/g, '').replace(/}/g, '');
+			}
+			else{
+				dt[gr.sys_id]["Special Topic"] = "";
+			}
+			if(s["DOC"]){
+				dt[gr.sys_id]["DOC"] = gr.x_26385_crs_kd_u_kb_doc.toString().replace(/{/g, '').replace(/}/g, '');
+			}
+			else{
+				dt[gr.sys_id]["DOC"] = "";
+			}
+			dt[gr.sys_id]["Fiscal Year"] = gr.x_26385_crs_kd_u_kb_fiscal_year.toString().replace(/{/g, '').replace(/}/g, '');
+			if(s["Description"]){
+				dt[gr.sys_id]["Description"] = gr.x_26385_crs_kd_u_kb_description.toString();
+			}
+			else{
+				dt[gr.sys_id]["Description"] = "";
+			}
+			if(s["References"]){
+				dt[gr.sys_id]["References"] = gr.x_26385_crs_kd_u_kb_references.toString();
+			}
+			else{
+				dt[gr.sys_id]["References"] = "";
+			}
+			if(s["Involved organization"]){
+				dt[gr.sys_id]["Involved organization"] = gr.x_26385_crs_kd_u_kb_involved_organization.toString();
+			}
+			else{
+				dt[gr.sys_id]["Involved organization"] = "";
+			}
+			if(s["Measure ID"]){
+				dt[gr.sys_id]["Measure ID"] = gr.x_26385_crs_kd_u_kb_measure_id.toString();
+			}
+			else{
+				dt[gr.sys_id]["Measure ID"] = "";
+			}
+			if(s["Contacts"]){
+				dt[gr.sys_id]["Contacts"] = gr.x_26385_crs_kd_u_kb_contacts.toString();
+			}
+			else{
+				dt[gr.sys_id]["Contacts"] = "";
+			}
+			
+			if(s["Summary"]){
+				dt[gr.sys_id]["Summary"] = gr.x_26385_crs_kd_u_kb_summary.toString();
+			}
+			else{
+				dt[gr.sys_id]["Summary"] = "";
+			}
+			if(s["Background"]){
+				dt[gr.sys_id]["Background"] = gr.x_26385_crs_kd_u_kb_background.toString();
+			}
+			else{
+				dt[gr.sys_id]["Background"] = "";
+			}
+			if(s["Target Context and Conditions"]){
+				dt[gr.sys_id]["Target Context and Conditions"] = gr.x_26385_crs_kd_u_kb_target_context_and_conditions.toString();
+			}
+			else{
+				dt[gr.sys_id]["Target Context and Conditions"] = "";
+			}
 		}
 	}
 	files.forEach(function(fs){
@@ -89,7 +157,7 @@ var data = request.body.data;
         <sys_created_on>2018-12-14 22:08:53</sys_created_on>
         <sys_customer_update>false</sys_customer_update>
         <sys_id>3b677b72dbdeaf0054d8ff621f961966</sys_id>
-        <sys_mod_count>2</sys_mod_count>
+        <sys_mod_count>4</sys_mod_count>
         <sys_name>save2Excel</sys_name>
         <sys_package display_value="CRS Knowledge Database" source="x_26385_crs_kd">404e613b4f9213007221e321a310c738</sys_package>
         <sys_policy/>
@@ -97,7 +165,7 @@ var data = request.body.data;
         <sys_scope display_value="CRS Knowledge Database">404e613b4f9213007221e321a310c738</sys_scope>
         <sys_update_name>sys_ws_operation_3b677b72dbdeaf0054d8ff621f961966</sys_update_name>
         <sys_updated_by>yuw5@nih.gov</sys_updated_by>
-        <sys_updated_on>2018-12-14 22:18:57</sys_updated_on>
+        <sys_updated_on>2018-12-26 16:43:05</sys_updated_on>
         <web_service_definition display_value="export">01e1bbe7db6a53005358dc50cf961994</web_service_definition>
         <web_service_version/>
     </sys_ws_operation>

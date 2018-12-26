@@ -387,15 +387,45 @@
 		$http(req).then(function(resp){
 			var content = resp.data.result.content;
 			var data = [];
+			var div = document.createElement("div");
 			content.forEach(function(ct){
-					var tmp = {};
+					//var tmp = {};
 					//tmp["Date entered"] = ct.published;
-					tmp.Database = ct.database;
-					tmp.Category = ct.category;
-					tmp.Title = ct.title;
-					tmp["Research Type"] = ct.x_26385_crs_kd_u_kb_research_type;
-					tmp["Fiscal Year"] = ct.x_26385_crs_kd_u_kb_fiscal_year;
-					data.push(tmp);
+					//tmp.Database = ct.database;
+					//tmp.Category = ct.category;
+					//tmp.Title = ct.title;
+					//tmp["Research Type"] = ct.x_26385_crs_kd_u_kb_research_type;
+					//tmp["Fiscal Year"] = ct.x_26385_crs_kd_u_kb_fiscal_year;
+				if(ct["Description"] !== ""){
+					div.innerHTML = ct["Description"];
+					ct["Description"] = div.textContent || div.innerText || "";
+				}
+
+				if(ct["References"] !== ""){
+					div.innerHTML = ct["References"];
+					ct["References"] = div.textContent || div.innerText || "";
+				}
+
+				if(ct["Involved organization"] !== ""){
+					div.innerHTML = ct["Involved organization"];
+					ct["Involved organization"] = div.textContent || div.innerText || "";
+				}
+
+				if(ct["Summary"] !== ""){
+					div.innerHTML = ct["Summary"];
+					ct["Summary"] = div.textContent || div.innerText || "";
+				}
+
+				if(ct["Background"] !== ""){
+					div.innerHTML = ct["Background"];
+					ct["Background"] = div.textContent || div.innerText || "";
+				}
+
+				if(ct["Target Context and Conditions"] !== ""){
+					div.innerHTML = ct["Target Context and Conditions"];
+					ct["Target Context and Conditions"] = div.textContent || div.innerText || "";
+				}
+				data.push(ct);
 			});
 			
 			/* generate a worksheet */
@@ -452,7 +482,10 @@
 			var content = resp.data.result.content;
 			var dt = '';
 			content.forEach(function(ct){
+				console.log(ct);
 					dt += '<h1 style="text-align:center;">'+ct.title+'</h1>';
+					dt += '<h3>Category:</h3>';
+					dt += '<p>'+ct.category+'</p>';
 				  for(var key in ct){
 						if(key != 'title'){
 							dt += '<h3>'+key+':</h3>';
@@ -644,7 +677,7 @@
 				for(k in filters){
 					var v = articleResult[filters[k]];
 					if(v != ''){
-						if(k == 'doc'){
+						if(k == 'researchType' || k == 'doc'){
 							v.split(",").forEach(function(elem){
 								var idx = elem.indexOf('-');
 								if(idx == -1){
@@ -704,7 +737,7 @@
         <sys_created_on>2018-06-01 19:53:54</sys_created_on>
         <sys_customer_update>false</sys_customer_update>
         <sys_id>cf120a374fd213007221e321a310c724</sys_id>
-        <sys_mod_count>997</sys_mod_count>
+        <sys_mod_count>1004</sys_mod_count>
         <sys_name>[crs] KD Search</sys_name>
         <sys_package display_value="CRS Knowledge Database" source="x_26385_crs_kd">404e613b4f9213007221e321a310c738</sys_package>
         <sys_policy/>
@@ -712,7 +745,7 @@
         <sys_scope display_value="CRS Knowledge Database">404e613b4f9213007221e321a310c738</sys_scope>
         <sys_update_name>sp_widget_cf120a374fd213007221e321a310c724</sys_update_name>
         <sys_updated_by>yuw5@nih.gov</sys_updated_by>
-        <sys_updated_on>2018-12-14 22:18:35</sys_updated_on>
+        <sys_updated_on>2018-12-26 17:18:01</sys_updated_on>
         <template><![CDATA[<div class="container">
   <div class="row">
         <div class="col-md-3">
