@@ -2,7 +2,7 @@
 <record_update table="sp_widget">
     <sp_widget action="INSERT_OR_UPDATE">
         <category>custom</category>
-        <client_script><![CDATA[function($scope,$sce, $location, NERDSearchBasicArticleByID, NERDComment, NERDTag, NERDFile) {
+        <client_script><![CDATA[function($scope,$rootScope, $sce, $location, NERDSearchBasicArticleByID, NERDComment, NERDTag, NERDFile) {
   /* widget controller */
   var c = this;
 	var s = $location.search();
@@ -38,6 +38,7 @@
 									 'Fiscal Year']
 				   };
 	c.knowledge_id = s.kb_knowledge_base;
+	c.cat = s.cat;
 	c.hasFilter = s.hasFilter;
 	c.upload_status = "upload";
 	c.errorMessage = false;
@@ -343,7 +344,28 @@
 	
 	c.trustAsHtml = function(string) {
     return $sce.trustAsHtml(string);
-};
+  };
+	
+	if(c.hasFilter == '1'){
+	  if(s.f1 && s.f1 !== ""){
+			$rootScope.searchString = s.f1.split('|');
+		}
+		if(s.f2 && s.f2 !== ""){
+			$rootScope.selectedYear = s.f2.split('|');
+		}
+		if(s.f3 && s.f3 !== ""){
+			$rootScope.selectedDoc = s.f3.split('|');
+		}
+		if(s.f4 && s.f4 !== ""){
+			$rootScope.selectedCancerSite = s.f4.split('|');
+		}
+		if(s.f5 && s.f5 !== ""){
+			$rootScope.selectedResearchType = s.f5.split('|');
+		}
+		if(s.f6 && s.f6 !== ""){
+			$rootScope.selectedSpecialTopic = s.f6.split('|');
+		}
+	}
 	
 }]]></client_script>
         <controller_as>c</controller_as>
@@ -379,7 +401,7 @@
         <sys_created_on>2018-10-17 20:16:40</sys_created_on>
         <sys_customer_update>false</sys_customer_update>
         <sys_id>ae23f05cdb592300b86770c08c961938</sys_id>
-        <sys_mod_count>273</sys_mod_count>
+        <sys_mod_count>288</sys_mod_count>
         <sys_name>[crs] KD Article</sys_name>
         <sys_package display_value="CRS Knowledge Database" source="x_26385_crs_kd">404e613b4f9213007221e321a310c738</sys_package>
         <sys_policy/>
@@ -387,7 +409,7 @@
         <sys_scope display_value="CRS Knowledge Database">404e613b4f9213007221e321a310c738</sys_scope>
         <sys_update_name>sp_widget_ae23f05cdb592300b86770c08c961938</sys_update_name>
         <sys_updated_by>yuw5@nih.gov</sys_updated_by>
-        <sys_updated_on>2018-12-26 20:21:50</sys_updated_on>
+        <sys_updated_on>2019-01-29 22:44:55</sys_updated_on>
         <template><![CDATA[<div id="crs-article">
   <div class="container">
     <div class="row row-space">
@@ -401,8 +423,12 @@
                 <h4  class="modal-title">{{title}}</h4>
             </div>      
             <div class="block-body">
+              <div>
+                <h4 style="font-weight:bold;">Category</h4> 
+                <div style="font-size:14px;">{{c.cat}}</div> 
+              </div> 
               <div ng-repeat="item in columns track by $index">
-                <h4>{{item}}</h4> 
+                <h4 style="font-weight:bold;">{{item}}</h4> 
                 <div ng-bind-html="c.trustAsHtml(data[item])" style="font-size:14px;"></div> 
               </div> 
             </div>
@@ -480,7 +506,7 @@
     <div class="row row-space">
       <div class="col-md-9 feedback-block">
         <div class="comment-header">
-          <h4>Provide Feedback</h4>
+          <h4>Comments</h4>
         </div>      
         <div class="comment-body">
           <div class="comment-submit">

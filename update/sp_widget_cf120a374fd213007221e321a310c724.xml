@@ -79,30 +79,31 @@
 	
 	c.gotoDetail = function(sys_id,template_id, cat){
 		var hasFilter = false;
+		var criteria = "";
 		//save searchCriteria to global scope
 		if(c.data.searchString && c.data.searchString !== ""){
 			hasFilter = true;
-			$rootScope.searchString = c.data.searchString;
+			criteria += "&f1="+c.data.searchString;
 		}
 		if(c.data.selectedYear.length > 0){
 			hasFilter = true;
-			$rootScope.selectedYear = c.data.selectedYear;
+			criteria += "&f2="+c.data.selectedYear.join('|');
 		}
 		if(c.data.selectedDoc.length > 0){
 			hasFilter = true;
-			$rootScope.selectedDoc = c.data.selectedDoc;
+			criteria += "&f3="+c.data.selectedDoc.join('|');
 		}
 		if(c.data.selectedCancerSite.length > 0){
 			hasFilter = true;
-			$rootScope.selectedCancerSite = c.data.selectedCancerSite;
+			criteria += "&f4="+c.data.selectedCancerSite.join('|');
 		}
 		if(c.data.selectedResearchType.length > 0){
 			hasFilter = true;
-			$rootScope.selectedResearchType = c.data.selectedResearchType;
+			criteria += "&f5="+c.data.selectedResearchType.join('|');
 		}
 		if(c.data.selectedSpecialTopic.length > 0){
 			hasFilter = true;
-			$rootScope.selectedSpecialTopic = c.data.selectedSpecialTopic;
+			criteria += "&f6="+c.data.selectedSpecialTopic.join('|');
 		}
 		//redirect to detail page
 		s.xpage = 'kd_article';
@@ -110,8 +111,12 @@
 		s.cat = cat;
 		s.tid = template_id;
 		s.hasFilter = hasFilter?'1':'0';
-		$location.search(s).replace();
-		//ng-href="crs_kd?xpage=kd_article&aid={{result.sys_id}}&tid={{result.template}}";
+		//$location.search(s).replace();
+		var url = '/nerd?xpage=kd_article&aid='+s.aid+'&cat='+s.cat+'&tid='+s.tid+'&hasFilter='+s.hasFilter;
+		if(s.hasFilter == '1'){
+			url += criteria; 
+		}
+		window.open(url, '_blank');
 	}
 	
 	c.updateFilter = function(cat){
@@ -736,7 +741,7 @@
         <sys_created_on>2018-06-01 19:53:54</sys_created_on>
         <sys_customer_update>false</sys_customer_update>
         <sys_id>cf120a374fd213007221e321a310c724</sys_id>
-        <sys_mod_count>1006</sys_mod_count>
+        <sys_mod_count>1015</sys_mod_count>
         <sys_name>[crs] KD Search</sys_name>
         <sys_package display_value="CRS Knowledge Database" source="x_26385_crs_kd">404e613b4f9213007221e321a310c738</sys_package>
         <sys_policy/>
@@ -744,7 +749,7 @@
         <sys_scope display_value="CRS Knowledge Database">404e613b4f9213007221e321a310c738</sys_scope>
         <sys_update_name>sp_widget_cf120a374fd213007221e321a310c724</sys_update_name>
         <sys_updated_by>yuw5@nih.gov</sys_updated_by>
-        <sys_updated_on>2018-12-26 17:52:30</sys_updated_on>
+        <sys_updated_on>2019-01-29 22:48:24</sys_updated_on>
         <template><![CDATA[<div class="container">
   <div class="row">
         <div class="col-md-3">
