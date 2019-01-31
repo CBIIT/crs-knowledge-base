@@ -520,8 +520,12 @@
 	c.data.researchType = [];
 	cache = c.data.tmp.researchType;
 	cache.sort();
+	var toDisplay = ['{Basic}','{Translational}','{Clinical}','{Epidemiological}'];
 	cache.forEach(function(elem){
-		c.data.researchType.push({id: elem, name: elem.substring(1, elem.length -1), count: c.data.count.researchType[elem]});
+		//c.data.researchType.push({id: elem, name: elem.substring(1, elem.length -1), count: c.data.count.researchType[elem]});
+		if(toDisplay.indexOf(elem) > -1){
+			c.data.researchType.push({id: elem, name: elem.substring(1, elem.length -1), count: c.data.count.researchType[elem]});
+		}
 	});
 	c.data.specialTopic = [];
 	cache = c.data.tmp.specialTopic;
@@ -741,7 +745,7 @@
         <sys_created_on>2018-06-01 19:53:54</sys_created_on>
         <sys_customer_update>false</sys_customer_update>
         <sys_id>cf120a374fd213007221e321a310c724</sys_id>
-        <sys_mod_count>1015</sys_mod_count>
+        <sys_mod_count>1017</sys_mod_count>
         <sys_name>[crs] KD Search</sys_name>
         <sys_package display_value="CRS Knowledge Database" source="x_26385_crs_kd">404e613b4f9213007221e321a310c738</sys_package>
         <sys_policy/>
@@ -749,7 +753,7 @@
         <sys_scope display_value="CRS Knowledge Database">404e613b4f9213007221e321a310c738</sys_scope>
         <sys_update_name>sp_widget_cf120a374fd213007221e321a310c724</sys_update_name>
         <sys_updated_by>yuw5@nih.gov</sys_updated_by>
-        <sys_updated_on>2019-01-29 22:48:24</sys_updated_on>
+        <sys_updated_on>2019-01-30 20:07:12</sys_updated_on>
         <template><![CDATA[<div class="container">
   <div class="row">
         <div class="col-md-3">
