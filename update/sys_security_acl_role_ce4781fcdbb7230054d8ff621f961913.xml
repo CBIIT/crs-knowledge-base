@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<record_update table="sys_security_acl_role">
+    <sys_security_acl_role action="INSERT_OR_UPDATE">
+        <sys_class_name>sys_security_acl_role</sys_class_name>
+        <sys_created_by>yuw5@nih.gov</sys_created_by>
+        <sys_created_on>2019-02-20 17:38:29</sys_created_on>
+        <sys_customer_update>false</sys_customer_update>
+        <sys_id>ce4781fcdbb7230054d8ff621f961913</sys_id>
+        <sys_mod_count>0</sys_mod_count>
+        <sys_name>u_kb_template_miscellaneous.snc_internal</sys_name>
+        <sys_package display_value="CRS Knowledge Database" source="x_26385_crs_kd">404e613b4f9213007221e321a310c738</sys_package>
+        <sys_policy/>
+        <sys_replace_on_upgrade>false</sys_replace_on_upgrade>
+        <sys_scope display_value="CRS Knowledge Database">404e613b4f9213007221e321a310c738</sys_scope>
+        <sys_security_acl display_value="u_kb_template_miscellaneous">574461e7db3a6300b86770c08c9619c3</sys_security_acl>
+        <sys_update_name>sys_security_acl_role_ce4781fcdbb7230054d8ff621f961913</sys_update_name>
+        <sys_updated_by>yuw5@nih.gov</sys_updated_by>
+        <sys_updated_on>2019-02-20 17:38:29</sys_updated_on>
+        <sys_user_role display_value="snc_internal" name="snc_internal">7fcaa702933002009c8579b4f47ffbde</sys_user_role>
+        <transaction_id>753789bcdbb7230054d8ff621f96196a</transaction_id>
+    </sys_security_acl_role>
+</record_update>

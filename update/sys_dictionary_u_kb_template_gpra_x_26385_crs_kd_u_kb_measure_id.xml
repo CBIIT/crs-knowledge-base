@@ -63,8 +63,8 @@
         <sys_replace_on_upgrade>false</sys_replace_on_upgrade>
         <sys_scope display_value="CRS Knowledge Database">404e613b4f9213007221e321a310c738</sys_scope>
         <sys_update_name>sys_dictionary_u_kb_template_gpra_x_26385_crs_kd_u_kb_measure_id</sys_update_name>
-        <sys_updated_by>system</sys_updated_by>
-        <sys_updated_on>2019-02-04 22:10:31</sys_updated_on>
+        <sys_updated_by>yuw5@nih.gov</sys_updated_by>
+        <sys_updated_on>2019-02-20 17:38:17</sys_updated_on>
         <table_reference>false</table_reference>
         <text_index>true</text_index>
         <u_model_id/>
