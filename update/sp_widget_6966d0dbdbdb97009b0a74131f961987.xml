@@ -42,14 +42,20 @@
         <option_schema/>
         <public>false</public>
         <roles/>
-        <script><![CDATA[(function() {  /* populate the 'data' object */  /* e.g., data.table = $sp.getValue('table'); */})();]]></script>
+        <script><![CDATA[(function() {  
+  var kb = new GlideRecord('kb_knowledge');
+	kb.addQuery('kb_knowledge_base','f5644dcadb54ab0054d8ff621f9619d7');
+	kb.query();
+
+	data.count = kb.getRowCount();
+})();]]></script>
         <servicenow>false</servicenow>
         <sys_class_name>sp_widget</sys_class_name>
         <sys_created_by>yuw5@nih.gov</sys_created_by>
         <sys_created_on>2018-07-19 15:47:10</sys_created_on>
         <sys_customer_update>false</sys_customer_update>
         <sys_id>6966d0dbdbdb97009b0a74131f961987</sys_id>
-        <sys_mod_count>41</sys_mod_count>
+        <sys_mod_count>42</sys_mod_count>
         <sys_name>[crs] KD Summary</sys_name>
         <sys_package display_value="CRS Knowledge Database" source="x_26385_crs_kd">404e613b4f9213007221e321a310c738</sys_package>
         <sys_policy/>
@@ -57,7 +63,7 @@
         <sys_scope display_value="CRS Knowledge Database">404e613b4f9213007221e321a310c738</sys_scope>
         <sys_update_name>sp_widget_6966d0dbdbdb97009b0a74131f961987</sys_update_name>
         <sys_updated_by>yuw5@nih.gov</sys_updated_by>
-        <sys_updated_on>2019-01-29 23:07:55</sys_updated_on>
+        <sys_updated_on>2019-02-06 18:42:42</sys_updated_on>
         <template><![CDATA[<div class="container">
   <div class="summary-box">
     <div class="kb-tile-block">
@@ -76,10 +82,10 @@
            </div> 
           </div> 
           <div class="kb-details"> 
-            <span title="Article" aria-label="614 Articles">
+            <span title="Article" aria-label="Articles">
               <span class="kb-summary">
                 <i class="fa fa-file-text" aria-hidden="true"></i>
-                <span class="kb-count ng-binding">614</span>
+                <span class="kb-count ng-binding">{{c.data.count}}</span>
               </span>
             </span>
           </div> 

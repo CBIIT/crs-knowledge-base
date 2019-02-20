@@ -43,9 +43,9 @@
 	c.upload_status = "upload";
 	c.errorMessage = false;
 	c.file2upload = '';
-	c.isSu = c.data.isSuperuser;
-	c.currentUserID = c.data.info.userID;
-	c.currentUserName = c.data.info.userName;
+	c.isSu = $rootScope.user.role.indexOf('su') > -1;
+	c.currentUserID = $rootScope.user.id;
+	c.currentUserName = $rootScope.user.name;
 	//console.log(c.data.info);
 	var sessionId = c.data.info.sessionId;
 	var data = {};
@@ -385,13 +385,8 @@
         <roles/>
         <script><![CDATA[(function() {
   var session_id = gs.getSession().getSessionToken();
-	var userName= gs.getUserName();
-	var userID = gs.getUserID();
-	data.isSuperuser = gs.getUser().isMemberOf('NERD Superuser');
 	data.info = {
-		sessionId: session_id,
-		userID: userID,
-		userName: userName
+		sessionId: session_id
 	};
 
 })();]]></script>
@@ -401,7 +396,7 @@
         <sys_created_on>2018-10-17 20:16:40</sys_created_on>
         <sys_customer_update>false</sys_customer_update>
         <sys_id>ae23f05cdb592300b86770c08c961938</sys_id>
-        <sys_mod_count>288</sys_mod_count>
+        <sys_mod_count>293</sys_mod_count>
         <sys_name>[crs] KD Article</sys_name>
         <sys_package display_value="CRS Knowledge Database" source="x_26385_crs_kd">404e613b4f9213007221e321a310c738</sys_package>
         <sys_policy/>
@@ -409,7 +404,7 @@
         <sys_scope display_value="CRS Knowledge Database">404e613b4f9213007221e321a310c738</sys_scope>
         <sys_update_name>sp_widget_ae23f05cdb592300b86770c08c961938</sys_update_name>
         <sys_updated_by>yuw5@nih.gov</sys_updated_by>
-        <sys_updated_on>2019-01-29 22:44:55</sys_updated_on>
+        <sys_updated_on>2019-02-05 21:55:04</sys_updated_on>
         <template><![CDATA[<div id="crs-article">
   <div class="container">
     <div class="row row-space">
@@ -432,7 +427,7 @@
                 <div ng-bind-html="c.trustAsHtml(data[item])" style="font-size:14px;"></div> 
               </div> 
             </div>
-            <div class="block-footer" ng-show="c.isSu">
+            <div class="block-footer">
               <div class="tag-label">
                 Tags:
               </div>
@@ -447,6 +442,7 @@
                 </tags-input>
               </div>
             </div>
+            <!--
             <div class="block-footer"  ng-show="!c.isSu && tags.length > 0">
               <div class="tag-label">
                 Tags:
@@ -457,6 +453,7 @@
                 </ul>
               </div>
             </div>
+            -->
           </div>
 
           <div class="col-md-2 attch-block" ng-show="attachments.length > 0">
