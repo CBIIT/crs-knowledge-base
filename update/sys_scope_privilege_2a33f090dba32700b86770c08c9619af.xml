@@ -19,7 +19,7 @@
         <sys_updated_by>yuw5@nih.gov</sys_updated_by>
         <sys_updated_on>2019-02-06 16:38:12</sys_updated_on>
         <target_name>x_naci_gcp_gcp_task</target_name>
-        <target_scope display_value="gcp">609215f9dbe35b00b86770c08c9619e2</target_scope>
+        <target_scope/>
         <target_type>sys_db_object</target_type>
     </sys_scope_privilege>
 </record_update>

@@ -14,14 +14,14 @@
         <sys_created_by>yuw5@nih.gov</sys_created_by>
         <sys_created_on>2018-10-16 19:29:43</sys_created_on>
         <sys_customer_update>false</sys_customer_update>
-        <sys_id>861c632bdb536300b86770c08c9619ec</sys_id>
+        <sys_id>5824f3abdbf7e74085b7fd0d0f9619ce</sys_id>
         <sys_mod_count>0</sys_mod_count>
         <sys_name>u_kb_template_miscellaneous</sys_name>
         <sys_package display_value="CRS Knowledge Database" source="x_26385_crs_kd">404e613b4f9213007221e321a310c738</sys_package>
         <sys_policy/>
         <sys_replace_on_upgrade>false</sys_replace_on_upgrade>
         <sys_scope display_value="CRS Knowledge Database">404e613b4f9213007221e321a310c738</sys_scope>
-        <sys_update_name>ua_table_licensing_config_861c632bdb536300b86770c08c9619ec</sys_update_name>
+        <sys_update_name>ua_table_licensing_config_5824f3abdbf7e74085b7fd0d0f9619ce</sys_update_name>
         <sys_updated_by>yuw5@nih.gov</sys_updated_by>
         <sys_updated_on>2018-10-16 19:29:43</sys_updated_on>
     </ua_table_licensing_config>
