@@ -36,8 +36,8 @@
 													'Where related information can be found',
 													'Comments',
 													'Includes analysis',
-													'Data in draft form',
-													'Data covered',
+													'Are the data in draft form',
+													'Is the underlying data covered under a DUDA',
 													'Analysis Notes']
 				   };
 
@@ -125,8 +125,8 @@
 													'Where related information can be found':"x_26385_crs_kd_u_kb_related_information",
 													'Comments':"x_26385_crs_kd_u_kb_comments",
 													'Includes analysis':"x_26385_crs_kd_u_kb_includes_analysis",
-													'Data in draft form':"x_26385_crs_kd_u_kb_data_in_draft_form",
-													'Data covered':"x_26385_crs_kd_u_kb_data_covered",
+													'Are the data in draft form':"x_26385_crs_kd_u_kb_data_in_draft_form",
+													'Is the underlying data covered under a DUDA':"x_26385_crs_kd_u_kb_data_covered",
 													'Analysis Notes':"x_26385_crs_kd_u_kb_analysis_notes"}
 };
  
@@ -215,7 +215,7 @@
         <sys_created_on>2018-06-26 20:52:59</sys_created_on>
         <sys_customer_update>false</sys_customer_update>
         <sys_id>d3bf36f3dbfa57009b0a74131f961981</sys_id>
-        <sys_mod_count>38</sys_mod_count>
+        <sys_mod_count>39</sys_mod_count>
         <sys_name>getDocumentById</sys_name>
         <sys_package display_value="CRS Knowledge Database" source="x_26385_crs_kd">404e613b4f9213007221e321a310c738</sys_package>
         <sys_policy/>
@@ -223,7 +223,7 @@
         <sys_scope display_value="CRS Knowledge Database">404e613b4f9213007221e321a310c738</sys_scope>
         <sys_update_name>sys_ws_operation_d3bf36f3dbfa57009b0a74131f961981</sys_update_name>
         <sys_updated_by>yuw5@nih.gov</sys_updated_by>
-        <sys_updated_on>2019-04-17 00:38:11</sys_updated_on>
+        <sys_updated_on>2019-04-17 18:36:37</sys_updated_on>
         <web_service_definition display_value="export">01e1bbe7db6a53005358dc50cf961994</web_service_definition>
         <web_service_version/>
     </sys_ws_operation>
