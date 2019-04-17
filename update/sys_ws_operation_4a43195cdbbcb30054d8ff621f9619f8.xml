@@ -1,0 +1,106 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<record_update table="sys_ws_operation">
+    <sys_ws_operation action="INSERT_OR_UPDATE">
+        <active>true</active>
+        <consumes>application/json,application/xml,text/xml</consumes>
+        <consumes_customized>false</consumes_customized>
+        <default_operation_uri/>
+        <enforce_acl>cf9d01d3e73003009d6247e603f6a990</enforce_acl>
+        <http_method>GET</http_method>
+        <name>getDocumentSchema</name>
+        <operation_script><![CDATA[(function process(/*RESTAPIRequest*/ request, /*RESTAPIResponse*/ response) {
+
+	var category = request.queryParams.category;
+	
+    var data_columns = {
+		"u_kb_template_literature_summary":[{label: "Title", type: "string", field: "x_26385_crs_kd_u_kb_title", required:"1"},
+											{label: "Cancer Site/Type", type: "checkbox", 
+											 field: "x_26385_crs_kd_u_kb_cancer_site_type",
+											 items: ['Bladder','Brain','Breast','Central nervous system','Cervical','Colon/colorectal',
+											 'Endometrial','Esophageal','Gallbladder','Gastric/Stomach','Glioblastoma','Head and neck',
+											 'Kidney','Leukemia','Liver','Lung','Lymphoma','Melanoma','Multiple myeloma','Neuroblastoma',
+											 'Ovarian','Pancreatic','Prostate','Sarcoma','Skin','Thyroid']},
+											{label: "Research Type", type: "checkbox", field: "x_26385_crs_kd_u_kb_research_type",
+											 items: ['Basic','Translational','Clinical','Epidemiological']},
+											{label: "Special Topic", type: "checkbox", field: "x_26385_crs_kd_u_kb_special_topic",
+											 items: ['Big data/Data sharing','Metastatic cancer','Minority health/Health disparities',
+															 'Moonshot','Pediatric','Rare','Training/Workforce development']},
+											{label: "Description", type: "html", field: "x_26385_crs_kd_u_kb_description"},
+											{label: "References (Please enter PMIDs in a comma-delimited format)", type: "string", field: "x_26385_crs_kd_u_kb_description.pmid"},
+											{label: "Funding", type: "string", field: "x_26385_crs_kd_u_kb_description.funding"},
+											{label: "Fiscal Year", type: "checkbox", field: "x_26385_crs_kd_u_kb_fiscal_year",
+											 items: ['2016','2017','2018','2019']},
+											{label: "Attachment", type: "file"}
+										   ],
+		"u_kb_template_miscellaneous_me":[{label: "Title", type: "string", field: "x_26385_crs_kd_u_kb_title", required: "1"},
+											{label: "Description", type: "html", field: "x_26385_crs_kd_u_kb_description"},
+											{label: "Moonshot Recommendation", type: "checkbox", field: "x_26385_crs_kd_u_kb_moonshot_recommendation",
+											 items: ['Network for Patient Engagement','Immunotherapy Network','Overcome Drug Resistance',
+													 'Cancer Data Ecosystem','Drivers of Childhood Cancers','Symptom Management',
+													 'Prevention and Detection Strategies','Retrospective Analysis of Biospecimens',
+													 'Human Tumor Atlases','New Cancer Technologies'
+											 ]},
+											{label: "Cross-cutting themes and goals", type: "checkbox", field:"x_26385_crs_kd_u_kb_cross_cutting_themes_and_goals",
+											 items: [
+												 'Health disparities','Prevention','Data sharing','Partnerships','Generate new knowledge','Enhance collaboration'
+											 ]},
+											{label: "CMIT", type: "checkbox", field: "x_26385_crs_kd_u_kb_cmit", items:[
+												'Adult Immunotherapy Translational Science Network','Development of New Enabling Technologies',
+												'Fusion Oncoproteins in Childhood Cancers','Generation of Human Tumor Atlases','High Risk Cancers Implementation',
+												'National Cancer Data Ecosystem','Network for Direct Patient Engagement','Pediatric Immunotherapy Translational Science Network',
+												'Prevention and Screening Implementation','Retrospective Analysis of Biospecimens','Symptom Management Research',
+												'Therapeutic Target Identification to Overcome Drug Resistance'
+											]},
+											{label: "Point of contact and contact information", type: "string", field: "x_26385_crs_kd_u_kb_point_of_contact_and_contact_information"},
+											{label: "Fiscal Year", type: "checkbox", field: "x_26385_crs_kd_u_kb_fiscal_year",
+											 items: ['2017','2018','2019','2020','2021']},
+											{label: "Attachment", type: "file"}],
+		"u_kb_template_presentations":[{label: "Title", type: "string", field: "x_26385_crs_kd_u_kb_title", required: "1"},
+											{label: "CRS POC(s)", type: "string", field: "x_26385_crs_kd_u_kb_crs_poc_s"},
+											{label: "Originated outside of CRS", type: "boolean", field: "x_26385_crs_kd_u_kb_originated_outside_of_crs", displayWhenTrue:[3,4], displayWhenFalse:[6,7,8,11,12,13]},
+											{label: "Obtained permission to share within CRS", type: "boolean", field:"x_26385_crs_kd_u_kb_obtained_permission_to_share", display: false},
+									        {label: "Originator/Owner", type: "string", field:"x_26385_crs_kd_u_kb_originator_owner", display: false},
+											{label: "Date presented or shared", type: "date", field: "x_26385_crs_kd_u_kb_date_presented_or_shared"},
+											{label: "Presented to", type: "string", field:"x_26385_crs_kd_u_kb_presented_to"},
+											{label: "Presented to leadership level (e.g. SPL)", type: "boolean", field: "x_26385_crs_kd_u_kb_presented_to_leadership_level"},
+										    {label: "Presented to public (e.g. advisory boards)", type: "boolean", field: "x_26385_crs_kd_u_kb_presented_to_public"},
+										    {label: "Brief Description (Please include, when applicable, background, purpose, outcome / impact)", type: "html", field: "x_26385_crs_kd_u_kb_brief_description"},
+									        {label: "Placeholder: Suggested tags/keywords", type: "string", field: "x_26385_crs_kd_u_kb_suggested_tags_keywords"},
+									        {label: "Where related information can be found (e.g. wiki, shared drive, personal folders, etc.)", type: "string", field: "x_26385_crs_kd_u_kb_related_information"},
+									        {label: "Comments", type: "string", field: "x_26385_crs_kd_u_kb_comments"},
+									        {label: "Includes analysis", type: "boolean", field: "x_26385_crs_kd_u_kb_includes_analysis", displayWhenTrue:[14,15,16], displayWhenFalse:[]},
+									        {label: "Are the data in draft form?", type: "boolean", field: "x_26385_crs_kd_u_kb_data_in_draft_form", display: false},
+											{label: "Is the underlying data covered under a DUDA (i.e. doublecheck with CRS POC before sharing data)?", type: "boolean", field: "x_26385_crs_kd_u_kb_data_covered", display: false},
+											{label: "Analysis Notes", type: "html", field: "x_26385_crs_kd_u_kb_analysis_notes", display: false},
+											{label: "Attachment", type: "file"}]
+	};
+	
+	return data_columns[category];
+
+})(request, response);]]></operation_script>
+        <operation_uri>/api/x_26385_crs_kd/export/getDocumentSchema</operation_uri>
+        <produces>application/json,application/xml,text/xml</produces>
+        <produces_customized>false</produces_customized>
+        <relative_path>/getDocumentSchema</relative_path>
+        <request_example/>
+        <requires_acl_authorization>false</requires_acl_authorization>
+        <requires_authentication>true</requires_authentication>
+        <short_description/>
+        <sys_class_name>sys_ws_operation</sys_class_name>
+        <sys_created_by>yuw5@nih.gov</sys_created_by>
+        <sys_created_on>2019-04-09 22:20:42</sys_created_on>
+        <sys_customer_update>false</sys_customer_update>
+        <sys_id>4a43195cdbbcb30054d8ff621f9619f8</sys_id>
+        <sys_mod_count>20</sys_mod_count>
+        <sys_name>getDocumentSchema</sys_name>
+        <sys_package display_value="CRS Knowledge Database" source="x_26385_crs_kd">404e613b4f9213007221e321a310c738</sys_package>
+        <sys_policy/>
+        <sys_replace_on_upgrade>false</sys_replace_on_upgrade>
+        <sys_scope display_value="CRS Knowledge Database">404e613b4f9213007221e321a310c738</sys_scope>
+        <sys_update_name>sys_ws_operation_4a43195cdbbcb30054d8ff621f9619f8</sys_update_name>
+        <sys_updated_by>yuw5@nih.gov</sys_updated_by>
+        <sys_updated_on>2019-04-16 23:26:09</sys_updated_on>
+        <web_service_definition display_value="export">01e1bbe7db6a53005358dc50cf961994</web_service_definition>
+        <web_service_version/>
+    </sys_ws_operation>
+</record_update>

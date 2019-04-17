@@ -4,6 +4,9 @@
         <css>.body {&#13;
  font-family: "SourceSansPro", Helvetica, Arial, sans-serif;&#13;
 }&#13;
+.sp-announcement-root{&#13;
+  display:none !important;&#13;
+}&#13;
 body{&#13;
   height:auto;&#13;
 }&#13;
@@ -50,6 +53,9 @@ button:focus {&#13;
 /* Hide arrow */&#13;
 .tooltipClass .tooltip-arrow {&#13;
   display: none;&#13;
+}&#13;
+.spModal_content{&#13;
+  text-align: center;&#13;
 }&#13;
 /* header */&#13;
 #crs-kd-logo{&#13;
@@ -785,6 +791,46 @@ button:focus {&#13;
   padding-left: 20px;&#13;
   padding-right: 20px;&#13;
 }&#13;
+/* submission */&#13;
+.submission-content{&#13;
+  background-color: white;&#13;
+  border: 1px solid lightgray;&#13;
+  border-radius: 5px;&#13;
+}&#13;
+/* submission new */&#13;
+.submission-new{&#13;
+  position: absolute;&#13;
+  top: 13px;&#13;
+  right: 30px;&#13;
+  z-index: 100;&#13;
+}&#13;
+.submission-checkboxes{&#13;
+  display: inline-flex;&#13;
+  width: 45%;&#13;
+  margin-left: 30px;&#13;
+}&#13;
+.submission-radios{&#13;
+  display: inline-flex;&#13;
+  margin-right: 20px;&#13;
+}&#13;
+.attachment-action{&#13;
+  width:16px;&#13;
+  height: 16px;&#13;
+  line-height: 34px;&#13;
+  margin-left:20px;&#13;
+  cursor:pointer;&#13;
+  border-radius:5px;&#13;
+}&#13;
+.attachment-action i{&#13;
+  color:#C6375D;&#13;
+  margin: 0 5px;&#13;
+}&#13;
+.attachment-action:hover{&#13;
+  background-color: #C6375D;&#13;
+}&#13;
+.attachment-action i:hover{&#13;
+  color:white;&#13;
+}&#13;
 /* footer */&#13;
 #footer .alert-info {&#13;
     color: #31708f;&#13;
@@ -849,6 +895,30 @@ button:focus {&#13;
 tags-input .autocomplete .suggestion-item.selected, tags-input .autocomplete .suggestion-item.selected em {&#13;
     color: #fff;&#13;
     background-color: #428bca !important;&#13;
+}&#13;
+md-content.md-default-theme, md-content {&#13;
+    background-color: inherit;&#13;
+}&#13;
+md-tabs.md-default-theme .md-tab .md-ripple-container, md-tabs .md-tab .md-ripple-container {&#13;
+    color: #C6375D;&#13;
+}&#13;
+md-tabs.md-default-theme .md-tab, md-tabs .md-tab {&#13;
+    color: #428bca;&#13;
+}&#13;
+md-tabs.md-default-theme .md-tab.md-active, md-tabs .md-tab.md-active, md-tabs.md-default-theme .md-tab.md-active md-icon, md-tabs .md-tab.md-active md-icon, md-tabs.md-default-theme .md-tab.md-focused, md-tabs .md-tab.md-focused, md-tabs.md-default-theme .md-tab.md-focused md-icon, md-tabs .md-tab.md-focused md-icon {&#13;
+    color: #428bca;&#13;
+}&#13;
+md-checkbox.md-default-theme.md-checked .md-icon, md-checkbox.md-checked .md-icon {&#13;
+    background-color: #C6375D;&#13;
+}&#13;
+md-radio-button.md-default-theme.md-checked .md-off, md-radio-button.md-checked .md-off {&#13;
+    border-color: #C6375D;&#13;
+}&#13;
+md-radio-button.md-default-theme .md-on, md-radio-button .md-on {&#13;
+    background-color: #C6375D;&#13;
+}&#13;
+md-autocomplete-wrap.md-whiteframe-z1{&#13;
+ box-shadow: none !important; &#13;
 }</css>
         <name>NERD_CSS</name>
         <sys_class_name>sp_css</sys_class_name>
@@ -856,7 +926,7 @@ tags-input .autocomplete .suggestion-item.selected, tags-input .autocomplete .su
         <sys_created_on>2018-09-04 15:57:11</sys_created_on>
         <sys_customer_update>false</sys_customer_update>
         <sys_id>b46b9296db54eb00b86770c08c961998</sys_id>
-        <sys_mod_count>149</sys_mod_count>
+        <sys_mod_count>177</sys_mod_count>
         <sys_name>NERD_CSS</sys_name>
         <sys_package display_value="CRS Knowledge Database" source="x_26385_crs_kd">404e613b4f9213007221e321a310c738</sys_package>
         <sys_policy/>
@@ -864,6 +934,6 @@ tags-input .autocomplete .suggestion-item.selected, tags-input .autocomplete .su
         <sys_scope display_value="CRS Knowledge Database">404e613b4f9213007221e321a310c738</sys_scope>
         <sys_update_name>sp_css_b46b9296db54eb00b86770c08c961998</sys_update_name>
         <sys_updated_by>yuw5@nih.gov</sys_updated_by>
-        <sys_updated_on>2019-02-05 14:24:49</sys_updated_on>
+        <sys_updated_on>2019-04-15 21:07:26</sys_updated_on>
     </sp_css>
 </record_update>

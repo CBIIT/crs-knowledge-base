@@ -1,0 +1,74 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<record_update table="sys_ws_operation">
+    <sys_ws_operation action="INSERT_OR_UPDATE">
+        <active>true</active>
+        <consumes>application/json,application/xml,text/xml</consumes>
+        <consumes_customized>false</consumes_customized>
+        <default_operation_uri/>
+        <enforce_acl>cf9d01d3e73003009d6247e603f6a990</enforce_acl>
+        <http_method>POST</http_method>
+        <name>saveSubmission</name>
+        <operation_script><![CDATA[(function process(/*RESTAPIRequest*/ request, /*RESTAPIResponse*/ response) {
+	
+	var metadata = {"u_kb_template_literature_summary":{
+						kb:"f5644dcadb54ab0054d8ff621f9619d7",
+						cat:"741b4320dbec3f00b86770c08c961965",
+						schema:["x_26385_crs_kd_u_kb_title","x_26385_crs_kd_u_kb_cancer_site_type",
+								"x_26385_crs_kd_u_kb_research_type","x_26385_crs_kd_u_kb_special_topic",
+								"x_26385_crs_kd_u_kb_description","x_26385_crs_kd_u_kb_fiscal_year"]
+					},
+				   "u_kb_template_miscellaneous_me":{
+					   kb:"2c42d2dedba47340b86770c08c9619a9",
+					   cat: "6c821adedba47340b86770c08c961913",
+					   schema:["x_26385_crs_kd_u_kb_title","x_26385_crs_kd_u_kb_description","x_26385_crs_kd_u_kb_moonshot_recommendation",
+							   "x_26385_crs_kd_u_kb_cross_cutting_themes_and_goals","x_26385_crs_kd_u_kb_fiscal_year",
+							   "x_26385_crs_kd_u_kb_cmit","x_26385_crs_kd_u_kb_point_of_contact_and_contact_information"]
+				   },
+				   "u_kb_template_presentations":{
+					   kb:"ff315a9edba47340b86770c08c961999",
+					   cat: "40e112dedba47340b86770c08c96191e",
+					   schema:["x_26385_crs_kd_u_kb_title","x_26385_crs_kd_u_kb_crs_poc_s","x_26385_crs_kd_u_kb_originated_outside_of_crs","x_26385_crs_kd_u_kb_obtained_permission_to_share","x_26385_crs_kd_u_kb_originator_owner","x_26385_crs_kd_u_kb_date_presented_or_shared","x_26385_crs_kd_u_kb_presented_to","x_26385_crs_kd_u_kb_presented_to_leadership_level","x_26385_crs_kd_u_kb_presented_to_public","x_26385_crs_kd_u_kb_brief_description","x_26385_crs_kd_u_kb_suggested_tags_keywords","x_26385_crs_kd_u_kb_related_information","x_26385_crs_kd_u_kb_comments","x_26385_crs_kd_u_kb_includes_analysis","x_26385_crs_kd_u_kb_data_in_draft_form","x_26385_crs_kd_u_kb_data_covered","x_26385_crs_kd_u_kb_analysis_notes"]
+				   }};
+	
+	var template = request.body.data.template;
+	var data = request.body.data.params;
+	
+	var submission = new GlideRecord(template);
+	submission.initialize(); 
+	submission.kb_knowledge_base = metadata[template].kb;
+	submission.kb_category =  metadata[template].cat;
+	metadata[template].schema.forEach(function(field){
+		submission[field] = data[field];
+	});
+	submission.author = gs.getUserID();
+	var sys_id = submission.insert();
+	
+	return sys_id;
+
+})(request, response);]]></operation_script>
+        <operation_uri>/api/x_26385_crs_kd/export/saveSubmission</operation_uri>
+        <produces>application/json,application/xml,text/xml</produces>
+        <produces_customized>false</produces_customized>
+        <relative_path>/saveSubmission</relative_path>
+        <request_example/>
+        <requires_acl_authorization>false</requires_acl_authorization>
+        <requires_authentication>true</requires_authentication>
+        <short_description/>
+        <sys_class_name>sys_ws_operation</sys_class_name>
+        <sys_created_by>yuw5@nih.gov</sys_created_by>
+        <sys_created_on>2019-04-11 18:14:13</sys_created_on>
+        <sys_customer_update>false</sys_customer_update>
+        <sys_id>5802e2b8db7c370054d8ff621f96195e</sys_id>
+        <sys_mod_count>7</sys_mod_count>
+        <sys_name>saveSubmission</sys_name>
+        <sys_package display_value="CRS Knowledge Database" source="x_26385_crs_kd">404e613b4f9213007221e321a310c738</sys_package>
+        <sys_policy/>
+        <sys_replace_on_upgrade>false</sys_replace_on_upgrade>
+        <sys_scope display_value="CRS Knowledge Database">404e613b4f9213007221e321a310c738</sys_scope>
+        <sys_update_name>sys_ws_operation_5802e2b8db7c370054d8ff621f96195e</sys_update_name>
+        <sys_updated_by>yuw5@nih.gov</sys_updated_by>
+        <sys_updated_on>2019-04-17 00:01:39</sys_updated_on>
+        <web_service_definition display_value="export">01e1bbe7db6a53005358dc50cf961994</web_service_definition>
+        <web_service_version/>
+    </sys_ws_operation>
+</record_update>

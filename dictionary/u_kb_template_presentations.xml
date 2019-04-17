@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<database>
+    <element attributes="document_viewer_audit=all,global_search_config_handler=KnowledgeArticle,all_tables.text_index_translations=true,attachment_index=true,text_index_attachment_displayed=true,text_index_enable_idf=true,synch_attachments=true,use_document_viewer=true,text_index_filter_junk=false" audit="true" extends="kb_knowledge" label="Presentations" max_length="40" name="u_kb_template_presentations" text_index="true" type="collection">
+        <element label="Analysis Notes" max_length="8000" name="x_26385_crs_kd_u_kb_analysis_notes" text_index="true" type="html"/>
+        <element label="Brief Description" max_length="8000" name="x_26385_crs_kd_u_kb_brief_description" text_index="true" type="html"/>
+        <element label="Comments" max_length="500" name="x_26385_crs_kd_u_kb_comments" text_index="true" type="string"/>
+        <element label="CRS POC(s)" max_length="500" name="x_26385_crs_kd_u_kb_crs_poc_s" text_index="true" type="string"/>
+        <element label="Data Covered" max_length="500" name="x_26385_crs_kd_u_kb_data_covered" text_index="true" type="string"/>
+        <element label="Data in Draft Form" max_length="500" name="x_26385_crs_kd_u_kb_data_in_draft_form" text_index="true" type="string"/>
+        <element label="Date Presented or Shared" max_length="500" name="x_26385_crs_kd_u_kb_date_presented_or_shared" text_index="true" type="string"/>
+        <element label="Includes Analysis" max_length="500" name="x_26385_crs_kd_u_kb_includes_analysis" text_index="true" type="string"/>
+        <element label="Obtained Permission to Share" max_length="500" name="x_26385_crs_kd_u_kb_obtained_permission_to_share" text_index="true" type="string"/>
+        <element label="Originated Outside of CRS" max_length="500" name="x_26385_crs_kd_u_kb_originated_outside_of_crs" text_index="true" type="string"/>
+        <element label="Originator/Owner" max_length="500" name="x_26385_crs_kd_u_kb_originator_owner" text_index="true" type="string"/>
+        <element label="Presented to" max_length="500" name="x_26385_crs_kd_u_kb_presented_to" text_index="true" type="string"/>
+        <element label="Presented to leadership level" max_length="500" name="x_26385_crs_kd_u_kb_presented_to_leadership_level" text_index="true" type="string"/>
+        <element label="Presented to public" max_length="500" name="x_26385_crs_kd_u_kb_presented_to_public" text_index="true" type="string"/>
+        <element label="Related Information" max_length="500" name="x_26385_crs_kd_u_kb_related_information" text_index="true" type="string"/>
+        <element label="Suggested Tags/Keywords" max_length="500" name="x_26385_crs_kd_u_kb_suggested_tags_keywords" text_index="true" type="string"/>
+        <element label="Tags" max_length="500" name="x_26385_crs_kd_u_kb_tags" text_index="true" type="string"/>
+        <element label="Title" max_length="500" name="x_26385_crs_kd_u_kb_title" text_index="true" type="string"/>
+    </element>
+</database>

@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<record_update table="m2m_sp_theme_js_include">
+    <m2m_sp_theme_js_include action="INSERT_OR_UPDATE">
+        <order>15</order>
+        <sp_js_include display_value="NERD_AngularJS_UI_Tinymce">d48306e0dbbcf30054d8ff621f9619a8</sp_js_include>
+        <sp_theme display_value="NERD Theme">975fe97b4f9213007221e321a310c75d</sp_theme>
+        <sys_class_name>m2m_sp_theme_js_include</sys_class_name>
+        <sys_created_by>yuw5@nih.gov</sys_created_by>
+        <sys_created_on>2019-04-10 20:26:20</sys_created_on>
+        <sys_customer_update>false</sys_customer_update>
+        <sys_id>bc134ea0dbbcf30054d8ff621f96191a</sys_id>
+        <sys_mod_count>0</sys_mod_count>
+        <sys_name>NERD_AngularJS_UI_Tinymce.NERD Theme</sys_name>
+        <sys_package display_value="CRS Knowledge Database" source="x_26385_crs_kd">404e613b4f9213007221e321a310c738</sys_package>
+        <sys_policy/>
+        <sys_replace_on_upgrade>false</sys_replace_on_upgrade>
+        <sys_scope display_value="CRS Knowledge Database">404e613b4f9213007221e321a310c738</sys_scope>
+        <sys_update_name>m2m_sp_theme_js_include_bc134ea0dbbcf30054d8ff621f96191a</sys_update_name>
+        <sys_updated_by>yuw5@nih.gov</sys_updated_by>
+        <sys_updated_on>2019-04-10 20:26:20</sys_updated_on>
+    </m2m_sp_theme_js_include>
+</record_update>

@@ -1,0 +1,178 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<record_update table="sp_widget">
+    <sp_widget action="INSERT_OR_UPDATE">
+        <category>custom</category>
+        <client_script><![CDATA[function($scope, $location) {
+  /* widget controller */
+  var c = this;
+	var s = $location.search();
+	c.mySubs = [];
+	c.allSubs = [];
+  c.mySubs.push({
+			title: "Article 1",
+      who: "Wei Yu",
+		  FY: "2018",
+      notes: "NERD > Literature Summaries",
+		  status: "Draft"
+    });
+	c.mySubs.push({
+			title: "Article 2",
+      who: "Wei Yu",
+		  FY: "2018",
+      notes: "Moonshot Evaluation > Miscellaneous",
+		  status: "Submitted"
+    });
+	
+	c.allSubs.push({
+			title: "Article 3",
+      who: "Jone Smith",
+		  FY: "2018",
+      notes: "NERD > Literature Summaries",
+		  status: "Submitted"
+    });
+	c.allSubs.push({
+			title: "Article 4",
+      who: "James Smith",
+		  FY: "2018",
+      notes: "Moonshot Evaluation > Miscellaneous",
+		  status: "Submitted"
+    });
+	c.allSubs.push({
+			title: "Article 5",
+      who: "Jerry Smith",
+		  FY: "2018",
+      notes: "NERD > Literature Summaries",
+		  status: "Published"
+    });
+	c.allSubs.push({
+			title: "Article 6",
+      who: "Jack Smith",
+		  FY: "2018",
+      notes: "Moonshot Evaluation > Miscellaneous",
+		  status: "Published"
+    });
+	
+	c.go2NewSubmission = function(){
+		s.xpage = "kd_new_submission";
+		$location.search(s).replace();
+	}
+	
+	c.gotoSubmissionDetail = function(id){
+		/*
+		s.xpage = "kd_submission_view";
+		s.s_id = id;
+		$location.search(s).replace();
+		*/
+	}
+}]]></client_script>
+        <controller_as>c</controller_as>
+        <css/>
+        <data_table>sp_instance</data_table>
+        <demo_data/>
+        <description/>
+        <docs/>
+        <field_list/>
+        <has_preview>false</has_preview>
+        <id>crs-kd-submissions</id>
+        <internal>false</internal>
+        <link/>
+        <name>[crs] KD Submissions</name>
+        <option_schema/>
+        <public>false</public>
+        <roles/>
+        <script><![CDATA[(function() {  /* populate the 'data' object */  /* e.g., data.table = $sp.getValue('table'); */})();]]></script>
+        <servicenow>false</servicenow>
+        <sys_class_name>sp_widget</sys_class_name>
+        <sys_created_by>yuw5@nih.gov</sys_created_by>
+        <sys_created_on>2019-04-08 20:43:14</sys_created_on>
+        <sys_customer_update>false</sys_customer_update>
+        <sys_id>3644b37bdb2c730054d8ff621f961911</sys_id>
+        <sys_mod_count>75</sys_mod_count>
+        <sys_name>[crs] KD Submissions</sys_name>
+        <sys_package display_value="CRS Knowledge Database" source="x_26385_crs_kd">404e613b4f9213007221e321a310c738</sys_package>
+        <sys_policy/>
+        <sys_replace_on_upgrade>false</sys_replace_on_upgrade>
+        <sys_scope display_value="CRS Knowledge Database">404e613b4f9213007221e321a310c738</sys_scope>
+        <sys_update_name>sp_widget_3644b37bdb2c730054d8ff621f961911</sys_update_name>
+        <sys_updated_by>yuw5@nih.gov</sys_updated_by>
+        <sys_updated_on>2019-04-12 14:34:28</sys_updated_on>
+        <template><![CDATA[<div id="crs-article">
+  <div class="container">
+    <div class="row row-space">
+          <div class="col-md-12">
+            <div class="submission-new">
+              <a href="#" ng-click="c.go2NewSubmission()" role="link">+ Create new Submission</a>
+            </div>
+            <div ng-cloak>
+              <md-content>
+                <md-tabs md-dynamic-height md-border-bottom>
+                  <md-tab label="My Submissions">
+                    <md-content class="md-padding submission-content">
+                      <md-content flex>
+                        <md-list>
+                          <md-list-item class="md-3-line" ng-repeat="item in c.mySubs">
+                            <!-- <img ng-src="{{item.face}}" alt="{{item.who}}" class="md-avatar"> -->
+														<div class="md-list-item-text">
+                                
+                              <h3><i class="glyphicon glyphicon-file"></i> <a class="kb-title ng-binding" ng-click="c.gotoSubmissionDetail(item.id)" role="link">{{item.title}}</a></h3>
+                              <div class="kb-about">
+                                {{item.notes}}
+                                <br>
+                                Author: {{item.who}}
+                                <span class="dot-divider" aria-hidden="true"> • </span>
+                                Fiscal Year: {{item.FY}}
+                                <span class="dot-divider" aria-hidden="true"> • </span>
+                                Status: {{item.status}}
+                              </div>
+                            </div>
+                            <md-divider inset></md-divider>
+                            <p class="md-secondary" ng-show="item.status == 'Submitted'">
+                              Submitted
+                            </p>
+                            <md-button class="md-raised md-secondary" ng-show="item.status == 'Draft'" style="background-color: #C6375D;color: white;">Submit</md-button>
+              							<md-button class="md-raised md-secondary" ng-show="item.status == 'Draft'" style="background-color: #C6375D;color: white;">Edit</md-button>
+              						</md-list-item>
+                        </md-list>
+                      </md-content>
+                    </md-content>
+                  </md-tab>
+                  <md-tab label="All Submissions">
+                    <md-content class="md-padding submission-content">
+                      <md-content flex>
+                        <md-list>
+                          <md-list-item class="md-3-line" ng-repeat="item in c.allSubs">
+                            <!-- <img ng-src="{{item.face}}" alt="{{item.who}}" class="md-avatar"> -->
+														<div class="md-list-item-text">
+                                
+                              <h3><i class="glyphicon glyphicon-file"></i>  <a class="kb-title ng-binding" ng-click="c.gotoSubmissionDetail(item.id)" role="link">{{item.title}}</a></h3>
+                              <div class="kb-about">
+                                {{item.notes}}
+                                <br>
+                                Author: {{item.who}}
+                                <span class="dot-divider" aria-hidden="true"> • </span>
+                                Fiscal Year: {{item.FY}}
+                                <span class="dot-divider" aria-hidden="true"> • </span>
+                                Status: {{item.status}}
+                              </div>
+                            </div>
+                            <md-divider inset></md-divider>
+                            <p class="md-secondary" ng-show="item.status == 'Published'">
+                              Published
+                            </p>
+                            <md-button class="md-raised md-secondary" ng-show="item.status == 'Submitted'" style="background-color: #C6375D;color: white;">Approve</md-button>
+              							<md-button class="md-raised md-secondary" ng-show="item.status == 'Submitted'" style="background-color: #C6375D;color: white;">Publish</md-button>
+              						</md-list-item>
+                        </md-list>
+                      </md-content>
+                    </md-content>
+                  </md-tab>
+                </md-tabs>
+              </md-content>
+            </div>
+          </div>
+
+		</div>
+  </div>
+</div>]]></template>
+    </sp_widget>
+</record_update>

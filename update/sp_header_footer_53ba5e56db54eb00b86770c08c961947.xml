@@ -54,7 +54,7 @@
         <sys_created_on>2018-09-04 15:54:38</sys_created_on>
         <sys_customer_update>false</sys_customer_update>
         <sys_id>53ba5e56db54eb00b86770c08c961947</sys_id>
-        <sys_mod_count>24</sys_mod_count>
+        <sys_mod_count>26</sys_mod_count>
         <sys_name>nerd header</sys_name>
         <sys_package display_value="CRS Knowledge Database" source="x_26385_crs_kd">404e613b4f9213007221e321a310c738</sys_package>
         <sys_policy/>
@@ -62,7 +62,7 @@
         <sys_scope display_value="CRS Knowledge Database">404e613b4f9213007221e321a310c738</sys_scope>
         <sys_update_name>sp_header_footer_53ba5e56db54eb00b86770c08c961947</sys_update_name>
         <sys_updated_by>yuw5@nih.gov</sys_updated_by>
-        <sys_updated_on>2019-02-05 22:12:20</sys_updated_on>
+        <sys_updated_on>2019-04-08 20:42:29</sys_updated_on>
         <template><![CDATA[<div id="crs-kd-header">
 	<div id="crs-kd-logo">
     <div class="container logo">
@@ -79,6 +79,9 @@
           </button>
           <ul class="dropdown-menu-right" uib-dropdown-menu role="menu" aria-labelledby="single-button">
             <li role="menuitem"><a href="#" class="userInfo-text">Signed in as <br><h5>{{c.data.userName}} ({{c.data.role_name}})</h5></a></li>
+            <li class="divider"></li>
+            <li role="menuitem" ng-show="c.data.role.length > 0"><a href="nerd?xpage=kd_submissions">Submissions</a></li>
+            <li role="menuitem" ng-show="c.data.role.length > 0 && c.data.role.indexOf('su') > -1"><a href="nerd?xpage=kd_settings">Settings</a></li>
             <li class="divider"></li>
             <li role="menuitem" ng-show="c.data.role.length > 0"><a href="nerd?xpage=kd_faqs">FAQs</a></li>
             <li role="menuitem" ng-show="c.data.role.length > 0"><a href="nerd?xpage=kd_glossary">Glossary</a></li>

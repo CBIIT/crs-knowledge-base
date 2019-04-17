@@ -47,7 +47,19 @@
 	kb.addQuery('kb_knowledge_base','f5644dcadb54ab0054d8ff621f9619d7');
 	kb.query();
 
-	data.count = kb.getRowCount();
+	data.count_1 = kb.getRowCount();
+	
+	kb = new GlideRecord('kb_knowledge');
+	kb.addQuery('kb_knowledge_base','ff315a9edba47340b86770c08c961999');
+	kb.query();
+
+	data.count_2 = kb.getRowCount();
+	
+	kb = new GlideRecord('kb_knowledge');
+	kb.addQuery('kb_knowledge_base','2c42d2dedba47340b86770c08c9619a9');
+	kb.query();
+
+	data.count_3 = kb.getRowCount();
 })();]]></script>
         <servicenow>false</servicenow>
         <sys_class_name>sp_widget</sys_class_name>
@@ -55,7 +67,7 @@
         <sys_created_on>2018-07-19 15:47:10</sys_created_on>
         <sys_customer_update>false</sys_customer_update>
         <sys_id>6966d0dbdbdb97009b0a74131f961987</sys_id>
-        <sys_mod_count>42</sys_mod_count>
+        <sys_mod_count>48</sys_mod_count>
         <sys_name>[crs] KD Summary</sys_name>
         <sys_package display_value="CRS Knowledge Database" source="x_26385_crs_kd">404e613b4f9213007221e321a310c738</sys_package>
         <sys_policy/>
@@ -63,7 +75,7 @@
         <sys_scope display_value="CRS Knowledge Database">404e613b4f9213007221e321a310c738</sys_scope>
         <sys_update_name>sp_widget_6966d0dbdbdb97009b0a74131f961987</sys_update_name>
         <sys_updated_by>yuw5@nih.gov</sys_updated_by>
-        <sys_updated_on>2019-02-06 18:42:42</sys_updated_on>
+        <sys_updated_on>2019-04-03 21:52:32</sys_updated_on>
         <template><![CDATA[<div class="container">
   <div class="summary-box">
     <div class="kb-tile-block">
@@ -76,7 +88,7 @@
                <img alt="" src="nci_knowledge-base.svg" aria-hidden="true" data-ng-if="!item.icon" class="ng-scope" role="presentation">
               </div> 
               <div class="link-text ng-scope"> 
-               <h5 class="ng-binding">Basic Knowledge Base</h5> 
+               <h5 class="ng-binding">NERD</h5> 
               </div> 
              </div></a> 
            </div> 
@@ -85,7 +97,57 @@
             <span title="Article" aria-label="Articles">
               <span class="kb-summary">
                 <i class="fa fa-file-text" aria-hidden="true"></i>
-                <span class="kb-count ng-binding">{{c.data.count}}</span>
+                <span class="kb-count ng-binding">{{c.data.count_1}}</span>
+              </span>
+            </span>
+          </div> 
+      </div>
+    </div>
+    <div class="kb-tile-block">
+      <div class="panel panel-default"> 
+          <div> 
+           <div class="kb-top-pad"> 
+            <a href="nerd?xpage=kd_search&amp;kb_knowledge_base=ff315a9edba47340b86770c08c961999" aria-label="" class="kb-tile-link" role="link"> 
+             <div class="kb-center"> 
+              <div class="link-icon"> 
+               <img alt="" src="nci_knowledge-base.svg" aria-hidden="true" data-ng-if="!item.icon" class="ng-scope" role="presentation">
+              </div> 
+              <div class="link-text ng-scope"> 
+               <h5 class="ng-binding">CRS Internal</h5> 
+              </div> 
+             </div></a> 
+           </div> 
+          </div> 
+          <div class="kb-details"> 
+            <span title="Article" aria-label="Articles">
+              <span class="kb-summary">
+                <i class="fa fa-file-text" aria-hidden="true"></i>
+                <span class="kb-count ng-binding">{{c.data.count_2}}</span>
+              </span>
+            </span>
+          </div> 
+      </div>
+    </div>
+    <div class="kb-tile-block">
+      <div class="panel panel-default"> 
+          <div> 
+           <div class="kb-top-pad"> 
+            <a href="nerd?xpage=kd_search&amp;kb_knowledge_base=2c42d2dedba47340b86770c08c9619a9" aria-label="" class="kb-tile-link" role="link"> 
+             <div class="kb-center"> 
+              <div class="link-icon"> 
+               <img alt="" src="nci_knowledge-base.svg" aria-hidden="true" data-ng-if="!item.icon" class="ng-scope" role="presentation">
+              </div> 
+              <div class="link-text ng-scope"> 
+               <h5 class="ng-binding">Moonshot Evaluation</h5> 
+              </div> 
+             </div></a> 
+           </div> 
+          </div> 
+          <div class="kb-details"> 
+            <span title="Article" aria-label="Articles">
+              <span class="kb-summary">
+                <i class="fa fa-file-text" aria-hidden="true"></i>
+                <span class="kb-count ng-binding">{{c.data.count_3}}</span>
               </span>
             </span>
           </div> 

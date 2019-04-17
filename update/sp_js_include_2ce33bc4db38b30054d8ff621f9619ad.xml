@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<record_update table="sp_js_include">
+    <sp_js_include action="INSERT_OR_UPDATE">
+        <display_name>NERD_AngularJS_Material_JS</display_name>
+        <source>local</source>
+        <sys_class_name>sp_js_include</sys_class_name>
+        <sys_created_by>yuw5@nih.gov</sys_created_by>
+        <sys_created_on>2019-04-09 15:20:36</sys_created_on>
+        <sys_customer_update>false</sys_customer_update>
+        <sys_id>2ce33bc4db38b30054d8ff621f9619ad</sys_id>
+        <sys_mod_count>0</sys_mod_count>
+        <sys_name>NERD_AngularJS_Material_JS</sys_name>
+        <sys_package display_value="CRS Knowledge Database" source="x_26385_crs_kd">404e613b4f9213007221e321a310c738</sys_package>
+        <sys_policy/>
+        <sys_replace_on_upgrade>false</sys_replace_on_upgrade>
+        <sys_scope display_value="CRS Knowledge Database">404e613b4f9213007221e321a310c738</sys_scope>
+        <sys_ui_script display_value="x_26385_crs_kd.NERD_AngularJS_Material_J">b503f344db38b30054d8ff621f9619b1</sys_ui_script>
+        <sys_update_name>sp_js_include_2ce33bc4db38b30054d8ff621f9619ad</sys_update_name>
+        <sys_updated_by>yuw5@nih.gov</sys_updated_by>
+        <sys_updated_on>2019-04-09 15:20:36</sys_updated_on>
+        <url/>
+    </sp_js_include>
+</record_update>

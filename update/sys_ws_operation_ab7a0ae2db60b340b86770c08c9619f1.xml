@@ -1,0 +1,250 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<record_update table="sys_ws_operation">
+    <sys_ws_operation action="INSERT_OR_UPDATE">
+        <active>true</active>
+        <consumes>application/json,application/xml,text/xml</consumes>
+        <consumes_customized>false</consumes_customized>
+        <default_operation_uri/>
+        <enforce_acl>cf9d01d3e73003009d6247e603f6a990</enforce_acl>
+        <http_method>GET</http_method>
+        <name>getFilters</name>
+        <operation_script><![CDATA[(function process(/*RESTAPIRequest*/ request, /*RESTAPIResponse*/ response) {
+	
+	var knowledgeBaseID = request.queryParams.knowledgeBaseID;
+	
+	var result = {};
+	result.tmp = {};
+	result.count = {};
+	
+	var cache = {};
+	
+	if(knowledgeBaseID == "ff315a9edba47340b86770c08c961999"){
+		//CRS Internal
+		result.filters = [];
+	}
+	else if(knowledgeBaseID == "2c42d2dedba47340b86770c08c9619a9"){
+		//Moonshot Evaluation
+		
+		result.filters = ['recommendation','themesGoals','cmit','fiscalYear'];
+		result.filters.forEach(function(item){
+			result.count[item] = {};
+			result.tmp[item] = [];
+			cache[item] = [];
+		});
+
+		var infos_category = {"Miscellaneous":"u_kb_template_miscellaneous_me"};
+
+		var info_schema = {
+					'Miscellaneous': {"recommendation":"x_26385_crs_kd_u_kb_moonshot_recommendation",
+									  "themesGoals":"x_26385_crs_kd_u_kb_cross_cutting_themes_and_goals",
+									  "cmit":"x_26385_crs_kd_u_kb_cmit",
+									  "fiscalYear":"x_26385_crs_kd_u_kb_fiscal_year"}
+		};
+
+			// The Knowledge Base IDs to be used in search filters
+		var gr = new GlideRecord('kb_category');
+			gr.addQuery('parent_id', knowledgeBaseID);
+			gr.orderBy('sys_created_on');
+			gr.query();
+			var categories = [];
+			while (gr.next()) {
+				categories.push({id: gr.sys_id.toString(), name: gr.label.toString()});
+			}
+
+		categories.forEach(function(cat){
+			var values = [];
+			var tmpl = infos_category[cat.name];
+			var schema = info_schema[cat.name];
+			gr = new GlideRecord(tmpl);
+			gr.query();
+
+			while (gr.next()) {
+
+				var articleResult = {};
+				if(schema["recommendation"]){
+					articleResult.x_26385_crs_kd_u_kb_moonshot_recommendation = gr.x_26385_crs_kd_u_kb_moonshot_recommendation.toString();
+				}
+				if(schema["themesGoals"]){
+					articleResult.x_26385_crs_kd_u_kb_cross_cutting_themes_and_goals = gr.x_26385_crs_kd_u_kb_cross_cutting_themes_and_goals.toString();
+				}
+				if(schema["cmit"]){
+					articleResult.x_26385_crs_kd_u_kb_cmit = gr.x_26385_crs_kd_u_kb_cmit.toString();
+				}
+				if(schema["fiscalYear"]){
+					articleResult.x_26385_crs_kd_u_kb_fiscal_year = gr.x_26385_crs_kd_u_kb_fiscal_year.toString();
+				}
+				
+				for(k in schema){
+						var v = articleResult[schema[k]];
+						if(v != ''){
+							v.split(",").forEach(function(elem){
+								if(cache[k].indexOf(elem) == -1){
+									cache[k].push(elem);
+									result.tmp[k].push(elem);
+									result.count[k][elem] = 1;
+								}
+								else{
+									result.count[k][elem] ++;
+								}
+							});
+
+						}
+
+					}
+			}
+		});
+	}
+	else{
+		//NERD
+		result.filters = ['cancerSite','researchType','specialTopic','fiscalYear','doc'];
+		result.filters.forEach(function(item){
+			result.count[item] = {};
+			result.tmp[item] = [];
+			cache[item] = [];
+		});
+
+		var infos_category = {'Top Accomplishments':'u_kb_template_top_accomplishment',
+								 'GPRA': 'u_kb_template_gpra',
+							  'Literature Summary': 'u_kb_template_literature_summary',
+							 "Miscellaneous":"u_kb_template_miscellaneous",
+							  "Final Reports":"u_kb_template_final_reports",
+							  "Significant Items":"u_kb_template_significant_items"};
+
+		var info_schema = {'Top Accomplishments': {"cancerSite":"x_26385_crs_kd_u_kb_cancer_site_type",																																											"researchType":"x_26385_crs_kd_u_kb_research_type",
+													"specialTopic":"x_26385_crs_kd_u_kb_special_topic",																																											"doc":"x_26385_crs_kd_u_kb_doc",																																															"fiscalYear":"x_26385_crs_kd_u_kb_fiscal_year"},
+					 'GPRA': {"researchType":"x_26385_crs_kd_u_kb_research_type",
+								"specialTopic":"x_26385_crs_kd_u_kb_special_topic",																																											"doc":"x_26385_crs_kd_u_kb_doc",																																															"fiscalYear":"x_26385_crs_kd_u_kb_fiscal_year"},
+					 'Literature Summary': {"cancerSite":"x_26385_crs_kd_u_kb_cancer_site_type",
+									   "researchType":"x_26385_crs_kd_u_kb_research_type",
+									   "specialTopic":"x_26385_crs_kd_u_kb_special_topic",
+									   "fiscalYear":"x_26385_crs_kd_u_kb_fiscal_year"},
+					'Miscellaneous': {"cancerSite":"x_26385_crs_kd_u_kb_cancer_site_type",
+									  "researchType":"x_26385_crs_kd_u_kb_research_type",
+									  "specialTopic":"x_26385_crs_kd_u_kb_special_topic",
+									  "fiscalYear":"x_26385_crs_kd_u_kb_fiscal_year"},
+					'Final Reports': {"cancerSite":"x_26385_crs_kd_u_kb_cancer_site_type",
+									 "researchType":"x_26385_crs_kd_u_kb_research_type",
+										"specialTopic":"x_26385_crs_kd_u_kb_special_topic",
+										"fiscalYear":"x_26385_crs_kd_u_kb_fiscal_year"},
+					'Significant Items': {"cancerSite":"x_26385_crs_kd_u_kb_cancer_site_type",
+										 "researchType":"x_26385_crs_kd_u_kb_research_type",
+										 "specialTopic":"x_26385_crs_kd_u_kb_special_topic",
+										 "fiscalYear":"x_26385_crs_kd_u_kb_fiscal_year"}
+		};
+
+			// The Knowledge Base IDs to be used in search filters
+		var gr = new GlideRecord('kb_category');
+			gr.addQuery('parent_id', knowledgeBaseID);
+			gr.orderBy('sys_created_on');
+			gr.query();
+			var categories = [];
+			while (gr.next()) {
+				categories.push({id: gr.sys_id.toString(), name: gr.label.toString()});
+			}
+
+		categories.forEach(function(cat){
+			var values = [];
+			var tmpl = infos_category[cat.name];
+			var schema = info_schema[cat.name];
+			gr = new GlideRecord(tmpl);
+			gr.query();
+
+			while (gr.next()) {
+
+				var articleResult = {};
+				if(schema["cancerSite"]){
+					articleResult.x_26385_crs_kd_u_kb_cancer_site_type = gr.x_26385_crs_kd_u_kb_cancer_site_type.toString();
+				}
+				if(schema["researchType"]){
+					articleResult.x_26385_crs_kd_u_kb_research_type = gr.x_26385_crs_kd_u_kb_research_type.toString();
+				}
+				if(schema["doc"]){
+					articleResult.x_26385_crs_kd_u_kb_doc = gr.x_26385_crs_kd_u_kb_doc.toString();
+				}
+				if(schema["fiscalYear"]){
+					articleResult.x_26385_crs_kd_u_kb_fiscal_year = gr.x_26385_crs_kd_u_kb_fiscal_year.toString();
+				}
+				if(schema["specialTopic"]){
+					articleResult.x_26385_crs_kd_u_kb_special_topic = gr.x_26385_crs_kd_u_kb_special_topic.toString();
+				}
+				
+				for(k in schema){
+						var v = articleResult[schema[k]];
+						if(v != ''){
+							if(k == 'researchType' || k == 'doc'){
+								v.split(",").forEach(function(elem){
+									var idx = elem.indexOf('-');
+									if(idx == -1){
+										if(cache[k].indexOf(elem) == -1){
+											cache[k].push(elem);
+											result.tmp[k].push(elem);
+											result.count[k][elem] = 1;
+										}
+										else{
+											result.count[k][elem] ++;
+										}
+									}
+									else{
+										var em = elem.substring(0,idx) + '}';
+										if(cache[k].indexOf(em) == -1){
+											cache[k].push(em);
+											result.tmp[k].push(em);
+											result.count[k][em] = 1;
+										}
+										else{
+											result.count[k][em] ++;
+										}
+									}
+
+								});
+							}
+							else{
+								v.split(",").forEach(function(elem){
+									if(cache[k].indexOf(elem) == -1){
+										cache[k].push(elem);
+										result.tmp[k].push(elem);
+										result.count[k][elem] = 1;
+									}
+									else{
+										result.count[k][elem] ++;
+									}
+								});
+							}
+
+						}
+
+					}
+			}
+		});
+		
+	}
+	
+	return result;
+
+})(request, response);]]></operation_script>
+        <operation_uri>/api/x_26385_crs_kd/export/getFilters</operation_uri>
+        <produces>application/json,application/xml,text/xml</produces>
+        <produces_customized>false</produces_customized>
+        <relative_path>/getFilters</relative_path>
+        <request_example/>
+        <requires_acl_authorization>false</requires_acl_authorization>
+        <requires_authentication>true</requires_authentication>
+        <short_description/>
+        <sys_class_name>sys_ws_operation</sys_class_name>
+        <sys_created_by>yuw5@nih.gov</sys_created_by>
+        <sys_created_on>2019-04-04 16:11:52</sys_created_on>
+        <sys_customer_update>false</sys_customer_update>
+        <sys_id>ab7a0ae2db60b340b86770c08c9619f1</sys_id>
+        <sys_mod_count>5</sys_mod_count>
+        <sys_name>getFilters</sys_name>
+        <sys_package display_value="CRS Knowledge Database" source="x_26385_crs_kd">404e613b4f9213007221e321a310c738</sys_package>
+        <sys_policy/>
+        <sys_replace_on_upgrade>false</sys_replace_on_upgrade>
+        <sys_scope display_value="CRS Knowledge Database">404e613b4f9213007221e321a310c738</sys_scope>
+        <sys_update_name>sys_ws_operation_ab7a0ae2db60b340b86770c08c9619f1</sys_update_name>
+        <sys_updated_by>yuw5@nih.gov</sys_updated_by>
+        <sys_updated_on>2019-04-17 00:38:52</sys_updated_on>
+        <web_service_definition display_value="export">01e1bbe7db6a53005358dc50cf961994</web_service_definition>
+        <web_service_version/>
+    </sys_ws_operation>
+</record_update>

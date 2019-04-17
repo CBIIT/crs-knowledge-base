@@ -31,16 +31,40 @@
 					"Background":"x_26385_crs_kd_u_kb_background",
 					"Target Context and Conditions":"x_26385_crs_kd_u_kb_target_context_and_conditions",
 					"Fiscal Year":"x_26385_crs_kd_u_kb_fiscal_year"
+				},"u_kb_template_literature_summary":{
+					"Cancer Site/Type": "x_26385_crs_kd_u_kb_cancer_site_type",
+					"Research Type":"x_26385_crs_kd_u_kb_research_type",
+					"Description":"x_26385_crs_kd_u_kb_description",
+					"Special Topic":"x_26385_crs_kd_u_kb_special_topic",
+					"Fiscal Year":"x_26385_crs_kd_u_kb_fiscal_year"
 				},"u_kb_template_miscellaneous":{
 					"Cancer Site/Type": "x_26385_crs_kd_u_kb_cancer_site_type",
 					"Research Type":"x_26385_crs_kd_u_kb_research_type",
 					"Description":"x_26385_crs_kd_u_kb_description",
 					"Special Topic":"x_26385_crs_kd_u_kb_special_topic",
 					"Fiscal Year":"x_26385_crs_kd_u_kb_fiscal_year"
+				},"u_kb_template_final_reports":{
+					"Cancer Site/Type": "x_26385_crs_kd_u_kb_cancer_site_type",
+					"Research Type":"x_26385_crs_kd_u_kb_research_type",
+					"Description":"x_26385_crs_kd_u_kb_description",
+					"Special Topic":"x_26385_crs_kd_u_kb_special_topic",
+					"Fiscal Year":"x_26385_crs_kd_u_kb_fiscal_year"
+				},"u_kb_template_significant_items":{
+					"Cancer Site/Type":"x_26385_crs_kd_u_kb_cancer_site_type", 
+					"Research Type":"x_26385_crs_kd_u_kb_research_type",
+					"Special Topic":"x_26385_crs_kd_u_kb_special_topic",
+					"Congressional Language":"x_26385_crs_kd_u_kb_congressional_language",
+					"Action taken or to be taken":"x_26385_crs_kd_u_kb_action_taken_or_to_be_taken",
+					"References":"x_26385_crs_kd_u_kb_references",
+					"CRS Author":"x_26385_crs_kd_u_kb_crs_author",
+					"Fiscal Year":"x_26385_crs_kd_u_kb_fiscal_year"
 				}};
 	var config = {"Top Accomplishments":"u_kb_template_top_accomplishment",
 				  "GPRA":"u_kb_template_gpra",
-				  "Miscellaneous":"u_kb_template_miscellaneous"
+				  "Literature Summary":"u_kb_template_literature_summary",
+				  "Miscellaneous":"u_kb_template_miscellaneous",
+				  "Final Reports":"u_kb_template_final_reports",
+				  "Significant Items":"u_kb_template_significant_items"
 	};
 	var body = {};
 	body.content = [];
@@ -94,7 +118,7 @@
         <sys_created_on>2018-06-13 20:26:53</sys_created_on>
         <sys_customer_update>false</sys_customer_update>
         <sys_id>a73cb32fdb6a53005358dc50cf9619f8</sys_id>
-        <sys_mod_count>22</sys_mod_count>
+        <sys_mod_count>24</sys_mod_count>
         <sys_name>save2word</sys_name>
         <sys_package display_value="CRS Knowledge Database" source="x_26385_crs_kd">404e613b4f9213007221e321a310c738</sys_package>
         <sys_policy/>
@@ -102,7 +126,7 @@
         <sys_scope display_value="CRS Knowledge Database">404e613b4f9213007221e321a310c738</sys_scope>
         <sys_update_name>sys_ws_operation_a73cb32fdb6a53005358dc50cf9619f8</sys_update_name>
         <sys_updated_by>yuw5@nih.gov</sys_updated_by>
-        <sys_updated_on>2018-12-26 17:12:46</sys_updated_on>
+        <sys_updated_on>2019-04-03 19:33:25</sys_updated_on>
         <web_service_definition display_value="export">01e1bbe7db6a53005358dc50cf961994</web_service_definition>
         <web_service_version/>
     </sys_ws_operation>

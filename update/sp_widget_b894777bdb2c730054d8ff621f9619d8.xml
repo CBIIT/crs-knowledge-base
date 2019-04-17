@@ -1,0 +1,230 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<record_update table="sp_widget">
+    <sp_widget action="INSERT_OR_UPDATE">
+        <category>custom</category>
+        <client_script><![CDATA[function($scope) {
+  /* widget controller */
+  var c = this;
+	
+	
+	$scope.people_1 = [
+    { name: 'Janet Perkins',email:"test@gmail.com" },
+    { name: 'Mary Johnson',email:"test@gmail.com" },
+    { name: 'Peter Carlsson',email:"test@gmail.com"}
+  ];
+	
+	$scope.people_2 = [
+    { name: 'James Smith',email:"test@gmail.com" }
+  ];
+	
+	$scope.people_3 = [
+    { name: 'Jack Smith',email:"test@gmail.com" },
+    { name: 'Jonh Smith',email:"test@gmail.com" }
+  ];
+	
+	c.querySearch = function(){
+		return [{value:'1', display: 'item 1' },{value:'2', display: 'item 2' }];
+	};
+	
+	c.searchTextChange = function(text) {
+     console.log('Text changed to ' + text);
+  };
+
+  c.selectedItemChange = function(item) {
+    console.log('Item changed to ' + JSON.stringify(item));
+  };
+}]]></client_script>
+        <controller_as>c</controller_as>
+        <css/>
+        <data_table>sp_instance</data_table>
+        <demo_data/>
+        <description/>
+        <docs/>
+        <field_list/>
+        <has_preview>false</has_preview>
+        <id>crs-kd-settings</id>
+        <internal>false</internal>
+        <link/>
+        <name>[crs] KD Settings</name>
+        <option_schema/>
+        <public>false</public>
+        <roles/>
+        <script><![CDATA[(function() {  /* populate the 'data' object */  /* e.g., data.table = $sp.getValue('table'); */})();]]></script>
+        <servicenow>false</servicenow>
+        <sys_class_name>sp_widget</sys_class_name>
+        <sys_created_by>yuw5@nih.gov</sys_created_by>
+        <sys_created_on>2019-04-08 20:44:28</sys_created_on>
+        <sys_customer_update>false</sys_customer_update>
+        <sys_id>b894777bdb2c730054d8ff621f9619d8</sys_id>
+        <sys_mod_count>88</sys_mod_count>
+        <sys_name>[crs] KD Settings</sys_name>
+        <sys_package display_value="CRS Knowledge Database" source="x_26385_crs_kd">404e613b4f9213007221e321a310c738</sys_package>
+        <sys_policy/>
+        <sys_replace_on_upgrade>false</sys_replace_on_upgrade>
+        <sys_scope display_value="CRS Knowledge Database">404e613b4f9213007221e321a310c738</sys_scope>
+        <sys_update_name>sp_widget_b894777bdb2c730054d8ff621f9619d8</sys_update_name>
+        <sys_updated_by>yuw5@nih.gov</sys_updated_by>
+        <sys_updated_on>2019-04-15 18:54:25</sys_updated_on>
+        <template><![CDATA[<div id="crs-article">
+  <div class="container">
+    <div class="row row-space">
+          <div class="col-md-12">
+             <p class="label-header">
+               Settings
+            </p>
+            <uib-accordion close-others="false">
+              <div uib-accordion-group class="panel-default" is-open="tab1.isOpen">
+                <uib-accordion-heading>
+                  <div>
+                    Groups <i class="pull-right" ng-class="{'fa fa-minus-square': tab1.isOpen, 'fa fa-plus-square': !tab1.isOpen}"></i>
+                  </div>
+                </uib-accordion-heading>
+                Superuser / Regular User / DOC Approver (Curator) / DOC User / Outside User
+              </div>
+            </uib-accordion>
+            <uib-accordion close-others="false">
+              <div uib-accordion-group class="panel-default" is-open="tab2.isOpen">
+                <uib-accordion-heading>
+                  <div>
+                    Permissions <i class="pull-right" ng-class="{'fa fa-minus-square': tab2.isOpen, 'fa fa-plus-square': !tab2.isOpen}"></i>
+                  </div>
+                </uib-accordion-heading>
+                
+              </div>
+            </uib-accordion>
+            <uib-accordion close-others="false">
+              <div uib-accordion-group class="panel-default" is-open="tab3.isOpen">
+                <uib-accordion-heading>
+                  <div>
+                    Knowledge Base Accesses <i class="pull-right" ng-class="{'fa fa-minus-square': tab3.isOpen, 'fa fa-plus-square': !tab3.isOpen}"></i>
+                  </div>
+                </uib-accordion-heading>
+                <div ng-cloak>
+                  <md-content>
+                    <md-tabs md-center-tabs md-dynamic-height >
+                      <md-tab label="NERD">
+                        <md-content class="md-padding submission-content">
+                          <md-content flex>
+                            <md-autocomplete style="border: 1px solid lightgray; border-radius: 5px;"
+                                             ng-disabled="false"
+                                             md-no-cache="true"
+                                             md-selected-item="c.selectedItem"
+                                             md-search-text-change="c.searchTextChange(c.searchText)"
+                                             md-search-text="c.searchText"
+                                             md-selected-item-change="c.selectedItemChange(item)"
+                                             md-items="item in c.querySearch()"
+                                             md-item-text="item.display"
+                                             md-min-length="0"
+                                             placeholder="Enter name to Search..."
+                                             input-aria-labelledby="favoriteStateLabel"
+                                             input-aria-describedby="autocompleteDetailedDescription">
+                              <md-item-template>
+                                <span md-highlight-text="c.searchText" md-highlight-flags="^i">{{item.display}}</span>
+                                <md-button class="md-raised" style="background-color: #C6375D;color: white;float:right;">Add this Person</md-button>
+                              </md-item-template>
+                              <md-not-found>
+                                No person matching "{{c.searchText}}" were found.
+                              </md-not-found>
+                            </md-autocomplete>
+                            <md-list>
+                              <md-subheader class="md-no-sticky">People who can have access to NERD
+                              </md-subheader>
+                              <md-list-item class="" ng-repeat="person in people_1">
+                                <div class="md-list-item-text" style="margin:10px;">
+                                  <h5><i class="fa fa-user"></i> {{person.name}} ({{person.email}})</h5>
+                                </div>
+                                <md-divider inset></md-divider>
+                                <md-icon class="md-secondary"  ng-style="{color: '#C6375D', margin:'10px', 'font-size': '16px', height: '16px'}"><i class="fa fa-trash"></i></md-icon>
+                              </md-list-item>
+                            </md-list>
+                        	</md-content>
+                        </md-content>
+                      </md-tab>
+                      <md-tab label="CRS Internal">
+                        <md-content class="md-padding submission-content">
+                          <md-content flex>
+                            <md-autocomplete style="border: 1px solid lightgray; border-radius: 5px;"
+                                             ng-disabled="false"
+                                             md-no-cache="true"
+                                             md-selected-item="c.selectedItem"
+                                             md-search-text-change="c.searchTextChange(c.searchText)"
+                                             md-search-text="c.searchText"
+                                             md-selected-item-change="c.selectedItemChange(item)"
+                                             md-items="item in c.querySearch()"
+                                             md-item-text="item.display"
+                                             md-min-length="0"
+                                             placeholder="Enter name to Search..."
+                                             input-aria-labelledby="favoriteStateLabel"
+                                             input-aria-describedby="autocompleteDetailedDescription">
+                              <md-item-template>
+                                <span md-highlight-text="c.searchText" md-highlight-flags="^i">{{item.display}}</span>
+                                <md-button class="md-raised" style="background-color: #C6375D;color: white;float:right;">Add this Person</md-button>
+                              </md-item-template>
+                              <md-not-found>
+                                No person matching "{{c.searchText}}" were found.
+                              </md-not-found>
+                            </md-autocomplete>
+                            <md-list>
+                              <md-subheader class="md-no-sticky">People who can have access to CRS Internal
+                              </md-subheader>
+                              <md-list-item class="" ng-repeat="person in people_2">
+                                <div class="md-list-item-text" style="margin:10px;">
+                                  <h5><i class="fa fa-user"></i> {{person.name}} ({{person.email}})</h5>
+                                </div>
+                                <md-divider inset></md-divider>
+                                <md-icon class="md-secondary"  ng-style="{color: '#C6375D', margin:'10px', 'font-size': '16px', height: '16px'}"><i class="fa fa-trash"></i></md-icon>
+                              </md-list-item>
+                            </md-list>
+                        	</md-content>
+                        </md-content>
+                      </md-tab>
+                      <md-tab label="Moonshot Evaluation">
+                        <md-content class="md-padding submission-content">
+                          <md-content flex>
+                            <md-autocomplete style="border: 1px solid lightgray; border-radius: 5px;"
+                                             ng-disabled="false"
+                                             md-no-cache="true"
+                                             md-selected-item="c.selectedItem"
+                                             md-search-text-change="c.searchTextChange(c.searchText)"
+                                             md-search-text="c.searchText"
+                                             md-selected-item-change="c.selectedItemChange(item)"
+                                             md-items="item in c.querySearch()"
+                                             md-item-text="item.display"
+                                             md-min-length="0"
+                                             placeholder="Enter name to Search..."
+                                             input-aria-labelledby="favoriteStateLabel"
+                                             input-aria-describedby="autocompleteDetailedDescription">
+                              <md-item-template>
+                                <span md-highlight-text="c.searchText" md-highlight-flags="^i">{{item.display}}</span>
+                                <md-button class="md-raised" style="background-color: #C6375D;color: white;float:right;">Add this Person</md-button>
+                              </md-item-template>
+                              <md-not-found>
+                                No person matching "{{c.searchText}}" were found.
+                              </md-not-found>
+                            </md-autocomplete>
+                            <md-list>
+                              <md-subheader class="md-no-sticky">People who can have access to Moonshot Evaluation
+                              </md-subheader>
+                              <md-list-item class="" ng-repeat="person in people_3">
+                                <div class="md-list-item-text" style="margin:10px;">
+                                  <h5><i class="fa fa-user"></i> {{person.name}} ({{person.email}})</h5>
+                                </div>
+                                <md-divider inset></md-divider>
+                                <md-icon class="md-secondary"  ng-style="{color: '#C6375D', margin:'10px', 'font-size': '16px', height: '16px'}"><i class="fa fa-trash"></i></md-icon>
+                              </md-list-item>
+                            </md-list>
+                        	</md-content>
+                        </md-content>
+                      </md-tab>
+                    </md-tabs>
+                  </md-content>
+                </div> 
+              </div>
+            </uib-accordion>
+          </div>
+
+		</div>
+  </div>
+</div>]]></template>
+    </sp_widget>
+</record_update>

@@ -29,16 +29,66 @@
 									 'Background',
 									 'Target Context and Conditions', 
 									 'Fiscal Year'],
+									"u_kb_template_literature_summary": 
+									[
+									 'Cancer Site/Type',
+									 'Research Type',
+									 'Description', 
+									 'Special Topic',
+									 'Fiscal Year'],
 									"u_kb_template_miscellaneous": 
 									[
 									 'Cancer Site/Type',
 									 'Research Type',
 									 'Description', 
 									 'Special Topic',
-									 'Fiscal Year']
+									 'Fiscal Year'],
+									"u_kb_template_final_reports": 
+									[
+									 'Cancer Site/Type',
+									 'Research Type',
+									 'Description', 
+									 'Special Topic',
+									 'Fiscal Year'],
+									"u_kb_template_significant_items": 
+									[
+									 'Cancer Site/Type',
+									 'Research Type',
+									 'Special Topic',
+									 'Congressional Language',
+									 'Action taken or to be taken',
+									 'References',
+									 'CRS Author',
+									 'Fiscal Year'],
+									"u_kb_template_miscellaneous_me": 
+									[
+									 'Moonshot Recommendation',
+									 'Cross-cutting themes and goals',
+									 'CMIT',
+									 'Description',
+									 'Point of contact and contact information',
+									 'Fiscal Year'],
+									"u_kb_template_presentations": 
+									[
+									 'CRS POC(s)',
+									 'Originated outside of CRS',
+									 'Obtained permission to share within CRS',
+									 'Originator/Owner',
+									 'Date Presented or Shared',
+									 'Presented to',
+									 'Presented to leadership level',
+									 'Presented to public',
+										'Brief Description',
+										'Placeholder: Suggested tags/keywords',
+										'Where related information can be found',
+										'Comments',
+										'Includes analysis',
+										'Data in draft form',
+										'Data covered',
+										'Analysis Notes']
 				   };
-	c.knowledge_id = s.kb_knowledge_base;
-	c.cat = s.cat;
+	//c.knowledge_id = s.kb_knowledge_base;
+	//c.cat = s.cat;
 	c.hasFilter = s.hasFilter;
 	c.upload_status = "upload";
 	c.errorMessage = false;
@@ -57,12 +107,15 @@
 	
 	NERDSearchBasicArticleByID.getArticle(params, sessionId).then(function(res){
 		$scope.data = res.data.result;
+		c.knowledge_id = $scope.data['kb'];
+		c.cat = $scope.data['cat'];
 		$scope.title = $scope.data['Title'];
 		$scope.columns = template[params.template_id];
 		$scope.tags = c.parseTags($scope.data.tags);
 		
 		$scope.comments = $scope.data.comments;
 		$scope.attachments = $scope.data['attachments'];
+		$scope.$apply();
 	}, function(error){
 		console.log(error);
 	});
@@ -365,6 +418,15 @@
 		if(s.f6 && s.f6 !== ""){
 			$rootScope.selectedSpecialTopic = s.f6.split('|');
 		}
+		if(s.f7 && s.f7 !== ""){
+			$rootScope.selectedRecommendation = s.f7.split('|');
+		}
+		if(s.f8 && s.f8 !== ""){
+			$rootScope.selectedThemesGoals = s.f8.split('|');
+		}
+		if(s.f9 && s.f9 !== ""){
+			$rootScope.selectedCmit = s.f9.split('|');
+		}
 	}
 	
 }]]></client_script>
@@ -396,7 +458,7 @@
         <sys_created_on>2018-10-17 20:16:40</sys_created_on>
         <sys_customer_update>false</sys_customer_update>
         <sys_id>ae23f05cdb592300b86770c08c961938</sys_id>
-        <sys_mod_count>293</sys_mod_count>
+        <sys_mod_count>309</sys_mod_count>
         <sys_name>[crs] KD Article</sys_name>
         <sys_package display_value="CRS Knowledge Database" source="x_26385_crs_kd">404e613b4f9213007221e321a310c738</sys_package>
         <sys_policy/>
@@ -404,7 +466,7 @@
         <sys_scope display_value="CRS Knowledge Database">404e613b4f9213007221e321a310c738</sys_scope>
         <sys_update_name>sp_widget_ae23f05cdb592300b86770c08c961938</sys_update_name>
         <sys_updated_by>yuw5@nih.gov</sys_updated_by>
-        <sys_updated_on>2019-02-05 21:55:04</sys_updated_on>
+        <sys_updated_on>2019-04-17 01:12:32</sys_updated_on>
         <template><![CDATA[<div id="crs-article">
   <div class="container">
     <div class="row row-space">
@@ -489,10 +551,8 @@
           </div>
           <div class="file-list">
             <div class="file-block" ng-repeat="attach in attachments">
-              <a ng-if="attach.file_type == 'application/pdf'" target="_blank" href="sys_attachment.do?view=true&sys_id={{attach.attach_sys_id}}">
-                <i class="fa fa-file-pdf-o" aria-hidden="true"></i> {{attach.file_name}}</a>
-              <a ng-if="attach.file_type == 'application/vnd.ms-powerpoint' || attach.file_type == 'application/vnd.openxmlformats-officedocument.presentationml.presentation'" target="_blank" href="sys_attachment.do?view=true&sys_id={{attach.attach_sys_id}}">
-                <i class="fa fa-file-powerpoint-o" aria-hidden="true"></i> {{attach.file_name}}</a>
+              <a target="_blank" href="sys_attachment.do?view=true&sys_id={{attach.attach_sys_id}}">
+                <i ng-class="file.file_type == 'application/pdf' ? 'fa fa-file-pdf-o' : 'fa fa-file-powerpoint-o'" aria-hidden="true"></i> {{attach.file_name}}</a>
               <a class="btn-remove" ng-click="c.removeAttachment(attach.attach_sys_id)" role="link" ng-show="c.isSu || attach.created_by == c.currentUserName">×</a>
             </div>
           </div>
@@ -509,7 +569,7 @@
           <div class="comment-submit">
             <h4>Add a comment</h4> 
             <div style="width:100%;"><textarea name="comment" rows="3" ng-model="c.comment" style="width:100%;border-color:#ddd;border-radius:5px;"></textarea></div>
-            <div style="width:100%; text-align:right;"><button type="button" class="btn btn-primary" ng-disabled="c.comment == undefined || c.comment == ''" ng-click="c.addComment()">Submit</button></div> 
+            <div style="width:100%; margin-top: 5px; text-align:right;"><button type="button" class="btn btn-primary" ng-disabled="c.comment == undefined || c.comment == ''" ng-click="c.addComment()">Submit</button></div> 
           </div>
           <div class="comment-label">
             <h4>Comments ({{comments.length}})</h4> 

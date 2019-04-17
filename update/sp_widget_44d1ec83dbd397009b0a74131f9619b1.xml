@@ -2,7 +2,7 @@
 <record_update table="sp_widget">
     <sp_widget action="INSERT_OR_UPDATE">
         <category>custom</category>
-        <client_script><![CDATA[function($scope, $rootScope, $location) {
+        <client_script><![CDATA[function($scope,spModal, $rootScope, $location) {
   var c = this;
   var s = $location.search();
   var redirect = false;
@@ -12,6 +12,23 @@
 	}
 	else if (s.xpage && s.xpage == 'kd_search') {
 			c.xpage = "main";
+		if(s.kb_knowledge_base && c.data.kbs[s.kb_knowledge_base]){
+			c.kb_knowledge_base_name = c.data.kbs[s.kb_knowledge_base];
+			c.kb_knowledge_base = s.kb_knowledge_base;
+		}
+		else{
+			c.kb_knowledge_base_name = "NERD";
+			c.kb_knowledge_base = 'f5644dcadb54ab0054d8ff621f9619d7';
+		}
+	}
+	else if(s.xpage && s.xpage == 'kd_submissions'){
+		c.xpage = "submissions";
+	}
+	else if(s.xpage && s.xpage == 'kd_new_submission'){
+		c.xpage = "new_submission";
+	}
+	else if(s.xpage && s.xpage == 'kd_settings'){
+		c.xpage = "settings";
 	}
 	else if(s.xpage && s.xpage == 'kd_faqs'){
 		c.xpage = "faqs";
@@ -22,6 +39,14 @@
 	else if(s.xpage && s.xpage == 'kd_article'){
 		c.xpage = "article";
 		c.cat = s.cat;
+		if(s.kb_knowledge_base && c.data.kbs[s.kb_knowledge_base]){
+			c.kb_knowledge_base_name = c.data.kbs[s.kb_knowledge_base];
+			c.kb_knowledge_base = s.kb_knowledge_base;
+		}
+		else{
+			c.kb_knowledge_base_name = "NERD";
+			c.kb_knowledge_base = 'f5644dcadb54ab0054d8ff621f9619d7';
+		}
 	}
 	else{
 		c.xpage = "home";
@@ -49,6 +74,25 @@
     $location.search(s).replace();
 	}
 	
+	window.showMessageBox = function(message, willgoto){
+		spModal.open({
+			 title: 'Information Dialog',
+			 message: '<div class="spModal_content">'+message+'</div>',
+			 backdrop: 'static',
+       keyboard: false,
+			 buttons: [
+                {label:'Ok', primary: true}
+            ]
+			}).then(function() {
+					if(willgoto){
+						s.xpage = willgoto.xpage;
+						$location.search(s).replace();
+					}
+        }, function() {
+          
+        });
+	}
+	
 }]]></client_script>
         <controller_as>c</controller_as>
         <css/>
@@ -65,14 +109,21 @@
         <option_schema/>
         <public>false</public>
         <roles/>
-        <script><![CDATA[(function() {  /* populate the 'data' object */  /* e.g., data.table = $sp.getValue('table'); */})();]]></script>
+        <script><![CDATA[(function() {  /* populate the 'data' object */  /* e.g., data.table = $sp.getValue('table'); */
+	data.kbs = {
+		'f5644dcadb54ab0054d8ff621f9619d7': "NERD",
+		'ff315a9edba47340b86770c08c961999': "CRS Internal",
+		'2c42d2dedba47340b86770c08c9619a9': "Moonshot Evaluation"
+	};
+
+})();]]></script>
         <servicenow>false</servicenow>
         <sys_class_name>sp_widget</sys_class_name>
         <sys_created_by>yuw5@nih.gov</sys_created_by>
         <sys_created_on>2018-07-18 21:58:33</sys_created_on>
         <sys_customer_update>false</sys_customer_update>
         <sys_id>44d1ec83dbd397009b0a74131f9619b1</sys_id>
-        <sys_mod_count>176</sys_mod_count>
+        <sys_mod_count>196</sys_mod_count>
         <sys_name>[crs] KD Home</sys_name>
         <sys_package display_value="CRS Knowledge Database" source="x_26385_crs_kd">404e613b4f9213007221e321a310c738</sys_package>
         <sys_policy/>
@@ -80,7 +131,7 @@
         <sys_scope display_value="CRS Knowledge Database">404e613b4f9213007221e321a310c738</sys_scope>
         <sys_update_name>sp_widget_44d1ec83dbd397009b0a74131f9619b1</sys_update_name>
         <sys_updated_by>yuw5@nih.gov</sys_updated_by>
-        <sys_updated_on>2019-02-05 21:41:17</sys_updated_on>
+        <sys_updated_on>2019-04-17 01:09:54</sys_updated_on>
         <template><![CDATA[<div id="crs-kd-home">
   <div id="crs-kd-summary" class="container"  ng-if="c.xpage == 'home'">
     <div class="home-logo">
@@ -127,7 +178,7 @@
         <ul class="nav nav-pills nav-sm"> 
          <li><a ng-href="nerd" role="link" href="nerd">Home</a></li> 
          <li><i class="fa fa-chevron-right"></i></li> 
-         <li><a ng-href="nerd?xpage=kd_search" class="ng-binding" role="link" href="nerd?xpage=kd_search">Basic Knowledge Base</a></li>  
+         <li><a ng-href="nerd?xpage=kd_search&kb_knowledge_base={{c.kb_knowledge_base}}" class="ng-binding" role="link" href="nerd?xpage=kd_search&kb_knowledge_base={{c.kb_knowledge_base}}">{{c.kb_knowledge_base_name}}</a></li>  
         </ul>
       </div>
     </div>
@@ -161,10 +212,10 @@
         <ul class="nav nav-pills nav-sm"> 
          <li><a ng-href="nerd" role="link" href="nerd">Home</a></li> 
          <li><i class="fa fa-chevron-right"></i></li> 
-         <li><a ng-href="nerd?xpage=kd_search" class="ng-binding" role="link" href="nerd?xpage=kd_search">Basic Knowledge Base</a></li>
+         <li><a ng-href="nerd?xpage=kd_search&kb_knowledge_base={{c.kb_knowledge_base}}" class="ng-binding" role="link" href="nerd?xpage=kd_search&kb_knowledge_base={{c.kb_knowledge_base}}">{{c.kb_knowledge_base_name}}</a></li>
          <li><i class="fa fa-chevron-right"></i></li> 
          <li>
-           <a ng-href="nerd?xpage=kd_search" class="ng-binding" role="link" href="nerd?xpage=kd_search">{{c.cat}}</a>
+           <a ng-href="#" class="ng-binding" role="link" href="#">{{c.cat}}</a>
          </li>
         </ul>
       </div>
@@ -181,7 +232,7 @@
       </div>
     </div>
   </div>
-  <div id="crs-main" ng-if="c.xpage == 'faqs'">
+    <div id="crs-main" ng-if="c.xpage == 'faqs'">
     <div class="bread-bar">
       <div class="container">
         <ul class="nav nav-pills nav-sm"> 
@@ -193,6 +244,74 @@
     </div>
     <div class="main-content">
     	<widget id="crs-kd-faqs"></widget>
+      <div class="proclaim">
+        <p>
+          NERD is managed by CRS. For questions, contact <a href="mailto:NCINERDWebAdmin@mail.nih.gov ?subject=NERD Contact Us">NCINERDWebAdmin@mail.nih.gov</a>
+        </p>
+        <p>
+          For internal NCI use only. Not for distribution.
+        </p>
+      </div>
+    </div>
+  </div>
+    <div id="crs-main" ng-if="c.xpage == 'submissions'">
+    <div class="bread-bar">
+      <div class="container">
+        <ul class="nav nav-pills nav-sm"> 
+         <li><a ng-href="nerd" role="link" href="nerd">Home</a></li> 
+         <li><i class="fa fa-chevron-right"></i></li> 
+         <li><a ng-href="nerd?xpage=kd_submissions" class="ng-binding" role="link" href="nerd?xpage=kd_submissions">Submissions</a></li>
+        </ul>
+      </div>
+    </div>
+    <div class="main-content">
+    	<widget id="crs-kd-submissions"></widget>
+      <div class="proclaim">
+        <p>
+          NERD is managed by CRS. For questions, contact <a href="mailto:NCINERDWebAdmin@mail.nih.gov ?subject=NERD Contact Us">NCINERDWebAdmin@mail.nih.gov</a>
+        </p>
+        <p>
+          For internal NCI use only. Not for distribution.
+        </p>
+      </div>
+    </div>
+  </div>
+  <div id="crs-main" ng-if="c.xpage == 'new_submission'">
+    <div class="bread-bar">
+      <div class="container">
+        <ul class="nav nav-pills nav-sm"> 
+         <li><a ng-href="nerd" role="link" href="nerd">Home</a></li> 
+         <li><i class="fa fa-chevron-right"></i></li> 
+         <li><a ng-href="nerd?xpage=kd_submissions" class="ng-binding" role="link" href="nerd?xpage=kd_submissions">Submissions</a></li>
+         <li><i class="fa fa-chevron-right"></i></li> 
+         <li><a class="ng-binding" role="link" href="#">Create New Submission</a></li>
+        </ul>
+      </div>
+    </div>
+    <div class="main-content">
+    	<widget id="crs-kd-new-submission"></widget>
+      <div class="proclaim">
+        <p>
+          NERD is managed by CRS. For questions, contact <a href="mailto:NCINERDWebAdmin@mail.nih.gov ?subject=NERD Contact Us">NCINERDWebAdmin@mail.nih.gov</a>
+        </p>
+        <p>
+          For internal NCI use only. Not for distribution.
+        </p>
+      </div>
+    </div>
+  </div>
+  <div id="crs-main" ng-if="c.xpage == 'settings'">
+    <div class="bread-bar">
+      <div class="container">
+        <ul class="nav nav-pills nav-sm"> 
+         <li><a ng-href="nerd" role="link" href="nerd">Home</a></li> 
+         <li><i class="fa fa-chevron-right"></i></li> 
+         <li><a ng-href="nerd?xpage=kd_settings" class="ng-binding" role="link" href="nerd?xpage=kd_settings">Settings</a></li>
+        </ul>
+      </div>
+    </div>
+    <div class="main-content">
+    	<widget id="crs-kd-settings"></widget>
       <div class="proclaim">
         <p>
           NERD is managed by CRS. For questions, contact <a href="mailto:NCINERDWebAdmin@mail.nih.gov ?subject=NERD Contact Us">NCINERDWebAdmin@mail.nih.gov</a>

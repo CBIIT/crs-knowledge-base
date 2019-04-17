@@ -31,16 +31,40 @@ var data = request.body.data;
 					"Background":"x_26385_crs_kd_u_kb_background",
 					"Target Context and Conditions":"x_26385_crs_kd_u_kb_target_context_and_conditions",
 					"Fiscal Year":"x_26385_crs_kd_u_kb_fiscal_year"
+				},"u_kb_template_literature_summary":{
+					"Cancer Site/Type": "x_26385_crs_kd_u_kb_cancer_site_type",
+					"Research Type":"x_26385_crs_kd_u_kb_research_type",
+					"Description":"x_26385_crs_kd_u_kb_description",
+					"Special Topic":"x_26385_crs_kd_u_kb_special_topic",
+					"Fiscal Year":"x_26385_crs_kd_u_kb_fiscal_year"
 				},"u_kb_template_miscellaneous":{
 					"Cancer Site/Type": "x_26385_crs_kd_u_kb_cancer_site_type",
 					"Research Type":"x_26385_crs_kd_u_kb_research_type",
 					"Description":"x_26385_crs_kd_u_kb_description",
 					"Special Topic":"x_26385_crs_kd_u_kb_special_topic",
 					"Fiscal Year":"x_26385_crs_kd_u_kb_fiscal_year"
+				},"u_kb_template_final_reports":{
+					"Cancer Site/Type": "x_26385_crs_kd_u_kb_cancer_site_type",
+					"Research Type":"x_26385_crs_kd_u_kb_research_type",
+					"Description":"x_26385_crs_kd_u_kb_description",
+					"Special Topic":"x_26385_crs_kd_u_kb_special_topic",
+					"Fiscal Year":"x_26385_crs_kd_u_kb_fiscal_year"
+				},"u_kb_template_significant_items":{
+					"Cancer Site/Type":"x_26385_crs_kd_u_kb_cancer_site_type", 
+					"Research Type":"x_26385_crs_kd_u_kb_research_type",
+					"Special Topic":"x_26385_crs_kd_u_kb_special_topic",
+					"Congressional Language":"x_26385_crs_kd_u_kb_congressional_language",
+					"Action taken or to be taken":"x_26385_crs_kd_u_kb_action_taken_or_to_be_taken",
+					"References":"x_26385_crs_kd_u_kb_references",
+					"CRS Author":"x_26385_crs_kd_u_kb_crs_author",
+					"Fiscal Year":"x_26385_crs_kd_u_kb_fiscal_year"
 				}};
 	var config = {"Top Accomplishments":"u_kb_template_top_accomplishment",
 				  "GPRA":"u_kb_template_gpra",
-				  "Miscellaneous":"u_kb_template_miscellaneous"
+				  "Literature Summary":"u_kb_template_literature_summary",
+				  "Miscellaneous":"u_kb_template_miscellaneous",
+				  "Final Reports":"u_kb_template_final_reports",
+				  "Significant Items":"u_kb_template_significant_items"
 	};
 	var body = {};
 	body.content = [];
@@ -98,6 +122,24 @@ var data = request.body.data;
 			}
 			else{
 				dt[gr.sys_id]["References"] = "";
+			}
+			if(s["Congressional Language"]){
+				dt[gr.sys_id]["Congressional Language"] = gr.x_26385_crs_kd_u_kb_congressional_language.toString();
+			}
+			else{
+				dt[gr.sys_id]["Congressional Language"] = "";
+			}
+			if(s["Action taken or to be taken"]){
+				dt[gr.sys_id]["Action taken or to be taken"] = gr.x_26385_crs_kd_u_kb_action_taken_or_to_be_taken.toString();
+			}
+			else{
+				dt[gr.sys_id]["Action taken or to be taken"] = "";
+			}
+			if(s["CRS Author"]){
+				dt[gr.sys_id]["CRS Author"] = gr.x_26385_crs_kd_u_kb_crs_author.toString();
+			}
+			else{
+				dt[gr.sys_id]["CRS Author"] = "";
 			}
 			if(s["Involved organization"]){
 				dt[gr.sys_id]["Involved organization"] = gr.x_26385_crs_kd_u_kb_involved_organization.toString();
@@ -157,7 +199,7 @@ var data = request.body.data;
         <sys_created_on>2018-12-14 22:08:53</sys_created_on>
         <sys_customer_update>false</sys_customer_update>
         <sys_id>3b677b72dbdeaf0054d8ff621f961966</sys_id>
-        <sys_mod_count>4</sys_mod_count>
+        <sys_mod_count>6</sys_mod_count>
         <sys_name>save2Excel</sys_name>
         <sys_package display_value="CRS Knowledge Database" source="x_26385_crs_kd">404e613b4f9213007221e321a310c738</sys_package>
         <sys_policy/>
@@ -165,7 +207,7 @@ var data = request.body.data;
         <sys_scope display_value="CRS Knowledge Database">404e613b4f9213007221e321a310c738</sys_scope>
         <sys_update_name>sys_ws_operation_3b677b72dbdeaf0054d8ff621f961966</sys_update_name>
         <sys_updated_by>yuw5@nih.gov</sys_updated_by>
-        <sys_updated_on>2018-12-26 16:43:05</sys_updated_on>
+        <sys_updated_on>2019-04-03 19:30:48</sys_updated_on>
         <web_service_definition display_value="export">01e1bbe7db6a53005358dc50cf961994</web_service_definition>
         <web_service_version/>
     </sys_ws_operation>

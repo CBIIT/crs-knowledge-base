@@ -1,12 +1,24 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <record_update table="sp_angular_provider">
     <sp_angular_provider action="INSERT_OR_UPDATE">
-        <name>NERDSearchBasicArticleByCriteria</name>
-        <script><![CDATA[function NERDSearchBasicArticleByCriteria($http){
+        <name>CRSSearchBasicArticleByCriteria</name>
+        <script><![CDATA[function CRSSearchBasicArticleByCriteria($http){
 	this.getList = function(params, sessionId){
 		return new Promise(function(resolve, reject){
 			$http({
 				 url: '/api/x_26385_crs_kd/export/searchBasicArticleByCriteria',
+				 method : "GET",
+				 beforeSend: function(xhr){ xhr.setRequestHeader('X-UserToken', sessionId); },
+				 headers: {'Content-Type': 'application/json'},
+				 params: params
+			}).then(resolve, reject);
+		});
+	};
+	
+	this.getFilters = function(params, sessionId){
+		return new Promise(function(resolve, reject){
+			$http({
+				 url: '/api/x_26385_crs_kd/export/getFilters',
 				 method : "GET",
 				 beforeSend: function(xhr){ xhr.setRequestHeader('X-UserToken', sessionId); },
 				 headers: {'Content-Type': 'application/json'},
@@ -20,15 +32,15 @@
         <sys_created_on>2018-10-15 15:45:07</sys_created_on>
         <sys_customer_update>false</sys_customer_update>
         <sys_id>f7a1292bdbc9eb40b86770c08c961995</sys_id>
-        <sys_mod_count>2</sys_mod_count>
-        <sys_name>NERDSearchBasicArticleByCriteria</sys_name>
+        <sys_mod_count>7</sys_mod_count>
+        <sys_name>CRSSearchBasicArticleByCriteria</sys_name>
         <sys_package display_value="CRS Knowledge Database" source="x_26385_crs_kd">404e613b4f9213007221e321a310c738</sys_package>
         <sys_policy/>
         <sys_replace_on_upgrade>false</sys_replace_on_upgrade>
         <sys_scope display_value="CRS Knowledge Database">404e613b4f9213007221e321a310c738</sys_scope>
         <sys_update_name>sp_angular_provider_f7a1292bdbc9eb40b86770c08c961995</sys_update_name>
         <sys_updated_by>yuw5@nih.gov</sys_updated_by>
-        <sys_updated_on>2018-10-15 15:49:30</sys_updated_on>
+        <sys_updated_on>2019-04-04 17:53:19</sys_updated_on>
         <type>service</type>
     </sp_angular_provider>
 </record_update>
