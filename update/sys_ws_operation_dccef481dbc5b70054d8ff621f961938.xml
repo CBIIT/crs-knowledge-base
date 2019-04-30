@@ -7,12 +7,12 @@
         <default_operation_uri/>
         <enforce_acl>cf9d01d3e73003009d6247e603f6a990</enforce_acl>
         <http_method>GET</http_method>
-        <name>getDocumentSchema</name>
+        <name>getDocumentWithSchema</name>
         <operation_script><![CDATA[(function process(/*RESTAPIRequest*/ request, /*RESTAPIResponse*/ response) {
-
-	var category = request.queryParams.category;
-	
-    var data_columns = {
+	var number = request.queryParams.number;
+	var template = request.queryParams.template;
+	var version = request.queryParams.version;
+	var data_columns = {
 		"u_kb_template_top_accomplishment":[{label: "Title", type: "string", field: "x_26385_crs_kd_u_kb_title", required:"1"},
 											{label: "Cancer Site/Type", type: "checkbox", 
 											 field: "x_26385_crs_kd_u_kb_cancer_site_type",
@@ -34,8 +34,7 @@
 											{label: "Involved organization", type: "html", field: "x_26385_crs_kd_u_kb_involved_organization"},
 											{label: "References", type: "html", field: "x_26385_crs_kd_u_kb_references"},
 											{label: "Fiscal Year", type: "checkbox", field: "x_26385_crs_kd_u_kb_fiscal_year",
-											 items: ['2016','2017','2018','2019']},
-											{label: "Attachment", type: "file"}
+											 items: ['2016','2017','2018','2019']}
 										   ],
 		"u_kb_template_literature_summary":[{label: "Title", type: "string", field: "x_26385_crs_kd_u_kb_title", required:"1"},
 											{label: "Cancer Site/Type", type: "checkbox", 
@@ -52,11 +51,8 @@
 											 items: ['Big data/Data sharing','Metastatic cancer','Minority health/Health disparities',
 															 'Moonshot','Pediatric','Rare','Training/Workforce development']},
 											{label: "Description", type: "html", field: "x_26385_crs_kd_u_kb_description"},
-											{label: "References (Please enter PMIDs in a comma-delimited format)", type: "string", field: "x_26385_crs_kd_u_kb_description.pmid"},
-											{label: "Funding", type: "string", field: "x_26385_crs_kd_u_kb_description.funding"},
 											{label: "Fiscal Year", type: "checkbox", field: "x_26385_crs_kd_u_kb_fiscal_year",
-											 items: ['2016','2017','2018','2019']},
-											{label: "Attachment", type: "file"}
+											 items: ['2016','2017','2018','2019']}
 										   ],
 		"u_kb_template_miscellaneous_me":[{label: "Title", type: "string", field: "x_26385_crs_kd_u_kb_title", required: "1"},
 											{label: "Description", type: "html", field: "x_26385_crs_kd_u_kb_description"},
@@ -79,8 +75,7 @@
 											]},
 											{label: "Point of contact and contact information", type: "string", field: "x_26385_crs_kd_u_kb_point_of_contact_and_contact_information"},
 											{label: "Fiscal Year", type: "checkbox", field: "x_26385_crs_kd_u_kb_fiscal_year",
-											 items: ['2017','2018','2019','2020','2021']},
-											{label: "Attachment", type: "file"}],
+											 items: ['2017','2018','2019','2020','2021']}],
 		"u_kb_template_presentations":[{label: "Title", type: "string", field: "x_26385_crs_kd_u_kb_title", required: "1"},
 											{label: "CRS POC(s)", type: "string", field: "x_26385_crs_kd_u_kb_crs_poc_s"},
 											{label: "Originated outside of CRS", type: "boolean", field: "x_26385_crs_kd_u_kb_originated_outside_of_crs", displayWhenTrue:[3,4], displayWhenFalse:[6,7,8,11,12,13]},
@@ -97,35 +92,115 @@
 									        {label: "Includes analysis", type: "boolean", field: "x_26385_crs_kd_u_kb_includes_analysis", displayWhenTrue:[14,15,16], displayWhenFalse:[]},
 									        {label: "Are the data in draft form?", type: "boolean", field: "x_26385_crs_kd_u_kb_data_in_draft_form", display: false},
 											{label: "Is the underlying data covered under a DUDA (i.e. doublecheck with CRS POC before sharing data)?", type: "boolean", field: "x_26385_crs_kd_u_kb_data_covered", display: false},
-											{label: "Analysis Notes", type: "html", field: "x_26385_crs_kd_u_kb_analysis_notes", display: false},
-											{label: "Attachment", type: "file"}]
+											{label: "Analysis Notes", type: "html", field: "x_26385_crs_kd_u_kb_analysis_notes", display: false}]
 	};
 	
-	return data_columns[category];
-
+	var result = {};
+	
+	result.schema = data_columns[template];
+	//get article values
+	result.content = {};
+	var item = new GlideRecord(template);
+	item.addQuery('number', number);
+	item.query();
+	item.next();
+	
+	result.content.sys_id = item.sys_id.toString();
+	result.content.number = item.number.toString();
+	result.content.kb = item.kb_knowledge_base.toString();
+	result.content.cat = item.getDisplayValue("kb_category");
+	var attachments = [];
+	if(version == "" || item.x_26385_crs_kd_u_kb_article_version.toString() == version){
+		for(var j = 0; j < result.schema.length; j++){
+			if(item.getDisplayValue(result.schema[j].field) == null || item.getDisplayValue(result.schema[j].field).trim().length == 0){
+				result.content[result.schema[j].field] = "";					
+			}else{
+				result.content[result.schema[j].field] = item.getDisplayValue(result.schema[j].field);
+				if(result.content[result.schema[j].field].charAt(0) == '{'){
+					result.content[result.schema[j].field] = result.content[result.schema[j].field].replace(/{/g, '').replace(/}/g, '');
+				}
+			}
+		}
+		var v = new GlideRecord('x_26385_crs_kd_versions');
+		v.addQuery('article_number', result.content.number);
+		v.addQuery('article_version', item.x_26385_crs_kd_u_kb_article_version);
+		v.addQuery('article_field', 'attachments');
+		v.query();
+		if(v.next()){
+			attachments = v.article_field_value.split(",");
+		}
+		result.version = item.x_26385_crs_kd_u_kb_article_version.toString();
+	}
+	else{
+		var v = new GlideRecord('x_26385_crs_kd_versions');
+		v.addQuery('article_number', result.content.number);
+		v.addQuery('article_version', version);
+		v.query();
+		var article = {};
+		while(v.next()){
+			if(v.article_field == "attachments"){
+				attachments = v.article_field_value.split(",");
+			}
+			else{
+				article[v.article_field] = v.article_value.toString();
+			}
+		}
+		for(var j = 0; j < result.schema.length; j++){
+			if(article[result.schema[j].field] == null || article[result.schema[j].field].trim().length == 0){
+				result.content[result.schema[j].field] = "";					
+			}else{
+				result.content[result.schema[j].field] = article[result.schema[j].field];
+				if(result.content[result.schema[j].field].charAt(0) == '{'){
+					result.content[result.schema[j].field] = result.content[result.schema[j].field].replace(/{/g, '').replace(/}/g, '');
+				}
+			}
+		}
+		result.version = version;
+	}
+	
+	
+	result.attachments = [];
+	if(attachments.length > 0){
+		var gr = new GlideRecord('sys_attachment');
+		gr.addQuery("table_sys_id", result.content.sys_id);
+		gr.addQuery('content_type','STARTSWITH','application/');
+		gr.query();
+		while (gr.next()){
+			var tmp = {};
+			if(attachments.indexOf(gr.sys_id.toString()) > -1){
+				tmp.attach_sys_id = gr.sys_id.toString();
+				tmp.file_name = gr.file_name.toString();
+				tmp.file_type = gr.content_type.toString();
+				tmp.created_by = gr.sys_created_by.toString();
+				result.attachments.push(tmp);
+			}
+		}
+	}
+	
+	return result;
 })(request, response);]]></operation_script>
-        <operation_uri>/api/x_26385_crs_kd/export/getDocumentSchema</operation_uri>
+        <operation_uri>/api/x_26385_crs_kd/export/getDocumentWithSchema</operation_uri>
         <produces>application/json,application/xml,text/xml</produces>
         <produces_customized>false</produces_customized>
-        <relative_path>/getDocumentSchema</relative_path>
+        <relative_path>/getDocumentWithSchema</relative_path>
         <request_example/>
         <requires_acl_authorization>false</requires_acl_authorization>
         <requires_authentication>true</requires_authentication>
         <short_description/>
         <sys_class_name>sys_ws_operation</sys_class_name>
         <sys_created_by>yuw5@nih.gov</sys_created_by>
-        <sys_created_on>2019-04-09 22:20:42</sys_created_on>
+        <sys_created_on>2019-04-24 15:13:42</sys_created_on>
         <sys_customer_update>false</sys_customer_update>
-        <sys_id>4a43195cdbbcb30054d8ff621f9619f8</sys_id>
-        <sys_mod_count>25</sys_mod_count>
-        <sys_name>getDocumentSchema</sys_name>
+        <sys_id>dccef481dbc5b70054d8ff621f961938</sys_id>
+        <sys_mod_count>17</sys_mod_count>
+        <sys_name>getDocumentWithSchema</sys_name>
         <sys_package display_value="CRS Knowledge Database" source="x_26385_crs_kd">404e613b4f9213007221e321a310c738</sys_package>
         <sys_policy/>
         <sys_replace_on_upgrade>false</sys_replace_on_upgrade>
         <sys_scope display_value="CRS Knowledge Database">404e613b4f9213007221e321a310c738</sys_scope>
-        <sys_update_name>sys_ws_operation_4a43195cdbbcb30054d8ff621f9619f8</sys_update_name>
+        <sys_update_name>sys_ws_operation_dccef481dbc5b70054d8ff621f961938</sys_update_name>
         <sys_updated_by>yuw5@nih.gov</sys_updated_by>
-        <sys_updated_on>2019-04-30 21:42:50</sys_updated_on>
+        <sys_updated_on>2019-04-30 21:43:12</sys_updated_on>
         <web_service_definition display_value="export">01e1bbe7db6a53005358dc50cf961994</web_service_definition>
         <web_service_version/>
     </sys_ws_operation>

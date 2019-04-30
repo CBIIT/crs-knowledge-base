@@ -1,0 +1,223 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<record_update table="sys_ws_operation">
+    <sys_ws_operation action="INSERT_OR_UPDATE">
+        <active>true</active>
+        <consumes>application/json,application/xml,text/xml</consumes>
+        <consumes_customized>false</consumes_customized>
+        <default_operation_uri/>
+        <enforce_acl>cf9d01d3e73003009d6247e603f6a990</enforce_acl>
+        <http_method>POST</http_method>
+        <name>saveVersion</name>
+        <operation_script><![CDATA[(function process(/*RESTAPIRequest*/ request, /*RESTAPIResponse*/ response) {
+	var metadata = {
+		"u_kb_template_top_accomplishment":{
+						kb:"f5644dcadb54ab0054d8ff621f9619d7",
+						cat:"bef4810edb54ab0054d8ff621f9619e8",
+						schema:["x_26385_crs_kd_u_kb_title","x_26385_crs_kd_u_kb_cancer_site_type","x_26385_crs_kd_u_kb_description",
+								"x_26385_crs_kd_u_kb_doc","x_26385_crs_kd_u_kb_fiscal_year","x_26385_crs_kd_u_kb_involved_organization",
+								"x_26385_crs_kd_u_kb_references","x_26385_crs_kd_u_kb_research_type","x_26385_crs_kd_u_kb_special_topic"]
+					},
+		"u_kb_template_literature_summary":{
+						kb:"f5644dcadb54ab0054d8ff621f9619d7",
+						cat:"741b4320dbec3f00b86770c08c961965",
+						schema:["x_26385_crs_kd_u_kb_title","x_26385_crs_kd_u_kb_cancer_site_type",
+								"x_26385_crs_kd_u_kb_research_type","x_26385_crs_kd_u_kb_special_topic",
+								"x_26385_crs_kd_u_kb_description","x_26385_crs_kd_u_kb_fiscal_year"]
+					},
+		"u_kb_template_miscellaneous_me":{
+					   kb:"2c42d2dedba47340b86770c08c9619a9",
+					   cat: "6c821adedba47340b86770c08c961913",
+					   schema:["x_26385_crs_kd_u_kb_title","x_26385_crs_kd_u_kb_description","x_26385_crs_kd_u_kb_moonshot_recommendation",
+							   "x_26385_crs_kd_u_kb_cross_cutting_themes_and_goals","x_26385_crs_kd_u_kb_fiscal_year",
+							   "x_26385_crs_kd_u_kb_cmit","x_26385_crs_kd_u_kb_point_of_contact_and_contact_information"]
+				   },
+		"u_kb_template_presentations":{
+					   kb:"ff315a9edba47340b86770c08c961999",
+					   cat: "40e112dedba47340b86770c08c96191e",
+					   schema:["x_26385_crs_kd_u_kb_title","x_26385_crs_kd_u_kb_crs_poc_s","x_26385_crs_kd_u_kb_originated_outside_of_crs",
+							   "x_26385_crs_kd_u_kb_obtained_permission_to_share","x_26385_crs_kd_u_kb_originator_owner","x_26385_crs_kd_u_kb_date_presented_or_shared",
+							   "x_26385_crs_kd_u_kb_presented_to","x_26385_crs_kd_u_kb_presented_to_leadership_level","x_26385_crs_kd_u_kb_presented_to_public",
+							   "x_26385_crs_kd_u_kb_brief_description","x_26385_crs_kd_u_kb_suggested_tags_keywords","x_26385_crs_kd_u_kb_related_information",
+							   "x_26385_crs_kd_u_kb_comments","x_26385_crs_kd_u_kb_includes_analysis","x_26385_crs_kd_u_kb_data_in_draft_form",
+							   "x_26385_crs_kd_u_kb_data_covered","x_26385_crs_kd_u_kb_analysis_notes"]
+				   }};
+	
+	var template = request.body.data.template;
+	var params = request.body.data.params;
+	var version = params.version; //editing version
+	var isMainVersion = params.isMainVersion;
+	var specifyVersion = params.specifyVersion; //targeting version
+	var annotation = params.annotation; // targeting annotation
+	var attachments = params.attachments.toString();
+	var number = params.number;
+	
+	var result = {};
+	var item = new GlideRecord(template);
+	item.addQuery('number',number);
+	item.query();
+	item.next();
+	var top_version = item.x_26385_crs_kd_u_kb_article_version.toString();
+	var sys_id = item.sys_id.toString();
+	if(isMainVersion){
+		if(parseFloat(top_version) <= parseFloat(specifyVersion)){
+			//if top version is less than this version, replace the top version with this version
+			var v = new GlideRecord('x_26385_crs_kd_versions');
+			
+			metadata[template].schema.forEach(function(field){
+				v.initialize(); 
+				v.article_field = field;
+				v.article_version = top_version;
+				v.article_number = number;
+				v.article_field_value = item[field];
+				v.insert();
+			});
+			//also save this version to main table for search purpose
+			metadata[template].schema.forEach(function(field){
+				item[field] = params[field];
+			});
+			item.x_26385_crs_kd_u_kb_article_version = specifyVersion;
+			item.update();
+		}
+		else{
+			//else, only save this version to versions table
+			var vs = new GlideRecord('x_26385_crs_kd_versions');
+			
+			metadata[template].schema.forEach(function(field){
+				vs.initialize(); 
+				vs.article_field = field;
+				vs.article_version = specifyVersion;
+				vs.article_number = number;
+				vs.article_field_value = params[field];
+				vs.insert();
+			});
+		}
+		//annotation
+		var a = new GlideRecord('x_26385_crs_kd_versions');
+		a.initialize(); 
+		a.article_field = "annotation";
+		a.article_version = specifyVersion;
+		a.article_number = number;
+		a.article_field_value = annotation;
+		a.insert();
+		result.version = specifyVersion;
+	}
+	else{
+		//incremental version based on the editing version
+		var newVersion = "";
+		var idx = version.indexOf('.');
+		var newVersion_main  = "";
+		if(idx == -1){
+			newVersion_main = version;
+		}
+		else{
+			newVersion_main = version.substring(0, idx);
+		}
+		var vn = new GlideRecord('x_26385_crs_kd_versions');
+			vn.addQuery('article_version','<', parseFloat(newVersion_main) + 1);
+			vn.addQuery('article_version','>=', parseFloat(newVersion_main));
+		    vn.addQuery('article_number', number);
+		    vn.orderByDesc('article_version');
+		    vn.query();
+		if(vn.getRowCount() == 0){
+			newVersion = newVersion_main + ".1";
+		}
+		else{
+			vn.next();
+			var latestVersion = vn.article_version.toString();
+			idx = latestVersion.indexOf('.');
+			var tmp = "";
+			if(idx > -1){
+				tmp = parseInt(latestVersion.substring(idx+1)) + 1;
+			}
+			else{
+				tmp = 1;
+			}
+			newVersion = newVersion_main + "." + tmp;
+		}
+		if(parseFloat(top_version) <= parseFloat(newVersion)){
+			//if top version is less than this version, replace the top version with this version
+			var vk = new GlideRecord('x_26385_crs_kd_versions');
+			
+			metadata[template].schema.forEach(function(field){
+				vk.initialize(); 
+				vk.article_field = field;
+				vk.article_version = top_version;
+				vk.article_number = number;
+				vk.article_field_value = item[field];
+				vk.insert();
+			});
+			//also save this version to main table for search purpose
+			metadata[template].schema.forEach(function(field){
+				item[field] = params[field];
+			});
+			item.x_26385_crs_kd_u_kb_article_version = newVersion;
+			item.update();
+		}
+		else{
+			//else, only save this version to versions table
+			var vm = new GlideRecord('x_26385_crs_kd_versions');
+			
+			metadata[template].schema.forEach(function(field){
+				vm.initialize(); 
+				vm.article_field = field;
+				vm.article_version = newVersion;
+				vm.article_number = number;
+				vm.article_field_value = params[field];
+				vm.insert();
+			});
+		}
+		
+		//annotation
+		var a = new GlideRecord('x_26385_crs_kd_versions');
+		a.initialize(); 
+		a.article_field = "annotation";
+		a.article_version = newVersion;
+		a.article_number = number;
+		a.article_field_value = "Regular version";
+		a.insert();
+		
+		result.version = newVersion;
+	}
+	
+	// if this version contains attachment from the editing version, save attachment sys_id
+	if(attachments != ""){
+		var att = new GlideRecord('x_26385_crs_kd_versions');
+		att.initialize(); 
+		att.article_field = "attachments";
+		att.article_version = result.version;
+		att.article_number = number;
+		att.article_field_value = attachments;
+		att.insert();
+	}
+	
+	
+	result.sys_id = sys_id;
+	
+	return result;
+})(request, response);]]></operation_script>
+        <operation_uri>/api/x_26385_crs_kd/export/saveVersion</operation_uri>
+        <produces>application/json,application/xml,text/xml</produces>
+        <produces_customized>false</produces_customized>
+        <relative_path>/saveVersion</relative_path>
+        <request_example/>
+        <requires_acl_authorization>false</requires_acl_authorization>
+        <requires_authentication>true</requires_authentication>
+        <short_description/>
+        <sys_class_name>sys_ws_operation</sys_class_name>
+        <sys_created_by>yuw5@nih.gov</sys_created_by>
+        <sys_created_on>2019-04-29 21:36:12</sys_created_on>
+        <sys_customer_update>false</sys_customer_update>
+        <sys_id>6a92847adb4dfb0054d8ff621f9619ef</sys_id>
+        <sys_mod_count>5</sys_mod_count>
+        <sys_name>saveVersion</sys_name>
+        <sys_package display_value="CRS Knowledge Database" source="x_26385_crs_kd">404e613b4f9213007221e321a310c738</sys_package>
+        <sys_policy/>
+        <sys_replace_on_upgrade>false</sys_replace_on_upgrade>
+        <sys_scope display_value="CRS Knowledge Database">404e613b4f9213007221e321a310c738</sys_scope>
+        <sys_update_name>sys_ws_operation_6a92847adb4dfb0054d8ff621f9619ef</sys_update_name>
+        <sys_updated_by>yuw5@nih.gov</sys_updated_by>
+        <sys_updated_on>2019-04-30 22:29:55</sys_updated_on>
+        <web_service_definition display_value="export">01e1bbe7db6a53005358dc50cf961994</web_service_definition>
+        <web_service_version/>
+    </sys_ws_operation>
+</record_update>

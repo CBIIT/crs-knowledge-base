@@ -2,7 +2,7 @@
 <record_update table="sp_widget">
     <sp_widget action="INSERT_OR_UPDATE">
         <category>custom</category>
-        <client_script><![CDATA[function($rootScope, $scope, $location, $http,CRSSearchBasicArticleByCriteria) {
+        <client_script><![CDATA[function($rootScope, $scope, $location, $http,NERDSearch) {
 	/* widget controller */
 	//document.getElementById("progressing-bar").style.display = "flex";
 	//$scope.$emit('crs.header.display', false);
@@ -58,7 +58,7 @@
 									knowledgeBaseID: c.data.selectedKnowledgeBase.id
 								 };
 		
-			CRSSearchBasicArticleByCriteria.getFilters(params,c.data.sessionId).then(function(res){
+			NERDSearch.getFilters(params,c.data.sessionId).then(function(res){
 				var stat = res.data.result;
 				c.data.filters = stat.filters;
 				c.data.tmp = stat.tmp;
@@ -110,7 +110,7 @@
 									knowledgeBaseID: c.data.selectedKnowledgeBase.id
 								 };
 		
-			CRSSearchBasicArticleByCriteria.getFilters(params,c.data.sessionId).then(function(res){
+			NERDSearch.getFilters(params,c.data.sessionId).then(function(res){
 				var stat = res.data.result;
 				c.data.filters = stat.filters;
 				$scope.$apply();
@@ -124,7 +124,7 @@
 									knowledgeBaseID: c.data.selectedKnowledgeBase.id
 								 };
 		
-			CRSSearchBasicArticleByCriteria.getFilters(params,c.data.sessionId).then(function(res){
+			NERDSearch.getFilters(params,c.data.sessionId).then(function(res){
 				var stat = res.data.result;
 				c.data.filters = stat.filters;
 				c.data.tmp = stat.tmp;
@@ -180,7 +180,7 @@
 			            selectedSpecialTopics: c.data.selectedSpecialTopic.length > 0 ? c.data.selectedSpecialTopic.join(",") : ""
 								 };
 		
-			CRSSearchBasicArticleByCriteria.getList(params,c.data.sessionId).then(function(res){
+			NERDSearch.getList(params,c.data.sessionId).then(function(res){
 				c.data.tabs = res.data.result.searchResults;
 				
 				var idx = 0;
@@ -210,7 +210,7 @@
 									knowledgeBaseID: c.data.selectedKnowledgeBase.id
 								 };
 		
-			CRSSearchBasicArticleByCriteria.getList(params,c.data.sessionId).then(function(res){
+			NERDSearch.getList(params,c.data.sessionId).then(function(res){
 				c.data.tabs = res.data.result.searchResults;
 				
 				var idx = 0;
@@ -244,7 +244,7 @@
 									selectedRecommendation: c.data.selectedRecommendation.length > 0 ? c.data.selectedRecommendation.join(",") : ""
 								 };
 		
-			CRSSearchBasicArticleByCriteria.getList(params,c.data.sessionId).then(function(res){
+			NERDSearch.getList(params,c.data.sessionId).then(function(res){
 				c.data.tabs = res.data.result.searchResults;
 				
 				var idx = 0;
@@ -271,7 +271,7 @@
 		
 	};
 	
-	c.gotoDetail = function(sys_id,template_id, cat){
+	c.gotoDetail = function(sys_id,template_id, number){
 		var hasFilter = false;
 		var criteria = "";
 		//save searchCriteria to global scope
@@ -314,11 +314,11 @@
 		//redirect to detail page
 		s.xpage = 'kd_article';
 		s.aid = sys_id;
-		s.cat = cat;
+		s.number = number;
 		s.tid = template_id;
 		s.hasFilter = hasFilter?'1':'0';
 		//$location.search(s).replace();
-		var url = '/nerd?xpage=kd_article&kb_knowledge_base='+c.data.selectedKnowledgeBase.id+'&aid='+s.aid+'&cat='+s.cat+'&tid='+s.tid+'&hasFilter='+s.hasFilter;
+		var url = '/nerd?xpage=kd_article_view&kb_knowledge_base='+c.data.selectedKnowledgeBase.id+'&aid='+s.aid+'&number='+s.number+'&tid='+s.tid+'&hasFilter='+s.hasFilter;
 		if(s.hasFilter == '1'){
 			url += criteria; 
 		}
@@ -857,7 +857,7 @@
         <sys_created_on>2018-06-01 19:53:54</sys_created_on>
         <sys_customer_update>false</sys_customer_update>
         <sys_id>cf120a374fd213007221e321a310c724</sys_id>
-        <sys_mod_count>1125</sys_mod_count>
+        <sys_mod_count>1131</sys_mod_count>
         <sys_name>[crs] KD Search</sys_name>
         <sys_package display_value="CRS Knowledge Database" source="x_26385_crs_kd">404e613b4f9213007221e321a310c738</sys_package>
         <sys_policy/>
@@ -865,7 +865,7 @@
         <sys_scope display_value="CRS Knowledge Database">404e613b4f9213007221e321a310c738</sys_scope>
         <sys_update_name>sp_widget_cf120a374fd213007221e321a310c724</sys_update_name>
         <sys_updated_by>yuw5@nih.gov</sys_updated_by>
-        <sys_updated_on>2019-04-17 01:06:04</sys_updated_on>
+        <sys_updated_on>2019-04-25 20:28:11</sys_updated_on>
         <template><![CDATA[<div class="container">
   <div class="row">
         <div class="col-md-3">
@@ -1123,7 +1123,7 @@
                         <div uib-accordion-group ng-repeat="tab in c.data.tabs" ng-if="tab.show" class="panel-default" is-open="tab.isOpen">
                           <uib-accordion-heading>
                             <div>
-                              {{tab.name}} ({{tab.list.length}}) <a ng-if="tab.tmpl == 'u_kb_template_literature_summary' || tab.tmpl == 'u_kb_template_miscellaneous_me' || tab.tmpl == 'u_kb_template_presentations'" href="#" ng-click="c.gotoNewSubmission(tab.tmpl)" style="margin-left:20px;">+ Add new Article</a> <i class="pull-right" ng-class="{'fa fa-minus-square': tab.isOpen, 'fa fa-plus-square': !tab.isOpen}"></i>
+                              {{tab.name}} ({{tab.list.length}}) <a ng-if="tab.tmpl == 'u_kb_template_top_accomplishment' || tab.tmpl == 'u_kb_template_literature_summary' || tab.tmpl == 'u_kb_template_miscellaneous_me' || tab.tmpl == 'u_kb_template_presentations'" href="#" ng-click="c.gotoNewSubmission(tab.tmpl)" style="margin-left:20px;">+ Add new Article</a> <i class="pull-right" ng-class="{'fa fa-minus-square': tab.isOpen, 'fa fa-plus-square': !tab.isOpen}"></i>
                             </div>
                           </uib-accordion-heading>
                           <ul class="list-group">
@@ -1133,7 +1133,7 @@
                               </div>
                               <div class="content-side">
                                 <i class="glyphicon glyphicon-file"></i>
-                                <a class="kb-title ng-binding" ng-click="c.gotoDetail(result.sys_id, result.template, tab.name)" role="link">{{result.title}}</a>
+                                <a class="kb-title ng-binding" ng-click="c.gotoDetail(result.sys_id, result.template, result.number)" role="link">{{result.title}}</a>
                                 <br>
                                 <!--
                                 <div class="kb-ref">

@@ -1,0 +1,516 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<record_update table="sp_widget">
+    <sp_widget action="INSERT_OR_UPDATE">
+        <category>custom</category>
+        <client_script><![CDATA[function($location,$mdDialog, NERDArticle) {
+  /* widget controller */
+  var c = this;
+	var s = $location.search();
+	
+	c.saving = false;
+	c.save_text = "Save";
+	c.save_version_text = "Save this Version";
+	c.data.isMainVersion = false;
+	
+	c.attachments = [{name: 'file2upload'}];
+	c.prev_attachments = [];
+	
+	if(s.tid){
+		c.data.selectedKnowledgeCategory = s.tid;
+	}
+	
+	
+	//fontselect
+	c.mceOptions = {
+		resize: true,
+		height: 200,
+		menubar: false,
+		statusbar: false,
+		plugins: 'link autoresize',
+		toolbar: 'undo redo | fontsizeselect bold italic | alignleft aligncenter alignright alignjustify | bullist numlist | link'
+  }
+	
+	c.transform = function(field, arr_1, arr_2){
+		if(arr_1 == undefined && arr_2 == undefined){
+			return;
+		}
+		var sub = [];
+		if(c.data[field]){
+			arr_1.forEach(function(idx){
+				c.schema[idx].display = true;
+				if(c.schema[idx].type == 'boolean' && c.schema[idx].displayWhenTrue !== undefined){
+					sub.push(idx);
+				}
+			});
+			arr_2.forEach(function(idx){
+				c.schema[idx].display = false;
+				if(c.schema[idx].type == 'boolean' && c.schema[idx].displayWhenTrue !== undefined){
+					sub.push(idx);
+				}
+			});
+		}
+		else{
+			arr_1.forEach(function(idx){
+				c.schema[idx].display = false;
+				if(c.schema[idx].type == 'boolean' && c.schema[idx].displayWhenTrue !== undefined){
+					sub.push(idx);
+				}
+			});
+			arr_2.forEach(function(idx){
+				c.schema[idx].display = true;
+				if(c.schema[idx].type == 'boolean' && c.schema[idx].displayWhenTrue !== undefined){
+					sub.push(idx);
+				}
+			});
+		}
+		if(sub.length > 0){
+			sub.forEach(function(s){
+				if(!c.schema[s].display){
+					c.data[c.schema[s].field] = false;
+					c.transform(c.schema[s].field, c.schema[s].displayWhenTrue, c.schema[s].displayWhenFalse);
+				}
+			});
+		}
+		
+	};
+	
+	var ps = {};
+	ps.template = s.tid;
+	ps.number = s.number;
+	ps.version = s.version ? s.version : "";
+	NERDArticle.getArticleWithSchema(ps, c.data.sessionId).then(function(res){
+		var result = res.data.result;
+		c.schema = result.schema;
+		c.data = result.content;
+		c.items = {};
+		c.selected = {};
+		c.version = result.version;
+		if(c.version.indexOf(".") == -1){
+			c.version += ".0";
+		}
+		c.schema.forEach(function(item){
+			if(item.type == "checkbox"){
+				c.items[item.field] = item.items;
+				c.selected[item.field] = c.data[item.field] == "" ? [] : c.data[item.field].split(',');
+			}
+		});
+		c.prev_attachments = result.attachments;
+		$scope.$apply();
+	},function(error){
+		console.log(error);
+	});
+	
+	c.addAttachment = function(event){
+		c.attachments.push({name: 'file2upload'});
+	};
+	
+	c.deleteAttachment = function(event){
+		var el = event.currentTarget;
+		c.attachments.pop();
+    el.parentNode.parentNode.removeChild(el.parentNode);
+	};
+	
+	c.removeAttachment = function(attach_sys_id){
+		var idx = 0;
+		var count = 0;
+		c.prev_attachments.forEach(function(att){
+			if(att.attach_sys_id == attach_sys_id){
+				idx = count;
+			}
+			count ++;
+		});
+		c.prev_attachments.splice(idx, 1);
+	};
+	
+	c.toggle = function (item, list) {
+    var idx = list.indexOf(item);
+    if (idx > -1) {
+      list.splice(idx, 1);
+    }
+    else {
+      list.push(item);
+    }
+  };
+	
+	c.exists = function (item, list) {
+		return list.indexOf(item) > -1;
+  };
+
+	c.isIndeterminate = function(field) {
+    return (c.selected[field].length !== 0 &&
+        c.selected[field].length !== c.items[field].length);
+  };
+	
+	c.isChecked = function(field) {
+		return c.selected[field].length === c.items[field].length;
+  };
+
+  c.toggleAll = function(field) {
+    if (c.selected[field].length === c.items[field].length) {
+      c.selected[field] = [];
+    } else if (c.selected[field].length === 0 || c.selected[field].length > 0) {
+      c.selected[field] = c.items[field].slice(0);
+    }
+  };
+	
+	c.tosave = function(ev){
+		var input = $('input[name=file2upload]');
+		var length = input.length;
+		var pass = true;
+		var errorMessage = "";
+		var element;
+		for(var k = 0; k< length; k++){
+			element = input[k];
+			if(element.files.length == 0){
+				continue;
+			}
+			var file = element.files[0];
+			if(file.type !== 'application/pdf' && file.type !== 'application/vnd.ms-powerpoint' 
+				 && file.type !== 'application/vnd.openxmlformats-officedocument.presentationml.presentation'
+				 && file.type !== 'application/msword'
+				 && file.type !== 'application/vnd.openxmlformats-officedocument.wordprocessingml.document'){
+				pass = pass && false;
+				errorMessage = 'Please attach a PDF/PPT/Word file.';
+			}
+			else if(file.size > 18874368){
+				pass = pass && false;
+				errorMessage = 'Please make sure file size is less than 18MB.';
+			}
+		};
+		
+		if(!c.data.x_26385_crs_kd_u_kb_title || c.data.x_26385_crs_kd_u_kb_title.trim() == ""){
+			window.showMessageBox("Please enter a title for you submission.");
+		}
+		else if(!pass){
+			window.showMessageBox(errorMessage);
+		}
+		else{
+		  $mdDialog.show({
+				contentElement: '#myDialog',
+				parent: angular.element(document.body),
+				targetEvent: ev,
+				clickOutsideToClose: false
+			});
+		}
+		
+	};
+	
+	function pReadFile(file){
+		return new Promise(function(resolve, reject){
+			var fr = new FileReader();  
+			fr.onload = function(){
+				var encoded = fr.result.replace(/^data:(.*;base64,)?/, '');
+				if ((encoded.length % 4) > 0) {
+					encoded += '='.repeat(4 - (encoded.length % 4));
+				}
+				resolve(encoded);
+			};
+			fr.readAsDataURL(file);
+		});
+	}
+	
+	function readFile(file, callback) {
+		var fileReader = new FileReader();
+		fileReader.onload = function() {
+			//var result = fileReader.result.replace('data:application/pdf;base64,', '');
+			var encoded = fileReader.result.replace(/^data:(.*;base64,)?/, '');
+      if ((encoded.length % 4) > 0) {
+        encoded += '='.repeat(4 - (encoded.length % 4));
+      }
+			callback(encoded);
+		}
+		fileReader.readAsDataURL(file); //file must be base64
+	}
+	
+	c.saveAttachment = function(version, input,template, sys_id, sessionId, idx){
+		if(input.length <= idx){
+			return new Promise(function(resolve, reject){
+								resolve("1");
+							});
+		}
+		else if(input[idx].files.length == 0){
+			return c.saveAttachment(version, input,template, sys_id, sessionId, idx + 1);
+		}
+		else{
+			var file = input[idx].files[0];
+			return new Promise(function(resolve, reject){
+				pReadFile(file).then(function(base64){
+					var attach = {
+						template: template,
+						version: version,
+						number: ps.number,
+						sys_id: sys_id,
+						fileName: file.name,
+						fileType: file.type,
+						fileContents : base64
+					};
+					NERDArticle.saveAttachmentWithVersion(attach, sessionId).then(function(res){
+						var result = res.data.result;
+						c.saveAttachment(version, input, template, sys_id, sessionId, idx + 1).then(function(dt){
+							resolve(dt);
+						},
+						function(error){
+							console.log(error);
+						});
+						
+					},function(error){
+						console.log(error);
+					});
+				},function(error){
+					console.log(error);
+				});
+			});
+			
+			
+		}
+	};
+	
+	c.saveVersion = function(){
+		var input = $('input[name=file2upload]');
+		var params = {};
+		c.schema.forEach(function(item){
+			if(item.display !== undefined && !item.display){
+				params[item.field] = item.type == 'boolean' ? "No" : "";
+			}
+			else if(item.type == 'boolean'){
+				params[item.field] = (params[item.field] == undefined || params[item.field] == "" || !params[item.field]) ? "No" : "Yes";
+			}
+			else if(item.type == 'date'){
+				if(params[item.field] == undefined){
+					params[item.field] = "";
+				}
+				else if(params[item.field] !== ""){
+					params[item.field] = new Date(params[item.field]).toISOString().substring(0, 10);
+				}
+			}
+			else if(item.type == 'checkbox'){
+				if(c.selected[item.field].length > 0){
+					params[item.field] = '{'+c.selected[item.field].join("},{") + '}';
+				}
+				else{
+					params[item.field] = "";
+				}
+			}
+			else if(item.type == 'string' || item.type == 'html'){
+				params[item.field] = c.data[item.field];
+			}
+			else if(item.type == 'radio'){
+				params[item.field] = c.data[item.field];
+			}
+			else if(item.type == 'file'){
+				
+			}
+		});
+		
+		params.number = ps.number;
+		params.version = c.version;
+		params.isMainVersion = c.data.isMainVersion;
+		params.specifyVersion = c.data.specifyVersion;
+		params.annotation = c.data.annotation;
+		var att_arr = [];
+		c.prev_attachments.forEach(function(att){
+			att_arr.push(att.attach_sys_id);
+		});
+		params.attachments = att_arr.length > 0 ? att_arr.join(",") : "";
+		console.log(params);
+		
+		
+		var template = s.tid;
+
+		c.saving = true;
+		c.save_text = "Saving...";
+
+		NERDArticle.saveVersion(template, params, c.data.sessionId).then(function(res){
+			var result = res.data.result;
+			if(result == "0"){
+				return new Promise(function(resolve, reject){
+					resolve("0");
+				});
+			}
+			else{
+				var version = result.version;
+				var sys_id = result.sys_id;
+				return c.saveAttachment(version, input, template, sys_id, c.data.sessionId, 0);
+			}
+		},function(error){
+			console.log(error);
+		}).then(function(rp){
+			c.saving = false;
+			c.save_text = "Save";
+			var v = rp;
+			if(v == "1"){
+				window.showMessageBox("Article has been successfully saved.",{xpage:'kd_article_view'});
+			}
+			else{
+				window.showMessageBox("Failed to save your changes.");
+			}
+
+		}, function(error){
+			console.log(error);
+		});
+	}
+	
+	c.cancelDialog = function(){
+		$mdDialog.cancel();
+	};
+	
+	c.goBacktoArticle = function(){
+		s.xpage = "kd_article_view";
+		$location.search(s).replace();
+	}
+	
+}]]></client_script>
+        <controller_as>c</controller_as>
+        <css/>
+        <data_table>sp_instance</data_table>
+        <demo_data/>
+        <description/>
+        <docs/>
+        <field_list/>
+        <has_preview>false</has_preview>
+        <id>crs-kd-article-edit</id>
+        <internal>false</internal>
+        <link/>
+        <name>[crs] KD Article Edit</name>
+        <option_schema/>
+        <public>false</public>
+        <roles/>
+        <script><![CDATA[(function() {
+  /* populate the 'data' object */
+  /* e.g., data.table = $sp.getValue('table'); */
+	data.sessionId = gs.getSession().getSessionToken();
+})();]]></script>
+        <servicenow>false</servicenow>
+        <sys_class_name>sp_widget</sys_class_name>
+        <sys_created_by>yuw5@nih.gov</sys_created_by>
+        <sys_created_on>2019-04-23 21:21:16</sys_created_on>
+        <sys_customer_update>false</sys_customer_update>
+        <sys_id>cadc89b8dbc9770054d8ff621f961927</sys_id>
+        <sys_mod_count>146</sys_mod_count>
+        <sys_name>[crs] KD Article Edit</sys_name>
+        <sys_package display_value="CRS Knowledge Database" source="x_26385_crs_kd">404e613b4f9213007221e321a310c738</sys_package>
+        <sys_policy/>
+        <sys_replace_on_upgrade>false</sys_replace_on_upgrade>
+        <sys_scope display_value="CRS Knowledge Database">404e613b4f9213007221e321a310c738</sys_scope>
+        <sys_update_name>sp_widget_cadc89b8dbc9770054d8ff621f961927</sys_update_name>
+        <sys_updated_by>yuw5@nih.gov</sys_updated_by>
+        <sys_updated_on>2019-04-30 22:34:34</sys_updated_on>
+        <template><![CDATA[<div id="crs-article">
+  <div class="container">
+    <div class="row row-space">
+          <div class="col-md-12 article-block">     
+            <div class="block-body">
+              <div>
+                <h4 style="font-weight:bold;">Category</h4> 
+                <div>
+                	{{c.data.cat}}
+                </div>
+              </div>
+              <div ng-repeat="entry in c.schema track by $index" id="{{entry.field}}" ng-show=" entry.display == undefined || entry.display ">
+                <h4 style="font-weight:bold;"><i class="fa fa-asterisk" aria-hidden="true" ng-show="entry.required && entry.required == '1'" style="font-size:8px;color:#B22222;vertical-align: middle;"></i> {{entry.label}}</h4> 
+                <div ng-if="entry.type == 'string'">
+                	<input type="text" class="form-control" name="{{entry.field}}" id="{{entry.field}}" ng-model="c.data[entry.field]">
+                </div>
+                <div ng-if="entry.type == 'checkbox'">
+                	<div flex-xs flex="50">
+                    <md-checkbox aria-label="Select All"
+                                 ng-checked="c.isChecked(entry.field)"
+                                 md-indeterminate="c.isIndeterminate(entry.field)"
+                                 ng-click="c.toggleAll(entry.field)">
+                      <span ng-if="c.isChecked(entry.field)">Un-</span>Select All
+                    </md-checkbox>
+                  </div>
+                  <div class="submission-checkboxes" ng-repeat="item in entry.items">
+                    <md-checkbox ng-checked="c.exists(item, c.selected[entry.field])" ng-click="c.toggle(item, c.selected[entry.field])">
+                      {{ item }}
+                    </md-checkbox>
+                  </div>
+                </div>
+                <div ng-if="entry.type == 'boolean'">
+                  <div class="submission-checkboxes">
+                    <md-checkbox ng-model="c.data[entry.field]" aria-label="{{entry.label}}" ng-change="c.transform(entry.field, entry.displayWhenTrue,entry.displayWhenFalse);">
+                    </md-checkbox>
+                  </div>
+                </div>
+                <div ng-if="entry.type == 'date'">
+                  <md-datepicker ng-model="c.data[entry.field]" md-placeholder="Enter date"></md-datepicker>
+                </div>
+                <div ng-if="entry.type == 'html'">
+                  <!-- <input type="text" class="form-control" name="{{entry.field}}" id="{{entry.field}}" ng-model="c.data[entry.field]">
+                  <textarea ui-tinymce="c.testMceOptions" ng-model="c.data[entry.field]"></textarea>
+                   -->
+                  <textarea aria-label="{{entry.field}}"
+                            name="{{entry.field}}"
+                            class="form-control"
+                            ng-model="c.data[entry.field]"
+                            ui-tinymce="c.mceOptions"
+                            >
+                  </textarea>
+                  
+                  
+                </div>
+                <div ng-if="entry.type == 'radio'">
+                  <md-radio-group ng-model="c.data[entry.field]">
+                    <md-radio-button class="submission-radios" value="{{item}}" ng-repeat="item in entry.items">{{item}}</md-radio-button>
+                  </md-radio-group>
+                </div>
+              </div>
+              <div>
+                <h4 style="font-weight:bold;">Attachment</h4> 
+                <div>
+                  <div ng-repeat="item in c.attachments" style="margin-bottom:10px;">
+                    <input type="file" style="width:80%;float:left;cursor: pointer;" name="{{item.name}}" class="form-control">
+                    <span class="attachment-action" ng-click="c.addAttachment($event)"><i class="fa fa-plus"></i></span>
+                  	<span class="attachment-action" ng-click="c.deleteAttachment($event)" ng-show = "c.attachments.length > 1"><i class="fa fa-minus"></i></span>
+                  </div>
+                  <span style="color:darkgray;">PDF/PPT/Word only, Maximum upload size 18 MB.</span>
+                </div>
+                <div>
+                  <div class="file-list" style="border-top: 1px solid lightgray;">
+                    <div class="file-block" ng-repeat="attach in c.prev_attachments">
+                      <a target="_blank" href="sys_attachment.do?view=true&sys_id={{attach.attach_sys_id}}">
+                        <i ng-class="attach.file_type == 'application/pdf' ? 'fa fa-file-pdf-o' : 'fa fa-file-powerpoint-o'" aria-hidden="true"></i> {{attach.file_name}}</a>
+                      <a class="btn-remove" ng-click="c.removeAttachment(attach.attach_sys_id)" role="link">×</a>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div class="block-footer" style="text-align:center;">
+              <md-button class="md-raised" ng-disabled="c.saving" style="background-color: #C6375D;color: white;" ng-click="c.tosave($event)">{{c.save_text}}</md-button>
+              <md-button class="md-raised" ng-disabled="c.saving" ng-click="c.goBacktoArticle()">Cancel</md-button>
+            </div>
+          </div>
+		</div>
+  </div>
+</div>
+
+<div style="visibility: hidden">
+  <div class="md-dialog-container" id="myDialog">
+    <md-dialog>
+      <div class="dialog_header">
+        Version Control
+      </div>
+      <div class="dialog_content">
+        <p>
+          By default, system will create a new version greater than this version (v{{c.version}})
+        </p>
+        <div>
+          <input type="Checkbox" name="isMainVersion" ng-model="c.data.isMainVersion" > Specify a main version?
+        </div>
+        <div ng-show="c.data.isMainVersion" style="padding: 10px 10px 0px 10px;">
+          <input type="text" placeholder="Enter main version here" class="form-control" name="specifyVersion" id="specifyVersion" ng-model="c.data.specifyVersion">
+        </div>
+        <div ng-show="c.data.isMainVersion" style="padding: 10px 10px 0px 10px;">
+          <input type="text" placeholder="Enter annotation here" class="form-control" name="annotation" id="annotation" ng-model="c.data.annotation">
+        </div>
+      </div>
+      <div class="dialog_footer">
+        <md-button class="md-raised" style="background-color: #C6375D;color: white;" ng-click="c.saveVersion($event)">{{c.save_version_text}}</md-button>
+        <md-button class="md-raised" ng-click="c.cancelDialog()">Cancel</md-button>
+      </div>
+    </md-dialog>
+  </div>
+</div>]]></template>
+    </sp_widget>
+</record_update>

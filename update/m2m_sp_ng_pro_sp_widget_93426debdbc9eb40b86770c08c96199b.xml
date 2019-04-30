@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <record_update table="m2m_sp_ng_pro_sp_widget">
     <m2m_sp_ng_pro_sp_widget action="INSERT_OR_UPDATE">
-        <sp_angular_provider display_value="CRSSearchBasicArticleByCriteria">f7a1292bdbc9eb40b86770c08c961995</sp_angular_provider>
+        <sp_angular_provider display_value="NERDSearch">f7a1292bdbc9eb40b86770c08c961995</sp_angular_provider>
         <sp_widget display_value="[crs] KD Search">cf120a374fd213007221e321a310c724</sp_widget>
         <sys_class_name>m2m_sp_ng_pro_sp_widget</sys_class_name>
         <sys_created_by>yuw5@nih.gov</sys_created_by>
