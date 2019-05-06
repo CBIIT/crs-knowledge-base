@@ -51,6 +51,8 @@
 											 items: ['Big data/Data sharing','Metastatic cancer','Minority health/Health disparities',
 															 'Moonshot','Pediatric','Rare','Training/Workforce development']},
 											{label: "Description", type: "html", field: "x_26385_crs_kd_u_kb_description"},
+											{label: "References",type: "customize", field: "x_26385_crs_kd_u_kb_references"},
+											{label: "Funding", type: "customize", field: "x_26385_crs_kd_u_kb_funding"},
 											{label: "Fiscal Year", type: "checkbox", field: "x_26385_crs_kd_u_kb_fiscal_year",
 											 items: ['2016','2017','2018','2019']}
 										   ],
@@ -110,7 +112,7 @@
 	result.content.kb = item.kb_knowledge_base.toString();
 	result.content.cat = item.getDisplayValue("kb_category");
 	var attachments = [];
-	if(version == "" || item.x_26385_crs_kd_u_kb_article_version.toString() == version){
+	if(version == "" || parseFloat(item.x_26385_crs_kd_u_kb_article_version.toString()) == parseFloat(version)){
 		for(var j = 0; j < result.schema.length; j++){
 			if(item.getDisplayValue(result.schema[j].field) == null || item.getDisplayValue(result.schema[j].field).trim().length == 0){
 				result.content[result.schema[j].field] = "";					
@@ -142,7 +144,7 @@
 				attachments = v.article_field_value.split(",");
 			}
 			else{
-				article[v.article_field] = v.article_value.toString();
+				article[v.article_field] = v.article_field_value.toString();
 			}
 		}
 		for(var j = 0; j < result.schema.length; j++){
@@ -192,7 +194,7 @@
         <sys_created_on>2019-04-24 15:13:42</sys_created_on>
         <sys_customer_update>false</sys_customer_update>
         <sys_id>dccef481dbc5b70054d8ff621f961938</sys_id>
-        <sys_mod_count>17</sys_mod_count>
+        <sys_mod_count>20</sys_mod_count>
         <sys_name>getDocumentWithSchema</sys_name>
         <sys_package display_value="CRS Knowledge Database" source="x_26385_crs_kd">404e613b4f9213007221e321a310c738</sys_package>
         <sys_policy/>
@@ -200,7 +202,7 @@
         <sys_scope display_value="CRS Knowledge Database">404e613b4f9213007221e321a310c738</sys_scope>
         <sys_update_name>sys_ws_operation_dccef481dbc5b70054d8ff621f961938</sys_update_name>
         <sys_updated_by>yuw5@nih.gov</sys_updated_by>
-        <sys_updated_on>2019-04-30 21:43:12</sys_updated_on>
+        <sys_updated_on>2019-05-02 22:05:47</sys_updated_on>
         <web_service_definition display_value="export">01e1bbe7db6a53005358dc50cf961994</web_service_definition>
         <web_service_version/>
     </sys_ws_operation>

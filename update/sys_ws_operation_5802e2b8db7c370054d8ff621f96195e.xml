@@ -23,7 +23,7 @@
 						cat:"741b4320dbec3f00b86770c08c961965",
 						schema:["x_26385_crs_kd_u_kb_title","x_26385_crs_kd_u_kb_cancer_site_type",
 								"x_26385_crs_kd_u_kb_research_type","x_26385_crs_kd_u_kb_special_topic",
-								"x_26385_crs_kd_u_kb_description","x_26385_crs_kd_u_kb_fiscal_year"]
+								"x_26385_crs_kd_u_kb_description","x_26385_crs_kd_u_kb_references","x_26385_crs_kd_u_kb_funding","x_26385_crs_kd_u_kb_fiscal_year"]
 					},
 		"u_kb_template_miscellaneous_me":{
 					   kb:"2c42d2dedba47340b86770c08c9619a9",
@@ -52,9 +52,22 @@
 	submission.kb_category =  metadata[template].cat;
 	metadata[template].schema.forEach(function(field){
 		submission[field] = data[field];
+		if(field == 'x_26385_crs_kd_u_kb_funding' && data[field].split('|')[0] == 'Yes'){
+			submission.x_26385_crs_kd_u_kb_caution_warning = "No NCI Funding.";
+		}
 	});
 	submission.author = gs.getUserID();
+	submission.x_26385_crs_kd_u_kb_article_version = 1.0; //todo... should be using 0.1 as Draft
 	var sys_id = submission.insert();
+	
+	//save annotation to versions table
+	var a = new GlideRecord('x_26385_crs_kd_versions');
+		a.initialize(); 
+		a.article_field = "annotation";
+		a.article_version = 1.0;
+		a.article_number = submission.number.toString();
+		a.article_field_value = "Initial Version";
+		a.insert();
 	
 	return sys_id;
 
@@ -72,7 +85,7 @@
         <sys_created_on>2019-04-11 18:14:13</sys_created_on>
         <sys_customer_update>false</sys_customer_update>
         <sys_id>5802e2b8db7c370054d8ff621f96195e</sys_id>
-        <sys_mod_count>9</sys_mod_count>
+        <sys_mod_count>14</sys_mod_count>
         <sys_name>saveSubmission</sys_name>
         <sys_package display_value="CRS Knowledge Database" source="x_26385_crs_kd">404e613b4f9213007221e321a310c738</sys_package>
         <sys_policy/>
@@ -80,7 +93,7 @@
         <sys_scope display_value="CRS Knowledge Database">404e613b4f9213007221e321a310c738</sys_scope>
         <sys_update_name>sys_ws_operation_5802e2b8db7c370054d8ff621f96195e</sys_update_name>
         <sys_updated_by>yuw5@nih.gov</sys_updated_by>
-        <sys_updated_on>2019-04-25 20:25:07</sys_updated_on>
+        <sys_updated_on>2019-05-02 21:55:55</sys_updated_on>
         <web_service_definition display_value="export">01e1bbe7db6a53005358dc50cf961994</web_service_definition>
         <web_service_version/>
     </sys_ws_operation>

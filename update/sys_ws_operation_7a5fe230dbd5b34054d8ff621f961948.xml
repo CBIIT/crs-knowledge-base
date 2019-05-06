@@ -1,0 +1,97 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<record_update table="sys_ws_operation">
+    <sys_ws_operation action="INSERT_OR_UPDATE">
+        <active>true</active>
+        <consumes>application/json,application/xml,text/xml</consumes>
+        <consumes_customized>false</consumes_customized>
+        <default_operation_uri/>
+        <enforce_acl>cf9d01d3e73003009d6247e603f6a990</enforce_acl>
+        <http_method>GET</http_method>
+        <name>getLinks</name>
+        <operation_script><![CDATA[(function process(/*RESTAPIRequest*/ request, /*RESTAPIResponse*/ response) {
+	
+	var number = request.queryParams.number.toString();
+	
+    var l = new GlideRecord('x_26385_crs_kd_linked_records');
+	var tmp = l.addQuery('article_number', number);
+	tmp.addOrCondition('reference_article', number);
+	l.query();
+	var links = {};
+	links.used = [];
+	links.ref = [];
+	var used = [];
+	var ref = [];
+	var cat = {};
+	while(l.next()){
+		var an = l.article_number.toString();
+		var ra = l.reference_article.toString();
+		var tem = l.category.toString();
+		if(!(tem in cat)){
+			cat[tem] = [];
+		}
+		if(an == number){
+			ref.push(ra);
+			cat[tem].push(ra);
+		}
+		else{
+			used.push(an);
+			cat[tem].push(an);
+		}
+	}
+	
+	for(var key in cat){
+		var article = new GlideRecord(key);
+		article.addQuery('number','IN', cat[key]);
+		article.query();
+
+		while(article.next()){
+			var t = article.number.toString();
+			if(used.indexOf(t) > -1){
+				links.used.push({
+					aid: article.sys_id.toString(),
+					kb_knowledge_base: article.kb_knowledge_base.toString(),
+					number: t,
+					tid: article.sys_class_name.toString(),
+					title: article.x_26385_crs_kd_u_kb_title.toString()
+				});
+			}
+			else{
+				links.ref.push({
+					aid: article.sys_id.toString(),
+					kb_knowledge_base: article.kb_knowledge_base.toString(),
+					number: t,
+					tid: article.sys_class_name.toString(),
+					title: article.x_26385_crs_kd_u_kb_title.toString()
+				});
+			}
+		}
+	}
+	return links;
+
+})(request, response);]]></operation_script>
+        <operation_uri>/api/x_26385_crs_kd/export/getLinks</operation_uri>
+        <produces>application/json,application/xml,text/xml</produces>
+        <produces_customized>false</produces_customized>
+        <relative_path>/getLinks</relative_path>
+        <request_example/>
+        <requires_acl_authorization>false</requires_acl_authorization>
+        <requires_authentication>true</requires_authentication>
+        <short_description/>
+        <sys_class_name>sys_ws_operation</sys_class_name>
+        <sys_created_by>yuw5@nih.gov</sys_created_by>
+        <sys_created_on>2019-05-06 15:09:31</sys_created_on>
+        <sys_customer_update>false</sys_customer_update>
+        <sys_id>7a5fe230dbd5b34054d8ff621f961948</sys_id>
+        <sys_mod_count>9</sys_mod_count>
+        <sys_name>getLinks</sys_name>
+        <sys_package display_value="CRS Knowledge Database" source="x_26385_crs_kd">404e613b4f9213007221e321a310c738</sys_package>
+        <sys_policy/>
+        <sys_replace_on_upgrade>false</sys_replace_on_upgrade>
+        <sys_scope display_value="CRS Knowledge Database">404e613b4f9213007221e321a310c738</sys_scope>
+        <sys_update_name>sys_ws_operation_7a5fe230dbd5b34054d8ff621f961948</sys_update_name>
+        <sys_updated_by>yuw5@nih.gov</sys_updated_by>
+        <sys_updated_on>2019-05-06 20:45:16</sys_updated_on>
+        <web_service_definition display_value="export">01e1bbe7db6a53005358dc50cf961994</web_service_definition>
+        <web_service_version/>
+    </sys_ws_operation>
+</record_update>

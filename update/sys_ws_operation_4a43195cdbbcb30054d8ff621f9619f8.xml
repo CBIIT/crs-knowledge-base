@@ -52,8 +52,8 @@
 											 items: ['Big data/Data sharing','Metastatic cancer','Minority health/Health disparities',
 															 'Moonshot','Pediatric','Rare','Training/Workforce development']},
 											{label: "Description", type: "html", field: "x_26385_crs_kd_u_kb_description"},
-											{label: "References (Please enter PMIDs in a comma-delimited format)", type: "string", field: "x_26385_crs_kd_u_kb_description.pmid"},
-											{label: "Funding", type: "string", field: "x_26385_crs_kd_u_kb_description.funding"},
+											{label: "References",type: "customize", field: "x_26385_crs_kd_u_kb_references"},
+											{label: "Funding", type: "customize", field: "x_26385_crs_kd_u_kb_funding"},
 											{label: "Fiscal Year", type: "checkbox", field: "x_26385_crs_kd_u_kb_fiscal_year",
 											 items: ['2016','2017','2018','2019']},
 											{label: "Attachment", type: "file"}
@@ -117,7 +117,7 @@
         <sys_created_on>2019-04-09 22:20:42</sys_created_on>
         <sys_customer_update>false</sys_customer_update>
         <sys_id>4a43195cdbbcb30054d8ff621f9619f8</sys_id>
-        <sys_mod_count>25</sys_mod_count>
+        <sys_mod_count>27</sys_mod_count>
         <sys_name>getDocumentSchema</sys_name>
         <sys_package display_value="CRS Knowledge Database" source="x_26385_crs_kd">404e613b4f9213007221e321a310c738</sys_package>
         <sys_policy/>
@@ -125,7 +125,7 @@
         <sys_scope display_value="CRS Knowledge Database">404e613b4f9213007221e321a310c738</sys_scope>
         <sys_update_name>sys_ws_operation_4a43195cdbbcb30054d8ff621f9619f8</sys_update_name>
         <sys_updated_by>yuw5@nih.gov</sys_updated_by>
-        <sys_updated_on>2019-04-30 21:42:50</sys_updated_on>
+        <sys_updated_on>2019-05-02 20:22:53</sys_updated_on>
         <web_service_definition display_value="export">01e1bbe7db6a53005358dc50cf961994</web_service_definition>
         <web_service_version/>
     </sys_ws_operation>

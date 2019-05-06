@@ -97,7 +97,10 @@
             ]
 			}).then(function() {
 					if(willgoto){
-						s.xpage = willgoto.xpage;
+						//s.xpage = willgoto.xpage;
+						for(var key in willgoto){
+							s[key] = willgoto[key];
+						}
 						$location.search(s).replace();
 					}
         }, function() {
@@ -135,7 +138,7 @@
         <sys_created_on>2018-07-18 21:58:33</sys_created_on>
         <sys_customer_update>false</sys_customer_update>
         <sys_id>44d1ec83dbd397009b0a74131f9619b1</sys_id>
-        <sys_mod_count>203</sys_mod_count>
+        <sys_mod_count>205</sys_mod_count>
         <sys_name>[crs] KD Home</sys_name>
         <sys_package display_value="CRS Knowledge Database" source="x_26385_crs_kd">404e613b4f9213007221e321a310c738</sys_package>
         <sys_policy/>
@@ -143,7 +146,7 @@
         <sys_scope display_value="CRS Knowledge Database">404e613b4f9213007221e321a310c738</sys_scope>
         <sys_update_name>sp_widget_44d1ec83dbd397009b0a74131f9619b1</sys_update_name>
         <sys_updated_by>yuw5@nih.gov</sys_updated_by>
-        <sys_updated_on>2019-04-23 21:20:35</sys_updated_on>
+        <sys_updated_on>2019-05-02 14:24:47</sys_updated_on>
         <template><![CDATA[<div id="crs-kd-home">
   <div id="crs-kd-summary" class="container"  ng-if="c.xpage == 'home'">
     <div class="home-logo">
@@ -201,7 +204,7 @@
         <div class="particle blue other-other-particle"></div>
       </div>
     	<div>
-        Loading Knowledges...
+        Loading Records...
       </div>
     </div>
     

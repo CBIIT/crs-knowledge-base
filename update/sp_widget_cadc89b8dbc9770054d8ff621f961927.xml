@@ -93,6 +93,16 @@
 				c.items[item.field] = item.items;
 				c.selected[item.field] = c.data[item.field] == "" ? [] : c.data[item.field].split(',');
 			}
+			else if(item.type == "customize"){
+				if(item.label == 'References'){
+					c.data['pmids'] = c.data[item.field];
+				}
+				if(item.label == 'Funding'){
+					var arr = c.data[item.field].split('|');
+					c.data['Funding'] = (arr[0] == "Yes");
+					c.data['Funding_info'] = arr[1];
+				}
+			}
 		});
 		c.prev_attachments = result.attachments;
 		$scope.$apply();
@@ -225,7 +235,7 @@
 	c.saveAttachment = function(version, input,template, sys_id, sessionId, idx){
 		if(input.length <= idx){
 			return new Promise(function(resolve, reject){
-								resolve("1");
+								resolve(version);
 							});
 		}
 		else if(input[idx].files.length == 0){
@@ -297,6 +307,28 @@
 			else if(item.type == 'radio'){
 				params[item.field] = c.data[item.field];
 			}
+			else if(item.type == 'customize'){
+				if(item.label == 'References'){
+					var pmids = c.data['pmids'];
+					var links = [];
+					if(pmids && pmids.trim() !== ""){
+						var p = pmids.trim().split(',');
+						p.forEach(function(t){
+							if(t !== ""){
+								links.push(t);
+							}
+						});
+					}
+					params[item.field] = links.join(',');
+				}
+				else if(item.label == 'Funding'){
+					var funding = [];
+					funding.push((c.data['Funding'] != undefined && c.data['Funding']) ? "Yes":"No");
+					funding.push(c.data['Funding_info']);
+					params[item.field] = funding.join('|');
+				}
+
+			}
 			else if(item.type == 'file'){
 				
 			}
@@ -338,12 +370,7 @@
 			c.saving = false;
 			c.save_text = "Save";
 			var v = rp;
-			if(v == "1"){
-				window.showMessageBox("Article has been successfully saved.",{xpage:'kd_article_view'});
-			}
-			else{
-				window.showMessageBox("Failed to save your changes.");
-			}
+			window.showMessageBox("Article has been successfully saved.",{xpage:'kd_article_view', version: v});
 
 		}, function(error){
 			console.log(error);
@@ -386,7 +413,7 @@
         <sys_created_on>2019-04-23 21:21:16</sys_created_on>
         <sys_customer_update>false</sys_customer_update>
         <sys_id>cadc89b8dbc9770054d8ff621f961927</sys_id>
-        <sys_mod_count>146</sys_mod_count>
+        <sys_mod_count>155</sys_mod_count>
         <sys_name>[crs] KD Article Edit</sys_name>
         <sys_package display_value="CRS Knowledge Database" source="x_26385_crs_kd">404e613b4f9213007221e321a310c738</sys_package>
         <sys_policy/>
@@ -394,7 +421,7 @@
         <sys_scope display_value="CRS Knowledge Database">404e613b4f9213007221e321a310c738</sys_scope>
         <sys_update_name>sp_widget_cadc89b8dbc9770054d8ff621f961927</sys_update_name>
         <sys_updated_by>yuw5@nih.gov</sys_updated_by>
-        <sys_updated_on>2019-04-30 22:34:34</sys_updated_on>
+        <sys_updated_on>2019-05-02 22:18:12</sys_updated_on>
         <template><![CDATA[<div id="crs-article">
   <div class="container">
     <div class="row row-space">
@@ -453,6 +480,27 @@
                   <md-radio-group ng-model="c.data[entry.field]">
                     <md-radio-button class="submission-radios" value="{{item}}" ng-repeat="item in entry.items">{{item}}</md-radio-button>
                   </md-radio-group>
+                </div>
+                <div ng-if="entry.type == 'customize'">
+                  <div ng-if="entry.label == 'References'">
+                    <h5>
+                      Please enter PMIDs (More than one PMID separated by commas)
+                    </h5>
+                    <div>
+                      <input type="text" class="form-control" name="pmids" id="pmids" ng-model="c.data['pmids']">
+                    </div>
+                  </div>
+                  <div ng-if="entry.label == 'Funding'">
+                    <md-checkbox ng-model="c.data['Funding']" style="margin-bottom:5px;">
+                      This study has no NCI funding
+                    </md-checkbox>
+                    <h5>
+                      Funding information
+                    </h5>
+                    <div>
+                      <input type="text" class="form-control" name="Funding_info" id="Funding_info" ng-model="c.data['Funding_info']">
+                    </div>
+                  </div>
                 </div>
               </div>
               <div>

@@ -29,6 +29,43 @@
 			}).then(resolve, reject);
 		});
 	};
+	this.getLinks = function(params, sessionId){
+		return new Promise(function(resolve, reject){
+			$http({
+				url: '/api/x_26385_crs_kd/export/getLinks',
+				method: 'GET',
+				beforeSend: function(xhr){xhr.setRequestHeader('X-UserToken', sessionId); },
+				headers: {
+					'Content-Type': 'application/json'
+				},
+				params: params
+			}).then(resolve, reject);
+		});
+	};
+	this.addLink = function(params, sessionId){
+		return new Promise(function(resolve, reject){
+			$http({
+				 url: '/api/x_26385_crs_kd/export/addLink',
+				 method : "POST",
+				 beforeSend: function(xhr){ xhr.setRequestHeader('X-UserToken', sessionId); },
+				 headers: {'Content-Type': 'application/json'},
+				 data: JSON.stringify(params),
+				 processData: false
+			}).then(resolve, reject);
+		});
+	};
+	this.deleteLink = function(params, sessionId){
+		return new Promise(function(resolve, reject){
+			$http({
+				 url: '/api/x_26385_crs_kd/export/deleteLink',
+				 method : "POST",
+				 beforeSend: function(xhr){ xhr.setRequestHeader('X-UserToken', sessionId); },
+				 headers: {'Content-Type': 'application/json'},
+				 data: JSON.stringify(params),
+				 processData: false
+			}).then(resolve, reject);
+		});
+	};
 	this.getArticleWithSchema = function(params, sessionId){
 		return new Promise(function(resolve, reject){
 			$http({
@@ -41,7 +78,33 @@
 				params: params
 			}).then(resolve, reject);
 		});
-	}
+	};
+	this.searchArticleByText = function(params, sessionId){
+		return new Promise(function(resolve, reject){
+			$http({
+				url: '/api/x_26385_crs_kd/export/searchArticleByText',
+				method: 'GET',
+				beforeSend: function(xhr){xhr.setRequestHeader('X-UserToken', sessionId); },
+				headers: {
+					'Content-Type': 'application/json'
+				},
+				params: params
+			}).then(resolve, reject);
+		});
+	};
+	
+	this.saveWarning = function(params, sessionId){
+		return new Promise(function(resolve, reject){
+			$http({
+				 url: '/api/x_26385_crs_kd/export/saveWarning',
+				 method : "POST",
+				 beforeSend: function(xhr){ xhr.setRequestHeader('X-UserToken', sessionId); },
+				 headers: {'Content-Type': 'application/json'},
+				 data: JSON.stringify(params),
+				 processData: false
+			}).then(resolve, reject);
+		});
+	};
 	
 	this.saveVersion = function(template, params, sessionId){
 		return new Promise(function(resolve, reject){
@@ -74,7 +137,7 @@
         <sys_created_on>2018-10-17 21:14:02</sys_created_on>
         <sys_customer_update>false</sys_customer_update>
         <sys_id>0930411cdb992300b86770c08c961988</sys_id>
-        <sys_mod_count>8</sys_mod_count>
+        <sys_mod_count>14</sys_mod_count>
         <sys_name>NERDArticle</sys_name>
         <sys_package display_value="CRS Knowledge Database" source="x_26385_crs_kd">404e613b4f9213007221e321a310c738</sys_package>
         <sys_policy/>
@@ -82,7 +145,7 @@
         <sys_scope display_value="CRS Knowledge Database">404e613b4f9213007221e321a310c738</sys_scope>
         <sys_update_name>sp_angular_provider_0930411cdb992300b86770c08c961988</sys_update_name>
         <sys_updated_by>yuw5@nih.gov</sys_updated_by>
-        <sys_updated_on>2019-04-30 18:38:34</sys_updated_on>
+        <sys_updated_on>2019-05-06 20:54:53</sys_updated_on>
         <type>service</type>
     </sp_angular_provider>
 </record_update>

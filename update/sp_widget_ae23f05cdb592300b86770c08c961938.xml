@@ -2,15 +2,20 @@
 <record_update table="sp_widget">
     <sp_widget action="INSERT_OR_UPDATE">
         <category>custom</category>
-        <client_script><![CDATA[function($scope,$rootScope, $sce, $location, NERDArticle, NERDComment, NERDTag, NERDFile) {
+        <client_script><![CDATA[function($scope,$rootScope, $mdDialog, $sce, $location, NERDArticle, NERDComment, NERDTag, NERDFile) {
   /* widget controller */
   var c = this;
 	var s = $location.search();
 	//callback for deletion
 	var cb = null;
 	
+	c.save_warning_text = "Save Warning";
 	c.versionsHidden  = true;
 	c.versions = [];
+	c.links = {used: [], ref: []};
+	c.ref_number = [];
+	c.kc = [];
+	
 	var template = {"u_kb_template_top_accomplishment":
 									['Cancer Site/Type',
 									 'Research Type',
@@ -36,7 +41,9 @@
 									[
 									 'Cancer Site/Type',
 									 'Research Type',
-									 'Description', 
+									 'Description',
+									 'References',
+									 'Funding', 
 									 'Special Topic',
 									 'Fiscal Year'],
 									"u_kb_template_miscellaneous": 
@@ -114,6 +121,22 @@
 		c.knowledge_id = $scope.data['kb'];
 		c.cat = $scope.data['cat'];
 		
+		if(c.knowledge_id == 'f5644dcadb54ab0054d8ff621f9619d7'){
+			c.kc.push({id:'u_kb_template_top_accomplishment',label:'Top Accomplishments'});
+			c.kc.push({id:'u_kb_template_gpra',label:'GPRA'});
+			c.kc.push({id:'u_kb_template_significant_items',label:'Significant Items'});
+			c.kc.push({id:'u_kb_template_final_reports',label:'Final Reports'});
+			c.kc.push({id:'u_kb_template_literature_summary',label:'Literature Summary'});
+			c.kc.push({id:'u_kb_template_miscellaneous',label:'Miscellaneous'});
+		}
+		else if(c.knowledge_id == 'ff315a9edba47340b86770c08c961999'){
+			c.kc.push({id:'u_kb_template_presentations',label:'Presentations'});
+		}
+		else if(c.knowledge_id == '2c42d2dedba47340b86770c08c9619a9'){
+			c.kc.push({id:'u_kb_template_miscellaneous_me',label:'Miscellaneous'});
+		}
+		c.selectedKnowledgeCategory = c.kc[0];
+		
 		$scope.number = $scope.data['number'];
 		$scope.title = $scope.data['Title'];
 		$scope.version = $scope.data['version'];
@@ -121,7 +144,32 @@
 			$scope.version += ".0";
 		}
 		$scope.latest = $scope.data['latest'];
+		$scope.editable = $scope.data['editable'];
+		$scope.warning = $scope.data['warning'];
+		//$scope.warning = 'Be sure to reference NCI if you use this top accomplishment.';
 		$scope.columns = template[params.template_id];
+		if(c.cat == 'Literature Summary'){
+			var pmids = $scope.data['References'];
+			if(pmids != "N/A"){
+				var links = [];
+				pmids.split(",").forEach(function(pd){
+					links.push("<p><a href='https://www.ncbi.nlm.nih.gov/pubmed/"+pd+"' target='_blank'>"+pd+"</a></p>");
+				});
+				$scope.data['References'] = "<p>PMIDs:</p>"+ links.join("");
+			}
+			
+			var funding = $scope.data['Funding'];
+			var arr = funding.split('|');
+			if(arr[0] == 'Yes'){
+				$scope.data['Funding'] = "<p>This study has no NCI funding.</p>";
+			}
+			else{
+				$scope.data['Funding'] = "";
+			}
+			if(arr[1].trim() != ''){
+				$scope.data['Funding'] += "<p>Funding information: "+arr[1].trim()+"</p>";
+			}
+		}
 		if(c.cat == 'Presentations'){
 			var idx = 0;
 			if($scope.data['Originated outside of CRS'] == 'Yes'){
@@ -144,19 +192,57 @@
 		$scope.comments = $scope.data.comments;
 		$scope.attachments = $scope.data['attachments'];
 		$scope.$apply();
-		c.getVersions("",$scope.number);
+		c.getVersions("", $scope.number);
+		c.getLinks();
 	}, function(error){
 		console.log(error);
 	});
 	
-	c.getVersions = function(start, number){
-		var params = {};
-		params.version = start;
-		params.number = number;
-		
-		NERDArticle.getVersions(params, sessionId).then(function(res){
+	c.swithKnowledgeCategory = function(){
+		c.querySearch();
+	};
+	
+	c.addtoReference = function(item, ev){
+		ev.stopPropagation();
+		var link = {};
+		link.number = $scope.number;
+		link.reference = item.number;
+		link.template = item.template;
+		NERDArticle.addLink(link, sessionId).then(function(res){
 				var result = res.data.result;
-			  if(result.length == 10){
+			  c.getLinks();
+			  $scope.$apply();
+			},function(error){
+				console.log(error);
+			});
+	};
+	
+	c.getLinks = function(){
+		var lk = {};
+		lk.number = $scope.number;
+		lk.knowledge_base = c.knowledge_id;
+		
+		NERDArticle.getLinks(lk, sessionId).then(function(res){
+				var result = res.data.result;
+			  c.links = result;
+			  c.ref_number = [];
+			  c.links.ref.forEach(function(rf){
+					c.ref_number.push(rf.number);
+				});
+			  $scope.$apply();
+			},function(error){
+				console.log(error);
+			});
+	};
+	
+	c.getVersions = function(start, number, cb){
+		var pr = {};
+		pr.version = start;
+		pr.number = number;
+		
+		NERDArticle.getVersions(pr, sessionId).then(function(res){
+				var result = res.data.result;
+			  if(result.length == 5){
 					c.hasMore = true;
 			  }
 			  else{
@@ -168,16 +254,73 @@
 					}
 					c.versions.push(element);
 				});
+				if(cb){
+					cb();
+				}
+			  $scope.$apply();
 			},function(error){
 				console.log(error);
 			});																 
-	}
+	};
 	
-	c.gotoEdit = function(){
-		console.log('editing');
-		s.xpage = "kd_article_edit";
+	c.openArticle = function(article){
+		s.xpage = "kd_article_view";
+		s.kb_knowledge_base = article.kb_knowledge_base;
+		s.aid = article.aid;
+		s.number = article.number;
+		s.tid = article.tid;
 		$location.search(s).replace();
 	};
+	
+	c.deleteLink = function(article){
+		var lk = {};
+		lk.number = $scope.number;
+		lk.reference = article.number;
+		lk.template = article.tid;
+		NERDArticle.deleteLink(lk, sessionId).then(function(res){
+				c.getLinks();
+				$scope.$apply();
+			}, function(error){
+				console.log(error);
+			});
+	}
+	
+	c.gotoEdit = function(v){
+		s.xpage = "kd_article_edit";
+		s.version = v;
+		$location.search(s).replace();
+	};
+	
+	c.gotoEditWarning = function(ev){
+		c.warning = $scope.warning;
+		$mdDialog.show({
+				contentElement: '#myDialog',
+				parent: angular.element(document.body),
+				targetEvent: ev,
+				clickOutsideToClose: false
+			});
+	};
+	
+	c.saveWarning = function(ev){
+		var ps = {};
+		ps.template = params.template_id;
+		ps.number = $scope.number;
+		ps.warning = c.warning;
+		
+		NERDArticle.saveWarning(ps, sessionId).then(function(res){
+				var result = res.data.result;
+			  $scope.warning = result;
+			  $mdDialog.cancel();
+			  $scope.$apply();
+			},function(error){
+				console.log(error);
+			});							
+	};
+	
+	c.cancelWarningDialog = function(){
+		c.warning = "";
+		$mdDialog.cancel();
+	}
 	
 	c.switchVersions = function(){
 		c.versionsHidden = !c.versionsHidden;
@@ -185,7 +328,11 @@
 		if (growDiv.clientHeight) {
 			growDiv.style.height = 0;
 		} else {
-			growDiv.style.height = (c.versions.length + 1) * 26 + "px";
+			var len = c.versions.length;
+			if(c.hasMore){
+				len += 1;
+			}
+			growDiv.style.height = len * 25 + "px";
 		}
 	}
 	
@@ -195,7 +342,14 @@
 	};
 	
 	c.loadMoreVersions = function(number){
-		c.getVersions(c.versions[c.versions.length -1].version, number);
+		c.getVersions(c.versions[c.versions.length -1].version, number, function(){
+			var growDiv = document.getElementById('grow');
+			var len = c.versions.length;
+			if(c.hasMore){
+				len += 1;
+			}
+			growDiv.style.height = len * 25 + "px";
+		});
 	}
 	
 	/*
@@ -425,6 +579,28 @@
 		return result;
 	};
 	
+	c.querySearch = function(){
+		var atc = {};
+		atc.search_text = c.searchText;
+		atc.template = c.selectedKnowledgeCategory.id;
+		
+		return NERDArticle.searchArticleByText(atc, sessionId).then(function(res){
+				var result = res.data.result;
+				result.forEach(function(item){
+					item.value = item.number;
+					item.display = item.title;
+				});
+				return result;
+			}, function(error){
+				console.log(error);
+			});
+		
+	};
+	
+	c.searchTextChange = function(text) {
+     c.querySearch();
+  };
+	
 	c.addComment = function(){
 		//post to server
 		NERDComment.addComment(params.doc_id, c.comment, sessionId).then(function(res){
@@ -538,7 +714,7 @@
         <sys_created_on>2018-10-17 20:16:40</sys_created_on>
         <sys_customer_update>false</sys_customer_update>
         <sys_id>ae23f05cdb592300b86770c08c961938</sys_id>
-        <sys_mod_count>411</sys_mod_count>
+        <sys_mod_count>575</sys_mod_count>
         <sys_name>[crs] KD Article</sys_name>
         <sys_package display_value="CRS Knowledge Database" source="x_26385_crs_kd">404e613b4f9213007221e321a310c738</sys_package>
         <sys_policy/>
@@ -546,7 +722,7 @@
         <sys_scope display_value="CRS Knowledge Database">404e613b4f9213007221e321a310c738</sys_scope>
         <sys_update_name>sp_widget_ae23f05cdb592300b86770c08c961938</sys_update_name>
         <sys_updated_by>yuw5@nih.gov</sys_updated_by>
-        <sys_updated_on>2019-04-30 22:06:09</sys_updated_on>
+        <sys_updated_on>2019-05-06 21:00:43</sys_updated_on>
         <template><![CDATA[<div id="crs-article">
   <div class="container">
     <div class="row row-space">
@@ -567,26 +743,29 @@
                 <a href="#" ng-click="c.switchVersions()"><i class="fa fa-caret-down" style="width:10px;"></i> Version {{version}}</a>
               </div>
               <div style="width:50%;text-align:right;">
-                  <a href="#" ng-click="c.gotoEdit()" ng-if="latest">+ Edit this Article</a>
+                  <a href="#" ng-click="c.gotoEdit(version)" ng-if="editable">+ Edit this Article</a>
               </div>
             </div>
-            <div id='grow'>
+            <div id='grow' style="border-bottom: 1px solid lightgray;">
               <div class="block-versions" ng-class="version == article.version? 'active' : ''" ng-repeat="article in c.versions">
                 <a href="#" ng-click="c.switchtoVersion(article.version)" ng-if="version != article.version">v{{article.version}} - {{article.annotation}}</a>
                 <span ng-if="version == article.version">v{{article.version}} - {{article.annotation}}</span>
               </div>
-              <div class="block-versions" style="text-align:center;border-top: 1px solid lightgray;border-bottom: 1px solid lightgray;">
+              <div class="block-versions" style="text-align:center;">
                 <a href="#" ng-click="c.loadMoreVersions(number)" ng-if="c.hasMore">Load More</a>
-                <span ng-if="c.versions.length == 0 && !c.hasMore">No Other Versions</span>
               </div>
             </div>
             
             <div class="block-body">
+              <div style="text-align:center;">
+                <div ng-if="warning && warning != ''" style="padding: 5px 10px;border: 1px solid lightgray;border-radius: 5px;background: lightyellow;font-size: 14px;"><i class="fa fa-exclamation-circle"></i> Caution/Warning: {{warning}} <a href="#" ng-click="c.gotoEditWarning($event)" style="margin-left: 15px;">Edit</a></div>
+                <div ng-if="!warning || warning == ''" style="padding: 5px 10px;border: 1px solid lightgray;border-radius: 5px;background: lightyellow;font-size: 14px;"><a href="#" ng-click="c.gotoEditWarning($event)" style="margin-left: 15px;">Add a Caution/Warning</a></div>
+              </div> 
               <div>
                 <h4 style="font-weight:bold;">Category</h4> 
                 <div style="font-size:14px;">{{c.cat}}</div> 
               </div> 
-              <div ng-repeat="item in columns track by $index" ng-if="c.cat !== 'u_kb_template_presentations'">
+              <div ng-repeat="item in columns track by $index">
                 <h4 style="font-weight:bold;">{{item}}</h4> 
                 <div ng-bind-html="c.trustAsHtml(data[item])" style="font-size:14px;"></div> 
               </div>
@@ -618,6 +797,33 @@
               </div>
             </div>
             -->
+          </div>
+      
+      		<div class="col-md-2 attch-block">
+             <div class="section-header">
+               Linked Records
+            </div>
+            <div class="section-content" ng-if="c.links.ref.length == 0 && c.links.used.length == 0">
+              <label style="width:100%; padding-left: 10px;margin-bottom: 0px;">
+                No Linked Records 
+              </label>
+            </div>
+            <div class="section-content" ng-if="c.links.ref.length > 0">
+              <label style="width:100%; padding-left: 10px;margin-bottom: 0px;">
+                Referenced
+              </label>
+              <a target="_blank" href="#" ng-click="c.openArticle(lk);" ng-repeat="lk in c.links.ref">
+                <i class="glyphicon glyphicon-file"></i> {{lk.title}}
+              </a>
+            </div>
+            <div class="section-content" ng-if="c.links.used.length > 0">
+              <label style="width:100%; padding-left: 10px;margin-top: 5px; margin-bottom: 0px;">
+                Used By
+              </label>
+              <a target="_blank" href="#" ng-click="c.openArticle(lk);" ng-repeat="lk in c.links.used">
+                 <i class="glyphicon glyphicon-file"></i> {{lk.title}}
+              </a>
+            </div>
           </div>
 
           <div class="col-md-2 attch-block" ng-show="attachments.length > 0">
@@ -663,6 +869,59 @@
       </div>
     </div>
 		-->
+    <!-- Linked Records section -->
+    <div class="row row-space">
+      <div class="col-md-9 upload-block">
+        <div class="upload-header">
+          <h4>Linked Records</h4>
+        </div>      
+        <div class="upload-body">
+          <md-content flex style="margin-top:10px;">
+            <select class="form-control" name="kcSelect" id="kcSelect" ng-options="option.label for option in c.kc track by option.id"
+                    ng-model="c.selectedKnowledgeCategory" style="display: inline;width: 25%;height: 40px;font-weight: inherit;">
+            </select>
+            <md-autocomplete style="border: 1px solid lightgray; border-radius: 5px;display: inline-block;width: 74%;"
+                             ng-disabled="false"
+                             md-no-cache="true"
+                             md-selected-item="c.selectedItem"
+                             md-search-text-change="c.searchTextChange(c.searchText)"
+                             md-search-text="c.searchText"
+                             md-items="item in c.querySearch()"
+                             md-item-text="item.display"
+                             md-min-length="3"
+                             md-dropdown-items="10"
+                             placeholder="Enter keyword to Search..."
+                             input-aria-labelledby="favoriteStateLabel"
+                             input-aria-describedby="autocompleteDetailedDescription">
+              <md-item-template>
+                <span md-highlight-text="c.searchText" md-highlight-flags="^i">{{item.display}}</span>
+                <md-button class="md-raised" ng-click="c.addtoReference(item,$event)" ng-if="c.ref_number.indexOf(item.number)  == -1" style="background-color: #C6375D;color: white;float:right;position:absolute;min-width: 50px;right: 10px;">Add</md-button>
+                <md-button class="md-raised" ng-if="c.ref_number.indexOf(item.number)  > -1" ng-disabled="true" style="background-color:lightgray; float:right;position:absolute;min-width: 50px;right: 10px;">Added</md-button>
+              </md-item-template>
+              <md-not-found>
+                No record matching "{{c.searchText}}" were found.
+              </md-not-found>
+            </md-autocomplete>
+            <md-list>
+              <md-subheader class="md-no-sticky" style="color:inherit;">Referenced
+              </md-subheader>
+              <div style="font-size: 14px;color: #717171;padding-left: 15px;padding-top: 5px;" ng-if="c.links.ref.length == 0 && c.links.used.length == 0">No Linked Records</div>
+              <md-list-item class="" ng-repeat="article in c.links.ref">
+                <div class="md-list-item-text">
+                  <h5>
+                    <a target="_blank" href="#" ng-click="c.openArticle(article);">
+                      <i class="glyphicon glyphicon-file"></i> {{article.title}}
+                    </a>
+                  </h5>
+                </div>
+                <md-divider inset></md-divider>
+                <md-icon class="md-secondary" ng-click="c.deleteLink(article)"  ng-style="{color: '#C6375D', 'font-size': '16px', height: '16px'}"><i class="fa fa-trash"></i></md-icon>
+              </md-list-item>
+            </md-list>
+          </md-content>
+        </div>
+      </div>
+    </div>
     <!-- comment section -->
     <div class="row row-space">
       <div class="col-md-9 feedback-block">
@@ -703,6 +962,22 @@
         <button class="btn btn-primary" ng-click="c.cancelDeletion();" data-dismiss="modal">No</button>
       </div>
     </div>
+  </div>
+</div>
+<div style="visibility: hidden">
+  <div class="md-dialog-container" id="myDialog">
+    <md-dialog style="width: 400px;">
+      <div class="dialog_header">
+        Caution/Warning
+      </div>
+      <div class="dialog_content">
+        <textarea row=1 ng-model="c.warning" placeholder="Enter Caution/Warning here"  id="warning" name="warning" style="resize: vertical;" value="{{c.warning}}" class="form-control"></textarea>
+      </div>
+      <div class="dialog_footer">
+        <md-button class="md-raised" style="background-color: #C6375D;color: white;" ng-click="c.saveWarning($event)">{{c.save_warning_text}}</md-button>
+        <md-button class="md-raised" ng-click="c.cancelWarningDialog()">Cancel</md-button>
+      </div>
+    </md-dialog>
   </div>
 </div>]]></template>
     </sp_widget>

@@ -20,7 +20,7 @@
 		v.addQuery('article_version', '<' ,startVersion);
 	}
 	v.orderByDesc('article_version');
-	v.setLimit(10);
+	v.setLimit(5);
 	v.query();
 	var versions = [];
 	while(v.next()){
@@ -46,7 +46,7 @@
         <sys_created_on>2019-04-23 19:59:52</sys_created_on>
         <sys_customer_update>false</sys_customer_update>
         <sys_id>108778fcdb89770054d8ff621f961913</sys_id>
-        <sys_mod_count>8</sys_mod_count>
+        <sys_mod_count>10</sys_mod_count>
         <sys_name>getVersions</sys_name>
         <sys_package display_value="CRS Knowledge Database" source="x_26385_crs_kd">404e613b4f9213007221e321a310c738</sys_package>
         <sys_policy/>
@@ -54,7 +54,7 @@
         <sys_scope display_value="CRS Knowledge Database">404e613b4f9213007221e321a310c738</sys_scope>
         <sys_update_name>sys_ws_operation_108778fcdb89770054d8ff621f961913</sys_update_name>
         <sys_updated_by>yuw5@nih.gov</sys_updated_by>
-        <sys_updated_on>2019-04-30 19:34:26</sys_updated_on>
+        <sys_updated_on>2019-05-01 15:37:03</sys_updated_on>
         <web_service_definition display_value="export">01e1bbe7db6a53005358dc50cf961994</web_service_definition>
         <web_service_version/>
     </sys_ws_operation>
