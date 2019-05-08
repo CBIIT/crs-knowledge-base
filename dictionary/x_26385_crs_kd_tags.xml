@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<database>
+    <element label="Tags" max_length="40" name="x_26385_crs_kd_tags" type="collection">
+        <element label="Article Number" max_length="100" name="article_number" type="string"/>
+        <element label="Tags" max_length="5000" name="tags" type="string"/>
+        <element label="userID" max_length="100" name="userid" type="string"/>
+    </element>
+</database>

@@ -7,10 +7,11 @@
         <default_operation_uri/>
         <enforce_acl>cf9d01d3e73003009d6247e603f6a990</enforce_acl>
         <http_method>POST</http_method>
-        <name>addPersonalTag</name>
+        <name>removePersonalTag</name>
         <operation_script><![CDATA[(function process(/*RESTAPIRequest*/ request, /*RESTAPIResponse*/ response) {
 
-    var number = request.body.data.number;
+    // implement resource here
+	var number = request.body.data.number;
 	var template_id = request.body.data.tmpId;
 	var tag = request.body.data.tag;
 	
@@ -20,55 +21,45 @@
 	t.addQuery('article_number', number);
 	t.addQuery('userid', userid);
 	t.query();
-	var result = [];
 	if(t.getRowCount() > 0){
 		t.next();
 		var tmp = t.tags.toString();
-		var tags = tmp == "" ? [] : tmp.split("#");
+		var tags = tmp.split("#");
 		var idx = tags.indexOf(tag);
-		if(idx == -1){
-			tags.push(tag);
-			t.tags = tags.join("#");
+		if(idx > -1){
+			tags.splice(idx, 1);
+			t.tags = tags.join('#');
 			t.update();
 		}
-		result = tags;
+		return tags;
 	}
 	else{
-		var a = new GlideRecord('x_26385_crs_kd_tags');
-		a.initialize();
-		a.article_number = number;
-		a.userid = userid;
-		a.tags = tag;
-		a.insert();
-		result = [];
-		result.push(tag);
+		return [];
 	}
-	
-	return result;
 
 })(request, response);]]></operation_script>
-        <operation_uri>/api/x_26385_crs_kd/export/addPersonalTag</operation_uri>
+        <operation_uri>/api/x_26385_crs_kd/export/removePersonalTag</operation_uri>
         <produces>application/json,application/xml,text/xml</produces>
         <produces_customized>false</produces_customized>
-        <relative_path>/addPersonalTag</relative_path>
+        <relative_path>/removePersonalTag</relative_path>
         <request_example/>
         <requires_acl_authorization>false</requires_acl_authorization>
         <requires_authentication>true</requires_authentication>
         <short_description/>
         <sys_class_name>sys_ws_operation</sys_class_name>
         <sys_created_by>yuw5@nih.gov</sys_created_by>
-        <sys_created_on>2018-10-29 19:28:53</sys_created_on>
+        <sys_created_on>2019-05-08 21:05:37</sys_created_on>
         <sys_customer_update>false</sys_customer_update>
-        <sys_id>03a91e48db29eb00b86770c08c96194f</sys_id>
-        <sys_mod_count>7</sys_mod_count>
-        <sys_name>addPersonalTag</sys_name>
+        <sys_id>f3c312e5db95f340b86770c08c961965</sys_id>
+        <sys_mod_count>3</sys_mod_count>
+        <sys_name>removePersonalTag</sys_name>
         <sys_package display_value="CRS Knowledge Database" source="x_26385_crs_kd">404e613b4f9213007221e321a310c738</sys_package>
         <sys_policy/>
         <sys_replace_on_upgrade>false</sys_replace_on_upgrade>
         <sys_scope display_value="CRS Knowledge Database">404e613b4f9213007221e321a310c738</sys_scope>
-        <sys_update_name>sys_ws_operation_03a91e48db29eb00b86770c08c96194f</sys_update_name>
+        <sys_update_name>sys_ws_operation_f3c312e5db95f340b86770c08c961965</sys_update_name>
         <sys_updated_by>yuw5@nih.gov</sys_updated_by>
-        <sys_updated_on>2019-05-08 21:35:41</sys_updated_on>
+        <sys_updated_on>2019-05-08 21:34:48</sys_updated_on>
         <web_service_definition display_value="export">01e1bbe7db6a53005358dc50cf961994</web_service_definition>
         <web_service_version/>
     </sys_ws_operation>
