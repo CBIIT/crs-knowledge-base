@@ -12,16 +12,21 @@
 	
 	var searchString = request.queryParams.searchString;
 	var knowledgeBaseID = request.queryParams.knowledgeBaseID;
+	var selectedTags = request.queryParams.selectedTags;
+	var selectedMyTags = request.queryParams.selectedMyTags;
+	
+	var userid = gs.getUserID();
 	
 	var result = {};
 	result.searchResults = [];
 	
 	if(knowledgeBaseID == "ff315a9edba47340b86770c08c961999"){
 		//CRS Internal
+		var selectedProject = request.queryParams.selectedProject;
 
 		var infos_category = {"Presentations":"u_kb_template_presentations"};
 
-		var info_schema = {'Presentations': {}};
+		var info_schema = {'Presentations': {"project":"x_26385_crs_kd_u_kb_project",}};
 
 			// The Knowledge Base IDs to be used in search filters
 		var gr = new GlideRecord('kb_category');
@@ -36,7 +41,29 @@
 		var filter = {};
 
 		filter.searchString = searchString.toString();
+		filter.selectedProject = selectedProject == ""? [] : selectedProject.toString().split(",");
+		filter.selectedTags = selectedTags == "" ? [] : selectedTags.toString().split(",");
+		filter.selectedMyTags = selectedMyTags == "" ? [] : selectedMyTags.toString().split(",");
+		
+		//if need to filter my tags
+		var ids = [];
+		if(filter.selectedMyTags.length > 0){
+			var mt = new GlideRecord('x_26385_crs_kd_tags');
+			mt.addQuery('knowledge_base', knowledgeBaseID);
+			mt.addQuery('userid', userid);
+			if (filter.selectedMyTags.length > 0) {
+				var myTagsQuery = mt.addQuery('tags', 'CONTAINS', filter.selectedMyTags[0]);
+				for(var j = 1; j< filter.selectedMyTags.length ; j++){
+					myTagsQuery.addOrCondition('tags', 'CONTAINS', filter.selectedMyTags[j]);
+				}
+			}
 
+			mt.query();
+			while(mt.next()){
+				ids.push(mt.article_number.toString());
+			}
+		}
+		
 		categories.forEach(function(cat){
 			var values = [];
 			var tmpl = infos_category[cat.name];
@@ -45,6 +72,29 @@
 			if (filter.searchString !== "") {
 				// Index search
 				gr.addQuery('IR_AND_QUERY', filter.searchString);
+			}
+			
+			if (filter.selectedProject.length > 0) {
+				if(schema["project"]){
+					var projectQuery = gr.addQuery('x_26385_crs_kd_u_kb_project', 'CONTAINS', filter.selectedProject[0]);
+					for(var j = 1; j< filter.selectedProject.length ; j++){
+						projectQuery.addOrCondition('x_26385_crs_kd_u_kb_project', 'CONTAINS', filter.selectedProject[j]);
+					}
+				}
+				else{
+					return;
+				}
+			}
+			
+			if (filter.selectedTags.length > 0) {
+				var tagsQuery = gr.addQuery('x_26385_crs_kd_u_kb_tags', 'CONTAINS', filter.selectedTags[0]);
+				for(var j = 1; j< filter.selectedTags.length ; j++){
+					tagsQuery.addOrCondition('x_26385_crs_kd_u_kb_tags', 'CONTAINS', filter.selectedTags[j]);
+				}
+			}
+			
+			if(ids.length > 0){
+				gr.addQuery('number', 'IN', ids);
 			}
 
 			gr.query();
@@ -57,6 +107,9 @@
 				articleResult.kb_category = gr.getDisplayValue('kb_category');
 				articleResult.author = gr.getDisplayValue('author');
 				articleResult.title = gr.x_26385_crs_kd_u_kb_title.toString();
+				if(schema["project"]){
+					articleResult.x_26385_crs_kd_u_kb_project = gr.x_26385_crs_kd_u_kb_project.toString();
+				}
 				articleResult.url = 'kb_view.do?sys_kb_id=' + articleResult.sys_id;
 				articleResult.template = infos_category[articleResult.kb_category];
 				values.push(articleResult);
@@ -102,6 +155,27 @@
 		filter.selectedThemesGoals  = selectedThemesGoals == ""? [] : selectedThemesGoals.toString().split(",");
 		filter.selectedCmit = selectedCmit == ""? [] : selectedCmit.toString().split(",");
 		filter.selectedYear = selectedYears == ""? [] : selectedYears.toString().split(",");
+		filter.selectedTags = selectedTags == "" ? [] : selectedTags.toString().split(",");
+		filter.selectedMyTags = selectedMyTags == "" ? [] : selectedMyTags.toString().split(",");
+		
+		//if need to filter my tags
+		var ids = [];
+		if(filter.selectedMyTags.length > 0){
+			var mt = new GlideRecord('x_26385_crs_kd_tags');
+			mt.addQuery('knowledge_base', knowledgeBaseID);
+			mt.addQuery('userid', userid);
+			if (filter.selectedMyTags.length > 0) {
+				var myTagsQuery = mt.addQuery('tags', 'CONTAINS', filter.selectedMyTags[0]);
+				for(var j = 1; j< filter.selectedMyTags.length ; j++){
+					myTagsQuery.addOrCondition('tags', 'CONTAINS', filter.selectedMyTags[j]);
+				}
+			}
+
+			mt.query();
+			while(mt.next()){
+				ids.push(mt.article_number.toString());
+			}
+		}
 
 		filter.searchString = searchString.toString();
 
@@ -163,6 +237,17 @@
 				else{
 					return;
 				}
+			}
+			
+			if (filter.selectedTags.length > 0) {
+				var tagsQuery = gr.addQuery('x_26385_crs_kd_u_kb_tags', 'CONTAINS', filter.selectedTags[0]);
+				for(var j = 1; j< filter.selectedTags.length ; j++){
+					tagsQuery.addOrCondition('x_26385_crs_kd_u_kb_tags', 'CONTAINS', filter.selectedTags[j]);
+				}
+			}
+			
+			if(ids.length > 0){
+				gr.addQuery('number', 'IN', ids);
 			}
 
 			gr.query();
@@ -256,6 +341,27 @@
 		filter.selectedResearchType = selectedResearchTypes == ""? [] : selectedResearchTypes.toString().split(",");
 		filter.selectedYear = selectedYears == ""? [] : selectedYears.toString().split(",");
 		filter.selectedSpecialTopic = selectedSpecialTopics == ""? [] : selectedSpecialTopics.toString().split(",");
+		filter.selectedTags = selectedTags == "" ? [] : selectedTags.toString().split(",");
+		filter.selectedMyTags = selectedMyTags == "" ? [] : selectedMyTags.toString().split(",");
+		
+		//if need to filter my tags
+		var ids = [];
+		if(filter.selectedMyTags.length > 0){
+			var mt = new GlideRecord('x_26385_crs_kd_tags');
+			mt.addQuery('knowledge_base', knowledgeBaseID);
+			mt.addQuery('userid', userid);
+			if (filter.selectedMyTags.length > 0) {
+				var myTagsQuery = mt.addQuery('tags', 'CONTAINS', filter.selectedMyTags[0]);
+				for(var j = 1; j< filter.selectedMyTags.length ; j++){
+					myTagsQuery.addOrCondition('tags', 'CONTAINS', filter.selectedMyTags[j]);
+				}
+			}
+
+			mt.query();
+			while(mt.next()){
+				ids.push(mt.article_number.toString());
+			}
+		}
 
 		filter.searchString = searchString.toString();
 
@@ -335,7 +441,18 @@
 				}
 			}
 			
-			gr.addQuery('x_26385_crs_kd_u_kb_article_version', '>=', 1.0);
+			if (filter.selectedTags.length > 0) {
+				var tagsQuery = gr.addQuery('x_26385_crs_kd_u_kb_tags', 'CONTAINS', filter.selectedTags[0]);
+				for(var j = 1; j< filter.selectedTags.length ; j++){
+					tagsQuery.addOrCondition('x_26385_crs_kd_u_kb_tags', 'CONTAINS', filter.selectedTags[j]);
+				}
+			}
+			
+			if(ids.length > 0){
+				gr.addQuery('number', 'IN', ids);
+			}
+			
+			//gr.addQuery('x_26385_crs_kd_u_kb_article_version', '>=', 1.0);
 
 			gr.query();
 
@@ -400,7 +517,7 @@
         <sys_created_on>2018-10-15 15:25:30</sys_created_on>
         <sys_customer_update>false</sys_customer_update>
         <sys_id>845c59e7dbc9eb40b86770c08c9619ab</sys_id>
-        <sys_mod_count>67</sys_mod_count>
+        <sys_mod_count>73</sys_mod_count>
         <sys_name>searchBasicArticleByCriteria</sys_name>
         <sys_package display_value="CRS Knowledge Database" source="x_26385_crs_kd">404e613b4f9213007221e321a310c738</sys_package>
         <sys_policy/>
@@ -408,7 +525,7 @@
         <sys_scope display_value="CRS Knowledge Database">404e613b4f9213007221e321a310c738</sys_scope>
         <sys_update_name>sys_ws_operation_845c59e7dbc9eb40b86770c08c9619ab</sys_update_name>
         <sys_updated_by>yuw5@nih.gov</sys_updated_by>
-        <sys_updated_on>2019-05-02 21:19:08</sys_updated_on>
+        <sys_updated_on>2019-05-30 21:08:04</sys_updated_on>
         <web_service_definition display_value="export">01e1bbe7db6a53005358dc50cf961994</web_service_definition>
         <web_service_version/>
     </sys_ws_operation>

@@ -13,10 +13,13 @@
 	c.data.searchString = "";
 	c.data.selectedYear = [];
 	c.data.selectedDoc = [];
+	c.data.selectedTags = [];
+	c.data.selectedMyTags = [];
 	c.data.selectedCancerSite = [];
 	c.data.selectedResearchType = [];
 	c.data.selectedSpecialTopic = [];
 	c.data.selectedCmit = [];
+	c.data.selectedProject = [];
 	c.data.selectedThemesGoals = [];
 	c.data.selectedRecommendation = [];
 	
@@ -69,7 +72,20 @@
 				cache.forEach(function(elem){
 					c.data.doc.push({id: elem, name: elem.substring(1, elem.length -1), count: c.data.count.doc[elem]});
 				});
-
+				
+				c.data.tags = [];
+				cache = c.data.tmp.tags;
+				cache.sort();
+				cache.forEach(function(elem){
+					c.data.tags.push({id: elem, name: elem.substring(1, elem.length -1), count: c.data.count.tags[elem]});
+				});
+				c.data.my_tags = [];
+				cache = c.data.tmp.my_tags;
+				cache.sort();
+				cache.forEach(function(elem){
+					c.data.my_tags.push({id: elem, name: elem.substring(1, elem.length -1), count: c.data.count.my_tags[elem]});
+				});
+				
 				c.data.cancerSite = [];
 				cache = c.data.tmp.cancerSite;
 				cache.sort();
@@ -113,6 +129,28 @@
 			NERDSearch.getFilters(params,c.data.sessionId).then(function(res){
 				var stat = res.data.result;
 				c.data.filters = stat.filters;
+				
+				c.data.tmp = stat.tmp;
+				c.data.count = stat.count;
+				c.data.project = [];
+				var cache = c.data.tmp.project;
+				cache.sort();
+				cache.forEach(function(elem){
+					c.data.project.push({id: elem, name: elem.substring(1, elem.length -1), count: c.data.count.project[elem]});
+				});
+				
+				c.data.tags = [];
+				cache = c.data.tmp.tags;
+				cache.sort();
+				cache.forEach(function(elem){
+					c.data.tags.push({id: elem, name: elem.substring(1, elem.length -1), count: c.data.count.tags[elem]});
+				});
+				c.data.my_tags = [];
+				cache = c.data.tmp.my_tags;
+				cache.sort();
+				cache.forEach(function(elem){
+					c.data.my_tags.push({id: elem, name: elem.substring(1, elem.length -1), count: c.data.count.my_tags[elem]});
+				});
 				$scope.$apply();
 				
 			}, function(error){
@@ -126,6 +164,7 @@
 		
 			NERDSearch.getFilters(params,c.data.sessionId).then(function(res){
 				var stat = res.data.result;
+				
 				c.data.filters = stat.filters;
 				c.data.tmp = stat.tmp;
 				c.data.count = stat.count;
@@ -157,6 +196,19 @@
 				cache.forEach(function(elem){
 					c.data.fiscalYear.push({id: elem, name: elem.substring(1, elem.length -1), count: c.data.count.fiscalYear[elem]});
 				});
+				
+				c.data.tags = [];
+				var cache = c.data.tmp.tags;
+				cache.sort();
+				cache.forEach(function(elem){
+					c.data.tags.push({id: elem, name: elem.substring(1, elem.length -1), count: c.data.count.tags[elem]});
+				});
+				c.data.my_tags = [];
+				cache = c.data.tmp.my_tags;
+				cache.sort();
+				cache.forEach(function(elem){
+					c.data.my_tags.push({id: elem, name: elem.substring(1, elem.length -1), count: c.data.count.my_tags[elem]});
+				});
 
 				$scope.$apply();
 				
@@ -177,7 +229,9 @@
 									selectedDocs: c.data.selectedDoc.length > 0 ? c.data.selectedDoc.join(",") : "",
 									selectedCancerSites: c.data.selectedCancerSite.length > 0 ? c.data.selectedCancerSite.join(",") : "",
 									selectedResearchTypes: c.data.selectedResearchType.length > 0 ? c.data.selectedResearchType.join(",") : "",
-			            selectedSpecialTopics: c.data.selectedSpecialTopic.length > 0 ? c.data.selectedSpecialTopic.join(",") : ""
+			            selectedSpecialTopics: c.data.selectedSpecialTopic.length > 0 ? c.data.selectedSpecialTopic.join(",") : "",
+									selectedTags: c.data.selectedTags.length > 0 ? c.data.selectedTags.join(",") : "",
+									selectedMyTags: c.data.selectedMyTags.length > 0 ? c.data.selectedMyTags.join(",") : ""
 								 };
 		
 			NERDSearch.getList(params,c.data.sessionId).then(function(res){
@@ -206,8 +260,11 @@
 		}
 		else if(c.data.selectedKnowledgeBase.name == "CRS Internal"){
 			var params = {
-									searchString: c.data.searchString && c.data.searchString !== ""? c.data.searchString : "", 
-									knowledgeBaseID: c.data.selectedKnowledgeBase.id
+									searchString: c.data.searchString && c.data.searchString !== ""? c.data.searchString : "",
+									selectedProject: c.data.selectedProject.length > 0 ? c.data.selectedProject.join(",") : "",
+									knowledgeBaseID: c.data.selectedKnowledgeBase.id,
+									selectedTags: c.data.selectedTags.length > 0 ? c.data.selectedTags.join(",") : "",
+									selectedMyTags: c.data.selectedMyTags.length > 0 ? c.data.selectedMyTags.join(",") : ""
 								 };
 		
 			NERDSearch.getList(params,c.data.sessionId).then(function(res){
@@ -241,7 +298,9 @@
 			            selectedYears: c.data.selectedYear.length > 0 ? c.data.selectedYear.join(",") : "",
 									selectedCmit: c.data.selectedCmit.length > 0 ? c.data.selectedCmit.join(",") : "",
 									selectedThemesGoals: c.data.selectedThemesGoals.length > 0 ? c.data.selectedThemesGoals.join(",") : "",
-									selectedRecommendation: c.data.selectedRecommendation.length > 0 ? c.data.selectedRecommendation.join(",") : ""
+									selectedRecommendation: c.data.selectedRecommendation.length > 0 ? c.data.selectedRecommendation.join(",") : "",
+									selectedTags: c.data.selectedTags.length > 0 ? c.data.selectedTags.join(",") : "",
+									selectedMyTags: c.data.selectedMyTags.length > 0 ? c.data.selectedMyTags.join(",") : ""
 								 };
 		
 			NERDSearch.getList(params,c.data.sessionId).then(function(res){
@@ -311,6 +370,18 @@
 			hasFilter = true;
 			criteria += "&f9="+c.data.selectedCmit.join('|');
 		}
+		if(c.data.selectedProject.length > 0){
+			hasFilter = true;
+			criteria += "&f10="+c.data.selectedProject.join('|');
+		}
+		if(c.data.selectedTags.length > 0){
+			hasFilter = true;
+			criteria += "&f11="+c.data.selectedTags.join('|');
+		}
+		if(c.data.selectedMyTags.length > 0){
+			hasFilter = true;
+			criteria += "&f12="+c.data.selectedMyTags.join('|');
+		}
 		//redirect to detail page
 		s.xpage = 'kd_article';
 		s.aid = sys_id;
@@ -325,8 +396,9 @@
 		window.open(url, '_blank');
 	}
 	
-	c.gotoNewSubmission = function(tmpl){
+	c.gotoNewSubmission = function(tmpl,ev){
 		//redirect to detail page
+		ev.stopPropagation();
 		var p = {};
 		p.xpage = 'kd_new_submission';
 		p.template = tmpl;
@@ -386,6 +458,14 @@
 	  c.data.selectedCancerSite = [];
 		c.data.selectedResearchType = [];
 		c.data.selectedSpecialTopic = [];
+		
+		c.data.selectedCmit = [];
+		c.data.selectedProject = [];
+		c.data.selectedThemesGoals = [];
+		c.data.selectedRecommendation = [];
+		
+		c.data.selectedTags = [];
+		c.data.selectedMyTags = [];
 		c.search();
 	};
 	
@@ -430,6 +510,58 @@
 				c.isExportable = false;
 			}
 		}
+	}
+	
+	c.updateTagData = function(item){
+		if(item.selected){
+			c.data.selectedTags.push(item.id);
+		}
+		else{
+			var idx = c.data.selectedTags.indexOf(item.id);
+			if (idx > -1) {
+				c.data.selectedTags.splice(idx, 1);
+			}
+		}
+		c.search();
+	}
+	
+	c.selectAll_Tag = function(){
+		var selectAll = document.getElementById("selectAll_Tag");
+		c.data.selectedTags = [];
+		if(selectAll.checked){
+			var tmp = [];
+			c.data.tags.map(function(obj){
+				tmp.push(obj.id);
+			});
+			c.data.selectedTags = tmp;
+		}
+		c.search();
+	}
+	
+	c.updateMyTagData = function(item){
+		if(item.selected){
+			c.data.selectedMyTags.push(item.id);
+		}
+		else{
+			var idx = c.data.selectedMyTags.indexOf(item.id);
+			if (idx > -1) {
+				c.data.selectedMyTags.splice(idx, 1);
+			}
+		}
+		c.search();
+	}
+	
+	c.selectAll_My_Tag = function(){
+		var selectAll = document.getElementById("selectAll_My_Tag");
+		c.data.selectedMyTags = [];
+		if(selectAll.checked){
+			var tmp = [];
+			c.data.my_tags.map(function(obj){
+				tmp.push(obj.id);
+			});
+			c.data.selectedMyTags = tmp;
+		}
+		c.search();
 	}
 	
 	c.updateCancerSiteData = function(item){
@@ -610,6 +742,32 @@
 				tmp.push(obj.id);
 			});
 			c.data.selectedCmit = tmp;
+		}
+		c.search();
+	}
+	
+	c.updateProjectData = function(item){
+		if(item.selected){
+			c.data.selectedProject.push(item.id);
+		}
+		else{
+			var idx = c.data.selectedProject.indexOf(item.id);
+			if (idx > -1) {
+				c.data.selectedProject.splice(idx, 1);
+			}
+		}
+		c.search();
+	}
+	
+	c.selectAll_Project = function(){
+		var selectAll = document.getElementById("selectAll_Project");
+		c.data.selectedProject = [];
+		if(selectAll.checked){
+			var tmp = [];
+			c.data.project.map(function(obj){
+				tmp.push(obj.id);
+			});
+			c.data.selectedProject = tmp;
 		}
 		c.search();
 	}
@@ -825,6 +983,11 @@
 			c.data.selectedThemesGoals = $rootScope.selectedThemesGoals?$rootScope.selectedThemesGoals : [];
 			c.data.selectedRecommendation = $rootScope.selectedRecommendation?$rootScope.selectedRecommendation : [];
 		}
+		else if(c.data.selectedKnowledgeBase.name == "CRS Internal"){
+			c.data.selectedProject = $rootScope.selectedProject?$rootScope.selectedProject : [];
+		}
+		c.data.selectedTags = $rootScope.selectedTags?$rootScope.selectedTags : [];
+		c.data.selectedMyTags = $rootScope.selectedMyTags?$rootScope.selectedMyTags : [];
 	}
 	c.search();
 }]]></client_script>
@@ -857,7 +1020,7 @@
         <sys_created_on>2018-06-01 19:53:54</sys_created_on>
         <sys_customer_update>false</sys_customer_update>
         <sys_id>cf120a374fd213007221e321a310c724</sys_id>
-        <sys_mod_count>1131</sys_mod_count>
+        <sys_mod_count>1177</sys_mod_count>
         <sys_name>[crs] KD Search</sys_name>
         <sys_package display_value="CRS Knowledge Database" source="x_26385_crs_kd">404e613b4f9213007221e321a310c738</sys_package>
         <sys_policy/>
@@ -865,7 +1028,7 @@
         <sys_scope display_value="CRS Knowledge Database">404e613b4f9213007221e321a310c738</sys_scope>
         <sys_update_name>sp_widget_cf120a374fd213007221e321a310c724</sys_update_name>
         <sys_updated_by>yuw5@nih.gov</sys_updated_by>
-        <sys_updated_on>2019-04-25 20:28:11</sys_updated_on>
+        <sys_updated_on>2019-05-30 20:54:21</sys_updated_on>
         <template><![CDATA[<div class="container">
   <div class="row">
         <div class="col-md-3">
@@ -894,7 +1057,7 @@
                       <div class="control-label" for="cancerSiteSelect">Filters: <span class="tooltip-icon" uib-tooltip="Search tags across this Knowledge Base." tooltip-placement="right" tooltip-class="tooltipClass"><i class="fa fa-question-circle" aria-hidden="true"></i></span>
                       </div>
                       <div class="facet-scroll"> 
-                        <div class="filter-section" ng-if="c.data.filters.includes('cancerSite')">
+                        <div class="filter-section" ng-if="c.data.filters.includes('cancerSite') && c.data.cancerSite.length > 0">
                           <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown"><span class="filter-btn-label">Cancer Site/Type  </span> <span class="caret"></span></button>
                           <ul class="dropdown-menu" style="width:100%;">
                             <li class="dropdown-options">
@@ -905,7 +1068,7 @@
                             </li>
                           </ul>
                         </div>
-                        <div class="filter-section" ng-if="c.data.filters.includes('researchType')">
+                        <div class="filter-section" ng-if="c.data.filters.includes('researchType') && c.data.researchType.length > 0">
                           <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown"><span class="filter-btn-label">Research Type  </span> <span class="caret"></span></button>
                           <ul class="dropdown-menu" style="width:100%;">
                             <li class="dropdown-options">
@@ -916,7 +1079,7 @@
                             </li>
                           </ul>
                         </div>
-                        <div class="filter-section" ng-if="c.data.filters.includes('specialTopic')">
+                        <div class="filter-section" ng-if="c.data.filters.includes('specialTopic') && c.data.specialTopic.length > 0">
                           <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown"><span class="filter-btn-label">Special Topic  </span> <span class="caret"></span></button>
                           <ul class="dropdown-menu" style="width:100%;">
                             <li class="dropdown-options">
@@ -927,7 +1090,7 @@
                             </li>
                           </ul>
                         </div>
-                        <div class="filter-section" ng-if="c.data.filters.includes('doc')">
+                        <div class="filter-section" ng-if="c.data.filters.includes('doc') && c.data.doc.length > 0">
                           <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown"><span class="filter-btn-label">DOC  </span> <span class="caret"></span></button>
                           <ul class="dropdown-menu" style="width:100%;">
                             <li class="dropdown-options">
@@ -939,7 +1102,7 @@
                           </ul>
                         </div>
                         
-                        <div class="filter-section" ng-if="c.data.filters.includes('recommendation')">
+                        <div class="filter-section" ng-if="c.data.filters.includes('recommendation') && c.data.recommendation.length > 0">
                           <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown"><span class="filter-btn-label">Moonshot Recommendation  </span> <span class="caret"></span></button>
                           <ul class="dropdown-menu" style="width:100%;">
                             <li class="dropdown-options">
@@ -951,7 +1114,7 @@
                           </ul>
                         </div>
                         
-                        <div class="filter-section" ng-if="c.data.filters.includes('themesGoals')">
+                        <div class="filter-section" ng-if="c.data.filters.includes('themesGoals') && c.data.themesGoals.length > 0">
                           <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown"><span class="filter-btn-label">Cross-Cutting Themes and Goals  </span> <span class="caret"></span></button>
                           <ul class="dropdown-menu" style="width:100%;">
                             <li class="dropdown-options">
@@ -963,7 +1126,7 @@
                           </ul>
                         </div>
                         
-                        <div class="filter-section" ng-if="c.data.filters.includes('cmit')">
+                        <div class="filter-section" ng-if="c.data.filters.includes('cmit') && c.data.cmit.length > 0">
                           <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown"><span class="filter-btn-label">CMIT  </span> <span class="caret"></span></button>
                           <ul class="dropdown-menu" style="width:100%;">
                             <li class="dropdown-options">
@@ -975,7 +1138,19 @@
                           </ul>
                         </div>
                         
-                        <div class="filter-section" ng-if="c.data.filters.includes('fiscalYear')">
+                        <div class="filter-section" ng-if="c.data.filters.includes('project')  && c.data.project.length > 0">
+                          <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown"><span class="filter-btn-label">Project  </span> <span class="caret"></span></button>
+                          <ul class="dropdown-menu" style="width:100%;">
+                            <li class="dropdown-options">
+                              <input type="checkbox" id="selectAll_Project" class="chekbox-input ng-pristine ng-untouched ng-valid ng-empty" ng-click="c.selectAll_Project()" ng-checked="c.data.selectedProject.length != 0  && c.data.selectedProject.length == c.data.project.length">&nbsp;All
+                            </li>
+                            <li class="dropdown-options" ng-repeat="cat in c.data.project">
+                              <input type="checkbox" class="chekbox-input ng-pristine ng-untouched ng-valid ng-empty" ng-model="cat.selected" ng-click="c.updateProjectData(cat)" value="{{cat.id}}" role="checkbox" aria-invalid="false" ng-checked="true" ng-checked="c.data.selectedProject.indexOf(cat.id) > -1">&nbsp;{{cat.name}} ({{cat.count}})
+                            </li>
+                          </ul>
+                        </div>
+                        
+                        <div class="filter-section" ng-if="c.data.filters.includes('fiscalYear') && c.data.fiscalYear.length > 0">
                           <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown"><span class="filter-btn-label">Fiscal Year  </span> <span class="caret"></span></button>
                           <ul class="dropdown-menu" style="width:100%;">
                             <li class="dropdown-options">
@@ -983,6 +1158,30 @@
                             </li>
                             <li class="dropdown-options" ng-repeat="cat in c.data.fiscalYear">
                               <input type="checkbox" class="chekbox-input ng-pristine ng-untouched ng-valid ng-empty" ng-model="cat.selected" ng-click="c.updateYearData(cat)" value="{{cat.id}}" role="checkbox" aria-invalid="false" ng-checked="true" ng-checked="c.data.selectedYear.indexOf(cat.id) > -1">&nbsp;{{cat.name}} ({{cat.count}})
+                            </li>
+                          </ul>
+                        </div>
+                        
+                        <div class="filter-section" ng-if="c.data.tags.length > 0">
+                          <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown"><span class="filter-btn-label">Tags  </span> <span class="caret"></span></button>
+                          <ul class="dropdown-menu" style="width:100%;">
+                            <li class="dropdown-options">
+                              <input type="checkbox" id="selectAll_Tag" class="chekbox-input ng-pristine ng-untouched ng-valid ng-empty" ng-click="c.selectAll_Tag()" ng-checked="c.data.selectedTags.length != 0  && c.data.selectedTags.length == c.data.tags.length">&nbsp;All
+                            </li>
+                            <li class="dropdown-options" ng-repeat="cat in c.data.tags">
+                              <input type="checkbox" class="chekbox-input ng-pristine ng-untouched ng-valid ng-empty" ng-model="cat.selected" ng-click="c.updateTagData(cat)" value="{{cat.id}}" role="checkbox" aria-invalid="false" ng-checked="true" ng-checked="c.data.selectedTags.indexOf(cat.id) > -1">&nbsp;{{cat.name}} ({{cat.count}})
+                            </li>
+                          </ul>
+                        </div>
+                        
+                        <div class="filter-section" ng-if="c.data.my_tags.length > 0">
+                          <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown"><span class="filter-btn-label">My Tags  </span> <span class="caret"></span></button>
+                          <ul class="dropdown-menu" style="width:100%;">
+                            <li class="dropdown-options">
+                              <input type="checkbox" id="selectAll_My_Tag" class="chekbox-input ng-pristine ng-untouched ng-valid ng-empty" ng-click="c.selectAll_MyTag()" ng-checked="c.data.selectedMyTags.length != 0  && c.data.selectedMyTags.length == c.data.my_tags.length">&nbsp;All
+                            </li>
+                            <li class="dropdown-options" ng-repeat="cat in c.data.my_tags">
+                              <input type="checkbox" class="chekbox-input ng-pristine ng-untouched ng-valid ng-empty" ng-model="cat.selected" ng-click="c.updateMyTagData(cat)" value="{{cat.id}}" role="checkbox" aria-invalid="false" ng-checked="true" ng-checked="c.data.selectedMyTags.indexOf(cat.id) > -1">&nbsp;{{cat.name}} ({{cat.count}})
                             </li>
                           </ul>
                         </div>
@@ -1065,7 +1264,9 @@
                         <ul class="filter-options-list" ng-show="c.data.selectedCancerSite.length > 0 || c.data.selectedResearchType.length > 0 || 
                                                                  c.data.selectedSpecialTopic.length > 0 || c.data.selectedDoc.length > 0 || 
                                                                  c.data.selectedYear.length > 0 || c.data.selectedCmit.length > 0 || 
-                                                                 c.data.selectedThemesGoals.length > 0 || c.data.selectedRecommendation.length > 0">
+                                                                 c.data.selectedThemesGoals.length > 0 || c.data.selectedRecommendation.length > 0 ||
+                                                                 c.data.selectedProject.length > 0 ||
+                                                                 c.data.selectedTags.length > 0 || c.data.selectedMyTags.length > 0">
                           <li class="filter-item" role="button" ng-repeat="t in c.data.selectedCancerSite">
                             <span>{{t.substring(1,t.length-1)}}</span>
                             <a class="remove-button" role="link" ng-click="c.updateCancerSiteData({'id':t})">×</a>
@@ -1098,6 +1299,18 @@
                             <span>{{t.substring(1,t.length-1)}}</span>
                             <a class="remove-button" role="link" ng-click="c.updateRecommendationData({'id':t})">×</a>
                           </li>
+                          <li class="filter-item" role="button" ng-repeat="t in c.data.selectedProject">
+                            <span>{{t.substring(1,t.length-1)}}</span>
+                            <a class="remove-button" role="link" ng-click="c.updateProjectData({'id':t})">×</a>
+                          </li>
+                          <li class="filter-item" role="button" ng-repeat="t in c.data.selectedTags">
+                            <span>{{t.substring(1,t.length-1)}}</span>
+                            <a class="remove-button" role="link" ng-click="c.updateTagData({'id':t})">×</a>
+                          </li>
+                          <li class="filter-item" role="button" ng-repeat="t in c.data.selectedMyTags">
+                            <span>{{t.substring(1,t.length-1)}}</span>
+                            <a class="remove-button" role="link" ng-click="c.updateMyTagData({'id':t})">×</a>
+                          </li>
                         </ul>
                       </div>
                       <div class="button-group">
@@ -1123,7 +1336,7 @@
                         <div uib-accordion-group ng-repeat="tab in c.data.tabs" ng-if="tab.show" class="panel-default" is-open="tab.isOpen">
                           <uib-accordion-heading>
                             <div>
-                              {{tab.name}} ({{tab.list.length}}) <a ng-if="tab.tmpl == 'u_kb_template_top_accomplishment' || tab.tmpl == 'u_kb_template_literature_summary' || tab.tmpl == 'u_kb_template_miscellaneous_me' || tab.tmpl == 'u_kb_template_presentations'" href="#" ng-click="c.gotoNewSubmission(tab.tmpl)" style="margin-left:20px;">+ Add new Article</a> <i class="pull-right" ng-class="{'fa fa-minus-square': tab.isOpen, 'fa fa-plus-square': !tab.isOpen}"></i>
+                              {{tab.name}} ({{tab.list.length}}) <a ng-if="tab.tmpl == 'u_kb_template_top_accomplishment' || tab.tmpl == 'u_kb_template_literature_summary' || tab.tmpl == 'u_kb_template_miscellaneous_me' || tab.tmpl == 'u_kb_template_presentations'" href="#" ng-click="c.gotoNewSubmission(tab.tmpl,$event)" style="margin-left:20px;">+ Add new Article</a> <i class="pull-right" ng-class="{'fa fa-minus-square': tab.isOpen, 'fa fa-plus-square': !tab.isOpen}"></i>
                             </div>
                           </uib-accordion-heading>
                           <ul class="list-group">
@@ -1134,17 +1347,18 @@
                               <div class="content-side">
                                 <i class="glyphicon glyphicon-file"></i>
                                 <a class="kb-title ng-binding" ng-click="c.gotoDetail(result.sys_id, result.template, result.number)" role="link">{{result.title}}</a>
-                                <br>
                                 <!--
+																<br>
                                 <div class="kb-ref">
                                   <span>{{result.kb_knowledge_base}} > {{result.kb_category}}</span>
                                 </div>
-                                -->
+                                
                                 <div class="kb-about">
                                   Author: {{result.author}}
                                   <span class="dot-divider" aria-hidden="true"> • </span>
                                   Fiscal Year: {{result.fYear.substring(1, 5)}}
                                 </div>
+																-->
                               </div>
                               
                             </li>

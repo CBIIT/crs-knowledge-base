@@ -116,6 +116,28 @@
 		
 	};
 	
+	c.reorderItems = function(items){
+		var result = [];
+		var len = items.length;
+		var rows = Math.floor(len/3);
+		if(len % 3 != 0){
+			rows ++;
+		}
+		var k = 0, i = 0;
+		for(k = 0; k< rows ; k++){
+			for(i = k; i< rows * 3; i = i + rows){
+				if(i >= len){
+					result.push('');
+				}
+				else{
+					result.push(items[i]);
+				}
+				
+			}
+		}
+		return result;
+	};
+	
 	c.swithKnowledgeCategory = function(){
 		var params = c.data.selectedKnowledgeCategory;
 		if(params.id == "0"){
@@ -133,6 +155,7 @@
 					c.selected = {};
 					result.forEach(function(item){
 						if(item.type == "checkbox"){
+							item.items = c.reorderItems(item.items);
 							c.items[item.field] = item.items;
 							c.selected[item.field] = [];
 						}
@@ -303,14 +326,14 @@
 					params[item.field] = item.type == 'boolean' ? "No" : "";
 				}
 				else if(item.type == 'boolean'){
-					params[item.field] = (params[item.field] == undefined || params[item.field] == "" || !params[item.field]) ? "No" : "Yes";
+					params[item.field] = (c.data[item.field] == undefined || c.data[item.field] == "" || !c.data[item.field]) ? "No" : "Yes";
 				}
 				else if(item.type == 'date'){
-					if(params[item.field] == undefined){
+					if(c.data[item.field] == undefined){
 						params[item.field] = "";
 					}
-					else if(params[item.field] !== ""){
-						params[item.field] = new Date(params[item.field]).toISOString().substring(0, 10);
+					else if(c.data[item.field] !== ""){
+						params[item.field] = new Date(c.data[item.field]).toISOString().substring(0, 10);
 					}
 					
 				}
@@ -431,7 +454,7 @@
         <sys_created_on>2019-04-09 20:37:48</sys_created_on>
         <sys_customer_update>false</sys_customer_update>
         <sys_id>38acf450db7cb30054d8ff621f961997</sys_id>
-        <sys_mod_count>281</sys_mod_count>
+        <sys_mod_count>297</sys_mod_count>
         <sys_name>[crs] KD New Submission</sys_name>
         <sys_package display_value="CRS Knowledge Database" source="x_26385_crs_kd">404e613b4f9213007221e321a310c738</sys_package>
         <sys_policy/>
@@ -439,7 +462,7 @@
         <sys_scope display_value="CRS Knowledge Database">404e613b4f9213007221e321a310c738</sys_scope>
         <sys_update_name>sp_widget_38acf450db7cb30054d8ff621f961997</sys_update_name>
         <sys_updated_by>yuw5@nih.gov</sys_updated_by>
-        <sys_updated_on>2019-05-02 21:51:23</sys_updated_on>
+        <sys_updated_on>2019-05-15 18:21:59</sys_updated_on>
         <template><![CDATA[<div id="crs-article">
   <div class="container">
     <div class="row row-space">
@@ -464,8 +487,8 @@
                       <span ng-if="c.isChecked(entry.field)">Un-</span>Select All
                     </md-checkbox>
                   </div>
-                  <div class="submission-checkboxes" ng-repeat="item in entry.items">
-                    <md-checkbox ng-checked="c.exists(item, c.selected[entry.field])" ng-click="c.toggle(item, c.selected[entry.field])">
+                  <div class="submission-checkboxes" ng-repeat="item in entry.items track by $index">
+                    <md-checkbox ng-if="item != ''" ng-checked="c.exists(item, c.selected[entry.field])" ng-click="c.toggle(item, c.selected[entry.field])">
                       {{ item }}
                     </md-checkbox>
                   </div>

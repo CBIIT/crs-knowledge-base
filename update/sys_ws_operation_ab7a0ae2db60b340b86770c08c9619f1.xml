@@ -11,6 +11,7 @@
         <operation_script><![CDATA[(function process(/*RESTAPIRequest*/ request, /*RESTAPIResponse*/ response) {
 	
 	var knowledgeBaseID = request.queryParams.knowledgeBaseID;
+	var userid = gs.getUserID();
 	
 	var result = {};
 	result.tmp = {};
@@ -20,12 +21,90 @@
 	
 	if(knowledgeBaseID == "ff315a9edba47340b86770c08c961999"){
 		//CRS Internal
-		result.filters = [];
+		result.filters = ['project','tags','my_tags'];
+		result.filters.forEach(function(item){
+			result.count[item] = {};
+			result.tmp[item] = [];
+			cache[item] = [];
+		});
+
+		var infos_category = {"Presentations":"u_kb_template_presentations"};
+
+		var info_schema = {'Presentations': {"project":"x_26385_crs_kd_u_kb_project","tags":"x_26385_crs_kd_u_kb_tags"}};
+
+			// The Knowledge Base IDs to be used in search filters
+		var gr = new GlideRecord('kb_category');
+			gr.addQuery('parent_id', knowledgeBaseID);
+			gr.orderBy('sys_created_on');
+			gr.query();
+			var categories = [];
+			while (gr.next()) {
+				categories.push({id: gr.sys_id.toString(), name: gr.label.toString()});
+			}
+
+		categories.forEach(function(cat){
+			var values = [];
+			var tmpl = infos_category[cat.name];
+			var schema = info_schema[cat.name];
+			gr = new GlideRecord(tmpl);
+			gr.query();
+
+			while (gr.next()) {
+
+				var articleResult = {};
+				if(schema["project"]){
+					articleResult.x_26385_crs_kd_u_kb_project = gr.x_26385_crs_kd_u_kb_project.toString();
+				}
+				if(schema["tags"]){
+					articleResult.x_26385_crs_kd_u_kb_tags = gr.x_26385_crs_kd_u_kb_tags.toString();
+				}
+				
+				for(var k in schema){
+						var v = articleResult[schema[k]];
+						if(v != ''){
+							v.split(",").forEach(function(elem){
+								if(cache[k].indexOf(elem) == -1){
+									cache[k].push(elem);
+									result.tmp[k].push(elem);
+									result.count[k][elem] = 1;
+								}
+								else{
+									result.count[k][elem] ++;
+								}
+							});
+
+						}
+
+					}
+			}
+		});
+		
+		//get my tags
+		var t = new GlideRecord('x_26385_crs_kd_tags');
+		t.addQuery('knowledge_base', knowledgeBaseID);
+		t.addQuery('userid', userid);
+		t.query();
+		while(t.next()){
+			var tag = t.tags.toString();
+			if(tag != ""){
+				tag.split("#").forEach(function(elem){
+					if(cache["my_tags"].indexOf(elem) == -1){
+						cache["my_tags"].push(elem);
+						result.tmp["my_tags"].push(elem);
+						result.count["my_tags"][elem] = 1;
+					}
+					else{
+						result.count["my_tags"][elem] ++;
+					}
+				});
+
+			}
+		}
 	}
 	else if(knowledgeBaseID == "2c42d2dedba47340b86770c08c9619a9"){
 		//Moonshot Evaluation
 		
-		result.filters = ['recommendation','themesGoals','cmit','fiscalYear'];
+		result.filters = ['recommendation','themesGoals','cmit','fiscalYear','tags','my_tags'];
 		result.filters.forEach(function(item){
 			result.count[item] = {};
 			result.tmp[item] = [];
@@ -38,7 +117,8 @@
 					'Miscellaneous': {"recommendation":"x_26385_crs_kd_u_kb_moonshot_recommendation",
 									  "themesGoals":"x_26385_crs_kd_u_kb_cross_cutting_themes_and_goals",
 									  "cmit":"x_26385_crs_kd_u_kb_cmit",
-									  "fiscalYear":"x_26385_crs_kd_u_kb_fiscal_year"}
+									  "fiscalYear":"x_26385_crs_kd_u_kb_fiscal_year",
+									  "tags":"x_26385_crs_kd_u_kb_tags"}
 		};
 
 			// The Knowledge Base IDs to be used in search filters
@@ -73,8 +153,11 @@
 				if(schema["fiscalYear"]){
 					articleResult.x_26385_crs_kd_u_kb_fiscal_year = gr.x_26385_crs_kd_u_kb_fiscal_year.toString();
 				}
+				if(schema["tags"]){
+					articleResult.x_26385_crs_kd_u_kb_tags = gr.x_26385_crs_kd_u_kb_tags.toString();
+				}
 				
-				for(k in schema){
+				for(var k in schema){
 						var v = articleResult[schema[k]];
 						if(v != ''){
 							v.split(",").forEach(function(elem){
@@ -93,10 +176,32 @@
 					}
 			}
 		});
+		
+		//get my tags
+		var t = new GlideRecord('x_26385_crs_kd_tags');
+		t.addQuery('knowledge_base', knowledgeBaseID);
+		t.addQuery('userid', userid);
+		t.query();
+		while(t.next()){
+			var tag = t.tags.toString();
+			if(tag != ""){
+				tag.split("#").forEach(function(elem){
+					if(cache["my_tags"].indexOf(elem) == -1){
+						cache["my_tags"].push(elem);
+						result.tmp["my_tags"].push(elem);
+						result.count["my_tags"][elem] = 1;
+					}
+					else{
+						result.count["my_tags"][elem] ++;
+					}
+				});
+
+			}
+		}
 	}
 	else{
 		//NERD
-		result.filters = ['cancerSite','researchType','specialTopic','fiscalYear','doc'];
+		result.filters = ['cancerSite','researchType','specialTopic','fiscalYear','doc','tags','my_tags'];
 		result.filters.forEach(function(item){
 			result.count[item] = {};
 			result.tmp[item] = [];
@@ -111,25 +216,31 @@
 							  "Significant Items":"u_kb_template_significant_items"};
 
 		var info_schema = {'Top Accomplishments': {"cancerSite":"x_26385_crs_kd_u_kb_cancer_site_type",																																											"researchType":"x_26385_crs_kd_u_kb_research_type",
-													"specialTopic":"x_26385_crs_kd_u_kb_special_topic",																																											"doc":"x_26385_crs_kd_u_kb_doc",																																															"fiscalYear":"x_26385_crs_kd_u_kb_fiscal_year"},
+													"specialTopic":"x_26385_crs_kd_u_kb_special_topic",																																											"doc":"x_26385_crs_kd_u_kb_doc",																																															"fiscalYear":"x_26385_crs_kd_u_kb_fiscal_year",
+										  "tags":"x_26385_crs_kd_u_kb_tags"},
 					 'GPRA': {"researchType":"x_26385_crs_kd_u_kb_research_type",
-								"specialTopic":"x_26385_crs_kd_u_kb_special_topic",																																											"doc":"x_26385_crs_kd_u_kb_doc",																																															"fiscalYear":"x_26385_crs_kd_u_kb_fiscal_year"},
+								"specialTopic":"x_26385_crs_kd_u_kb_special_topic",																																											"doc":"x_26385_crs_kd_u_kb_doc",																																															"fiscalYear":"x_26385_crs_kd_u_kb_fiscal_year",
+										  "tags":"x_26385_crs_kd_u_kb_tags"},
 					 'Literature Summary': {"cancerSite":"x_26385_crs_kd_u_kb_cancer_site_type",
 									   "researchType":"x_26385_crs_kd_u_kb_research_type",
 									   "specialTopic":"x_26385_crs_kd_u_kb_special_topic",
-									   "fiscalYear":"x_26385_crs_kd_u_kb_fiscal_year"},
+									   "fiscalYear":"x_26385_crs_kd_u_kb_fiscal_year",
+										  "tags":"x_26385_crs_kd_u_kb_tags"},
 					'Miscellaneous': {"cancerSite":"x_26385_crs_kd_u_kb_cancer_site_type",
 									  "researchType":"x_26385_crs_kd_u_kb_research_type",
 									  "specialTopic":"x_26385_crs_kd_u_kb_special_topic",
-									  "fiscalYear":"x_26385_crs_kd_u_kb_fiscal_year"},
+									  "fiscalYear":"x_26385_crs_kd_u_kb_fiscal_year",
+										  "tags":"x_26385_crs_kd_u_kb_tags"},
 					'Final Reports': {"cancerSite":"x_26385_crs_kd_u_kb_cancer_site_type",
 									 "researchType":"x_26385_crs_kd_u_kb_research_type",
 										"specialTopic":"x_26385_crs_kd_u_kb_special_topic",
-										"fiscalYear":"x_26385_crs_kd_u_kb_fiscal_year"},
+										"fiscalYear":"x_26385_crs_kd_u_kb_fiscal_year",
+										  "tags":"x_26385_crs_kd_u_kb_tags"},
 					'Significant Items': {"cancerSite":"x_26385_crs_kd_u_kb_cancer_site_type",
 										 "researchType":"x_26385_crs_kd_u_kb_research_type",
 										 "specialTopic":"x_26385_crs_kd_u_kb_special_topic",
-										 "fiscalYear":"x_26385_crs_kd_u_kb_fiscal_year"}
+										 "fiscalYear":"x_26385_crs_kd_u_kb_fiscal_year",
+										  "tags":"x_26385_crs_kd_u_kb_tags"}
 		};
 
 			// The Knowledge Base IDs to be used in search filters
@@ -167,8 +278,11 @@
 				if(schema["specialTopic"]){
 					articleResult.x_26385_crs_kd_u_kb_special_topic = gr.x_26385_crs_kd_u_kb_special_topic.toString();
 				}
+				if(schema["tags"]){
+					articleResult.x_26385_crs_kd_u_kb_tags = gr.x_26385_crs_kd_u_kb_tags.toString();
+				}
 				
-				for(k in schema){
+				for(var k in schema){
 						var v = articleResult[schema[k]];
 						if(v != ''){
 							if(k == 'researchType' || k == 'doc'){
@@ -216,7 +330,27 @@
 					}
 			}
 		});
-		
+		//get my tags
+		var t = new GlideRecord('x_26385_crs_kd_tags');
+		t.addQuery('knowledge_base', knowledgeBaseID);
+		t.addQuery('userid', userid);
+		t.query();
+		while(t.next()){
+			var tag = t.tags.toString();
+			if(tag != ""){
+				tag.split("#").forEach(function(elem){
+					if(cache["my_tags"].indexOf(elem) == -1){
+						cache["my_tags"].push(elem);
+						result.tmp["my_tags"].push(elem);
+						result.count["my_tags"][elem] = 1;
+					}
+					else{
+						result.count["my_tags"][elem] ++;
+					}
+				});
+
+			}
+		}
 	}
 	
 	return result;
@@ -235,7 +369,7 @@
         <sys_created_on>2019-04-04 16:11:52</sys_created_on>
         <sys_customer_update>false</sys_customer_update>
         <sys_id>ab7a0ae2db60b340b86770c08c9619f1</sys_id>
-        <sys_mod_count>5</sys_mod_count>
+        <sys_mod_count>9</sys_mod_count>
         <sys_name>getFilters</sys_name>
         <sys_package display_value="CRS Knowledge Database" source="x_26385_crs_kd">404e613b4f9213007221e321a310c738</sys_package>
         <sys_policy/>
@@ -243,7 +377,7 @@
         <sys_scope display_value="CRS Knowledge Database">404e613b4f9213007221e321a310c738</sys_scope>
         <sys_update_name>sys_ws_operation_ab7a0ae2db60b340b86770c08c9619f1</sys_update_name>
         <sys_updated_by>yuw5@nih.gov</sys_updated_by>
-        <sys_updated_on>2019-04-17 00:38:52</sys_updated_on>
+        <sys_updated_on>2019-05-30 20:15:45</sys_updated_on>
         <web_service_definition display_value="export">01e1bbe7db6a53005358dc50cf961994</web_service_definition>
         <web_service_version/>
     </sys_ws_operation>

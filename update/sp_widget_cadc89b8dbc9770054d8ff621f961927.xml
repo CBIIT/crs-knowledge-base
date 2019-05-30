@@ -30,6 +30,28 @@
 		toolbar: 'undo redo | fontsizeselect bold italic | alignleft aligncenter alignright alignjustify | bullist numlist | link'
   }
 	
+	c.reorderItems = function(items){
+		var result = [];
+		var len = items.length;
+		var rows = Math.floor(len/3);
+		if(len % 3 != 0){
+			rows ++;
+		}
+		var k = 0, i = 0;
+		for(k = 0; k< rows ; k++){
+			for(i = k; i< rows * 3; i = i + rows){
+				if(i >= len){
+					result.push('');
+				}
+				else{
+					result.push(items[i]);
+				}
+				
+			}
+		}
+		return result;
+	};
+	
 	c.transform = function(field, arr_1, arr_2){
 		if(arr_1 == undefined && arr_2 == undefined){
 			return;
@@ -67,7 +89,9 @@
 			sub.forEach(function(s){
 				if(!c.schema[s].display){
 					c.data[c.schema[s].field] = false;
-					c.transform(c.schema[s].field, c.schema[s].displayWhenTrue, c.schema[s].displayWhenFalse);
+					if(c.schema[s].field == 'x_26385_crs_kd_u_kb_includes_analysis'){
+						c.transform(c.schema[s].field, c.schema[s].displayWhenTrue, c.schema[s].displayWhenFalse);
+					}
 				}
 			});
 		}
@@ -91,7 +115,20 @@
 		c.schema.forEach(function(item){
 			if(item.type == "checkbox"){
 				c.items[item.field] = item.items;
+				item.items = c.reorderItems(item.items);
 				c.selected[item.field] = c.data[item.field] == "" ? [] : c.data[item.field].split(',');
+			}
+			else if(item.type == "boolean"){
+				c.data[item.field] = c.data[item.field] == "Yes";
+				if(item.displayWhenTrue){
+					c.transform(item.field, item.displayWhenTrue, item.displayWhenFalse);
+				}
+			}
+			else if(item.type == "date"){
+				if(c.data[item.field] != ""){
+					c.data[item.field] = c.data[item.field] + 'T05:00:00.000Z';
+					c.data[item.field] = new Date(c.data[item.field]);
+				}
 			}
 			else if(item.type == "customize"){
 				if(item.label == 'References'){
@@ -283,14 +320,14 @@
 				params[item.field] = item.type == 'boolean' ? "No" : "";
 			}
 			else if(item.type == 'boolean'){
-				params[item.field] = (params[item.field] == undefined || params[item.field] == "" || !params[item.field]) ? "No" : "Yes";
+				params[item.field] = (c.data[item.field] == undefined || c.data[item.field] == "" || !c.data[item.field]) ? "No" : "Yes";
 			}
 			else if(item.type == 'date'){
-				if(params[item.field] == undefined){
+				if(c.data[item.field] == undefined){
 					params[item.field] = "";
 				}
-				else if(params[item.field] !== ""){
-					params[item.field] = new Date(params[item.field]).toISOString().substring(0, 10);
+				else if(c.data[item.field] !== ""){
+					params[item.field] = new Date(c.data[item.field]).toISOString().substring(0, 10);
 				}
 			}
 			else if(item.type == 'checkbox'){
@@ -337,20 +374,21 @@
 		params.number = ps.number;
 		params.version = c.version;
 		params.isMainVersion = c.data.isMainVersion;
-		params.specifyVersion = c.data.specifyVersion;
+		//params.specifyVersion = c.data.specifyVersion;
 		params.annotation = c.data.annotation;
 		var att_arr = [];
 		c.prev_attachments.forEach(function(att){
 			att_arr.push(att.attach_sys_id);
 		});
 		params.attachments = att_arr.length > 0 ? att_arr.join(",") : "";
-		console.log(params);
 		
 		
 		var template = s.tid;
 
 		c.saving = true;
 		c.save_text = "Saving...";
+		
+		//console.log(params);
 
 		NERDArticle.saveVersion(template, params, c.data.sessionId).then(function(res){
 			var result = res.data.result;
@@ -413,7 +451,7 @@
         <sys_created_on>2019-04-23 21:21:16</sys_created_on>
         <sys_customer_update>false</sys_customer_update>
         <sys_id>cadc89b8dbc9770054d8ff621f961927</sys_id>
-        <sys_mod_count>155</sys_mod_count>
+        <sys_mod_count>180</sys_mod_count>
         <sys_name>[crs] KD Article Edit</sys_name>
         <sys_package display_value="CRS Knowledge Database" source="x_26385_crs_kd">404e613b4f9213007221e321a310c738</sys_package>
         <sys_policy/>
@@ -421,7 +459,7 @@
         <sys_scope display_value="CRS Knowledge Database">404e613b4f9213007221e321a310c738</sys_scope>
         <sys_update_name>sp_widget_cadc89b8dbc9770054d8ff621f961927</sys_update_name>
         <sys_updated_by>yuw5@nih.gov</sys_updated_by>
-        <sys_updated_on>2019-05-02 22:18:12</sys_updated_on>
+        <sys_updated_on>2019-05-30 20:50:41</sys_updated_on>
         <template><![CDATA[<div id="crs-article">
   <div class="container">
     <div class="row row-space">
@@ -447,8 +485,8 @@
                       <span ng-if="c.isChecked(entry.field)">Un-</span>Select All
                     </md-checkbox>
                   </div>
-                  <div class="submission-checkboxes" ng-repeat="item in entry.items">
-                    <md-checkbox ng-checked="c.exists(item, c.selected[entry.field])" ng-click="c.toggle(item, c.selected[entry.field])">
+                  <div class="submission-checkboxes" ng-repeat="item in entry.items track by $index">
+                    <md-checkbox ng-if="item != ''" ng-checked="c.exists(item, c.selected[entry.field])" ng-click="c.toggle(item, c.selected[entry.field])">
                       {{ item }}
                     </md-checkbox>
                   </div>
@@ -541,14 +579,16 @@
       </div>
       <div class="dialog_content">
         <p>
-          By default, system will create a new version greater than this version (v{{c.version}})
+          By default, system will create a regular version which is greater than v{{c.version}}
         </p>
         <div>
           <input type="Checkbox" name="isMainVersion" ng-model="c.data.isMainVersion" > Specify a main version?
         </div>
+        <!--
         <div ng-show="c.data.isMainVersion" style="padding: 10px 10px 0px 10px;">
           <input type="text" placeholder="Enter main version here" class="form-control" name="specifyVersion" id="specifyVersion" ng-model="c.data.specifyVersion">
         </div>
+				-->
         <div ng-show="c.data.isMainVersion" style="padding: 10px 10px 0px 10px;">
           <input type="text" placeholder="Enter annotation here" class="form-control" name="annotation" id="annotation" ng-model="c.data.annotation">
         </div>

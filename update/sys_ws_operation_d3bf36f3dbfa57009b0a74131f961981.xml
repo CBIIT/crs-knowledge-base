@@ -10,7 +10,7 @@
         <name>getDocumentById</name>
         <operation_script><![CDATA[(function process(/*RESTAPIRequest*/ request, /*RESTAPIResponse*/ response) {
 	var template = {"u_kb_template_top_accomplishment":['Title','Cancer Site/Type','Research Type','Special Topic','Description','References','Involved organization', 'DOC', 'Fiscal Year'],
-					 "u_kb_template_literature_summary": ['Title','Cancer Site/Type', 'Research Type','Description','References','Funding','Special Topic','Fiscal Year'],
+					 "u_kb_template_literature_summary": ['Title','Cancer Site/Type', 'Research Type','Description','References','Funding','Journal','Special Topic','Fiscal Year'],
 					 "u_kb_template_gpra": ['Title','Measure ID','Research Type','Special Topic','DOC','Contacts','Description',
 											'Summary','Background','Target Context and Conditions', 'Fiscal Year'],
 					"u_kb_template_miscellaneous": ['Title','Cancer Site/Type', 'Research Type','Description','Special Topic','Fiscal Year'],
@@ -24,6 +24,7 @@
 									 'Fiscal Year'],
 					"u_kb_template_presentations": ['Title',
 													'CRS POC(s)',
+													'Project',
 									 'Originated outside of CRS',
 									 'Obtained permission to share within CRS',
 									 'Originator/Owner',
@@ -60,6 +61,7 @@
 					            "Special Topic":"x_26385_crs_kd_u_kb_special_topic",            
 								"Description":"x_26385_crs_kd_u_kb_description",
 								"Funding":"x_26385_crs_kd_u_kb_funding",
+								"Journal":"x_26385_crs_kd_u_kb_journal",
                                 "References":"x_26385_crs_kd_u_kb_references",
                                 "Fiscal Year":"x_26385_crs_kd_u_kb_fiscal_year"
                 },
@@ -115,6 +117,7 @@
 		        "u_kb_template_presentations":{
 									'Title':"x_26385_crs_kd_u_kb_title",
 									'CRS POC(s)':"x_26385_crs_kd_u_kb_crs_poc_s",
+									'Project':"x_26385_crs_kd_u_kb_project",
 									 'Originated outside of CRS':"x_26385_crs_kd_u_kb_originated_outside_of_crs",
 									 'Obtained permission to share within CRS':"x_26385_crs_kd_u_kb_obtained_permission_to_share",
 									 'Originator/Owner':"x_26385_crs_kd_u_kb_originator_owner",
@@ -153,6 +156,8 @@
 	result.number = item.number.toString();
 	result.kb = item.kb_knowledge_base.toString();
 	result.cat = item.getDisplayValue("kb_category");
+	result.author = item.getDisplayValue('author');
+	result.author_id = item.author.toString();
 	result.version = item.x_26385_crs_kd_u_kb_article_version.toString();
 	result.warning = item.x_26385_crs_kd_u_kb_caution_warning.toString();
 	if(version == "" || parseFloat(version) == parseFloat(result.version)){
@@ -222,6 +227,7 @@
 	
 	var t = new GlideRecord('x_26385_crs_kd_tags');
 	t.addQuery('article_number', result.number);
+	t.addQuery('knowledge_base', result.kb);
 	t.addQuery('userid', userid);
 	t.query();
 	if(t.getRowCount() > 0){
@@ -252,29 +258,34 @@
 		}
 	}
 	
-	//get attachments
+	//get attachments and annotation
 	result.attachments = [];
+	result.annotation = "";
 	var attach = "";
 	var att = new GlideRecord('x_26385_crs_kd_versions');
 		att.addQuery('article_number', result.number);
 		att.addQuery('article_version', result.version);
-		att.addQuery('article_field', 'attachments');
+	//	att.addQuery('article_field', 'attachments');
 		att.query();
-	if(att.getRowCount() != 0){
-		att.next();
-		attach = att.article_field_value.toString();
-		var gr = new GlideRecord('sys_attachment');
-		gr.addQuery("table_sys_id", document_id);
-		gr.addQuery('content_type','STARTSWITH','application/');
-		gr.addQuery('sys_id','IN',attach);
-		gr.query();
-		while (gr.next()){
-			var tmp = {};
-			tmp.attach_sys_id = gr.sys_id.toString();
-			tmp.file_name = gr.file_name.toString();
-			tmp.file_type = gr.content_type.toString();
-			tmp.created_by = gr.sys_created_by.toString();
-			result.attachments.push(tmp);
+	while(att.next()){
+		if(att.article_field == 'attachments'){
+			attach = att.article_field_value.toString();
+			var gr = new GlideRecord('sys_attachment');
+			gr.addQuery("table_sys_id", document_id);
+			gr.addQuery('content_type','STARTSWITH','application/');
+			gr.addQuery('sys_id','IN',attach);
+			gr.query();
+			while (gr.next()){
+				var tmp = {};
+				tmp.attach_sys_id = gr.sys_id.toString();
+				tmp.file_name = gr.file_name.toString();
+				tmp.file_type = gr.content_type.toString();
+				tmp.created_by = gr.sys_created_by.toString();
+				result.attachments.push(tmp);
+			}
+		}
+		else if(att.article_field == 'annotation'){
+			result.annotation = att.article_field_value.toString();
 		}
 	}
   
@@ -293,7 +304,7 @@
         <sys_created_on>2018-06-26 20:52:59</sys_created_on>
         <sys_customer_update>false</sys_customer_update>
         <sys_id>d3bf36f3dbfa57009b0a74131f961981</sys_id>
-        <sys_mod_count>58</sys_mod_count>
+        <sys_mod_count>64</sys_mod_count>
         <sys_name>getDocumentById</sys_name>
         <sys_package display_value="CRS Knowledge Database" source="x_26385_crs_kd">404e613b4f9213007221e321a310c738</sys_package>
         <sys_policy/>
@@ -301,7 +312,7 @@
         <sys_scope display_value="CRS Knowledge Database">404e613b4f9213007221e321a310c738</sys_scope>
         <sys_update_name>sys_ws_operation_d3bf36f3dbfa57009b0a74131f961981</sys_update_name>
         <sys_updated_by>yuw5@nih.gov</sys_updated_by>
-        <sys_updated_on>2019-05-08 21:23:06</sys_updated_on>
+        <sys_updated_on>2019-05-30 21:23:24</sys_updated_on>
         <web_service_definition display_value="export">01e1bbe7db6a53005358dc50cf961994</web_service_definition>
         <web_service_version/>
     </sys_ws_operation>

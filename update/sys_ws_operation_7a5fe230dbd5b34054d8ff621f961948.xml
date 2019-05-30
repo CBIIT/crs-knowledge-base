@@ -16,11 +16,7 @@
 	var tmp = l.addQuery('article_number', number);
 	tmp.addOrCondition('reference_article', number);
 	l.query();
-	var links = {};
-	links.used = [];
-	links.ref = [];
-	var used = [];
-	var ref = [];
+	var links = [];
 	var cat = {};
 	while(l.next()){
 		var an = l.article_number.toString();
@@ -30,11 +26,9 @@
 			cat[tem] = [];
 		}
 		if(an == number){
-			ref.push(ra);
 			cat[tem].push(ra);
 		}
 		else{
-			used.push(an);
 			cat[tem].push(an);
 		}
 	}
@@ -46,24 +40,13 @@
 
 		while(article.next()){
 			var t = article.number.toString();
-			if(used.indexOf(t) > -1){
-				links.used.push({
-					aid: article.sys_id.toString(),
-					kb_knowledge_base: article.kb_knowledge_base.toString(),
-					number: t,
-					tid: article.sys_class_name.toString(),
-					title: article.x_26385_crs_kd_u_kb_title.toString()
-				});
-			}
-			else{
-				links.ref.push({
-					aid: article.sys_id.toString(),
-					kb_knowledge_base: article.kb_knowledge_base.toString(),
-					number: t,
-					tid: article.sys_class_name.toString(),
-					title: article.x_26385_crs_kd_u_kb_title.toString()
-				});
-			}
+			links.push({
+				aid: article.sys_id.toString(),
+				kb_knowledge_base: article.kb_knowledge_base.toString(),
+				number: t,
+				tid: article.sys_class_name.toString(),
+				title: article.x_26385_crs_kd_u_kb_title.toString()
+			});
 		}
 	}
 	return links;
@@ -82,7 +65,7 @@
         <sys_created_on>2019-05-06 15:09:31</sys_created_on>
         <sys_customer_update>false</sys_customer_update>
         <sys_id>7a5fe230dbd5b34054d8ff621f961948</sys_id>
-        <sys_mod_count>9</sys_mod_count>
+        <sys_mod_count>10</sys_mod_count>
         <sys_name>getLinks</sys_name>
         <sys_package display_value="CRS Knowledge Database" source="x_26385_crs_kd">404e613b4f9213007221e321a310c738</sys_package>
         <sys_policy/>
@@ -90,7 +73,7 @@
         <sys_scope display_value="CRS Knowledge Database">404e613b4f9213007221e321a310c738</sys_scope>
         <sys_update_name>sys_ws_operation_7a5fe230dbd5b34054d8ff621f961948</sys_update_name>
         <sys_updated_by>yuw5@nih.gov</sys_updated_by>
-        <sys_updated_on>2019-05-06 20:45:16</sys_updated_on>
+        <sys_updated_on>2019-05-24 15:37:10</sys_updated_on>
         <web_service_definition display_value="export">01e1bbe7db6a53005358dc50cf961994</web_service_definition>
         <web_service_version/>
     </sys_ws_operation>

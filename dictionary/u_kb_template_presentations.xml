@@ -17,6 +17,7 @@
         <element label="Presented to" max_length="500" name="x_26385_crs_kd_u_kb_presented_to" text_index="true" type="string"/>
         <element label="Presented to leadership level" max_length="500" name="x_26385_crs_kd_u_kb_presented_to_leadership_level" text_index="true" type="string"/>
         <element label="Presented to public" max_length="500" name="x_26385_crs_kd_u_kb_presented_to_public" text_index="true" type="string"/>
+        <element label="Project" max_length="500" name="x_26385_crs_kd_u_kb_project" text_index="true" type="string"/>
         <element label="Related Information" max_length="500" name="x_26385_crs_kd_u_kb_related_information" text_index="true" type="string"/>
         <element label="Suggested Tags/Keywords" max_length="500" name="x_26385_crs_kd_u_kb_suggested_tags_keywords" text_index="true" type="string"/>
         <element label="Tags" max_length="500" name="x_26385_crs_kd_u_kb_tags" text_index="true" type="string"/>
