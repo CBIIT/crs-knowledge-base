@@ -84,6 +84,23 @@
 									 'Description',
 									 'Point of contact and contact information',
 									 'Fiscal Year'],
+									"u_kb_template_miscellaneous_int": [
+										'CRS POC(s)',
+										'Project',
+										'Date',
+										'Description'],
+									"u_kb_template_analysis": [
+										'Analyst(s)',
+										'Date',
+										'Requested By',
+										'Output/Conclusions',
+										'Reason for analysis/Main question',
+										'Major caveats',
+										'Tools and Data Source(s)',
+										'Other tools and sources',
+										'Other Attributes',
+										'Name(s) of file(s)',
+										'Other Notes'],
 									"u_kb_template_presentations": 
 									[
 									 'CRS POC(s)',
@@ -186,6 +203,8 @@
 		}
 		else if(c.knowledge_id == 'ff315a9edba47340b86770c08c961999'){
 			c.kc.push({id:'u_kb_template_presentations',label:'Presentations'});
+			c.kc.push({id:'u_kb_template_analysis',label:'Analysis'});
+			c.kc.push({id:'u_kb_template_miscellaneous_int',label:'Miscellaneous'});
 		}
 		else if(c.knowledge_id == '2c42d2dedba47340b86770c08c9619a9'){
 			c.kc.push({id:'u_kb_template_miscellaneous_me',label:'Miscellaneous'});
@@ -272,7 +291,8 @@
 		var link = {};
 		link.number = $scope.number;
 		link.reference = item.number;
-		link.template = item.template;
+		link.template = c.template_id;
+		link.ref_template = item.template;
 		NERDArticle.addLink(link, sessionId).then(function(res){
 				var result = res.data.result;
 			  c.getLinks();
@@ -283,12 +303,9 @@
 	};
 	
 	c.openArticle = function(article){
-		s.xpage = "kd_article_view";
-		s.kb_knowledge_base = article.kb_knowledge_base;
-		s.aid = article.aid;
-		s.number = article.number;
-		s.tid = article.tid;
-		$location.search(s).replace();
+		var url = '/nerd?xpage=kd_article_view&kb_knowledge_base='+ article.kb_knowledge_base +'&aid='+ article.aid +'&number='+ article.number +'&tid='+ article.tid +'&hasFilter=0';
+		window.open(url, '_blank');
+		//$location.search(s).replace();
 	};
 	
 	c.deleteLink = function(article){
@@ -374,87 +391,6 @@
 			growDiv.style.height = len * 25 + "px";
 		});
 	}
-	
-	/*
-	var fileInput  = document.getElementById("file2upload");
-
-	fileInput.addEventListener( "change", function( event ) {
-		c.file2upload = this.value;
-		$scope.$apply();
-	});
-	
-	function readFile(file, callback) {
-		var fileReader = new FileReader();
-		fileReader.onload = function() {
-			var result = fileReader.result.replace('data:application/pdf;base64,', '');
-			callback(result);
-		}
-		fileReader.readAsDataURL(file); //file must be base64
-	}
-	
-	c.upload = function(){
-		c.upload_status = 'uploading...';
-		
-		var input = $('#file2upload')[0];
-		var file = input.files[0];
-		
-		if(file.type !== 'application/pdf' && file.type !== 'application/vnd.ms-powerpoint' && file.type !== 'application/vnd.openxmlformats-officedocument.presentationml.presentation'){
-			console.log("please upload a pdf or powerpoint file.");
-			c.errorMessage = true;
-			c.upload_status = 'upload';
-		}
-		else if(file.size > 18874368){
-			console.log("File size should not exceed 18 MB.");
-			c.errorMessage = true;
-			c.upload_status = 'upload';
-		}
-		else{
-		  readFile(file, function(base64) {
-				var filename = file.name;
-				var attach = {
-								sys_id: params.doc_id,
-								tmp_id: params.template_id,
-								fileName: filename,
-								fileType: file.type,
-								fileContents : base64
-							};
-				NERDFile.uploadPDF(attach, sessionId).then(function(res){
-					if(res){
-						c.upload_status = 'upload';
-						c.errorMesage = false;
-						$scope.attachments = res.data.result;
-						$scope.$apply();
-					}
-				}, function(error){
-						console.log(error);
-				});
-			});	
-		}
-	};
-	
-	c.removeAttachment = function(attach_sys_id){
-		
-		cb = function(callback){
-				//post to server
-				var attach = {
-					sys_id: params.doc_id,
-					tmp_id: params.template_id
-				};
-				attach.attachment_sys_id = attach_sys_id;
-				NERDFile.removePDF(attach, sessionId).then(function(res){
-					if(res){
-						$scope.attachments = res.data.result;
-						$scope.$apply();
-					}
-					callback();
-				}, function(error){
-					console.log(error);
-				});
-		};
-		$('#deletionDiv').modal('show');
-		
-	};
-	*/
 	
 	c.tagAdding = function(){
 		if(c.tag2add && c.tag2add.trim() !== ""){
@@ -774,7 +710,7 @@
         <sys_created_on>2018-10-17 20:16:40</sys_created_on>
         <sys_customer_update>false</sys_customer_update>
         <sys_id>ae23f05cdb592300b86770c08c961938</sys_id>
-        <sys_mod_count>770</sys_mod_count>
+        <sys_mod_count>790</sys_mod_count>
         <sys_name>[crs] KD Article</sys_name>
         <sys_package display_value="CRS Knowledge Database" source="x_26385_crs_kd">404e613b4f9213007221e321a310c738</sys_package>
         <sys_policy/>
@@ -782,7 +718,7 @@
         <sys_scope display_value="CRS Knowledge Database">404e613b4f9213007221e321a310c738</sys_scope>
         <sys_update_name>sp_widget_ae23f05cdb592300b86770c08c961938</sys_update_name>
         <sys_updated_by>yuw5@nih.gov</sys_updated_by>
-        <sys_updated_on>2019-05-30 21:23:11</sys_updated_on>
+        <sys_updated_on>2019-06-07 19:24:36</sys_updated_on>
         <template><![CDATA[<div id="crs-article">
   <div class="container">
     <div class="row row-space">
@@ -803,7 +739,7 @@
                 <a href="#" ng-click="c.switchVersions()"><i class="fa fa-caret-down" style="width:10px;"></i> Version {{version}} - {{annotation}}</a>
               </div>
               <div style="width:30%;text-align:right;" ng-if="c.isSu || c.author_id == c.currentUserID">
-                  <a href="#" ng-click="c.gotoEdit(version)" ng-if="(c.template_id == 'u_kb_template_top_accomplishment'|| c.template_id == 'u_kb_template_literature_summary' || c.template_id == 'u_kb_template_miscellaneous_me' || c.template_id == 'u_kb_template_presentations') && editable">+ Edit this Article</a>
+                  <a href="#" ng-click="c.gotoEdit(version)" ng-if="editable">+ Edit this Article</a>
               </div>
             </div>
             <div id='grow' style="border-bottom: 1px solid lightgray;">
@@ -826,7 +762,8 @@
               </div> 
               <div ng-repeat="item in columns track by $index">
                 <h4 style="font-weight:bold;">{{item}}</h4> 
-                <div ng-bind-html="c.trustAsHtml(data[item])" style="font-size:14px;"></div> 
+                <div ng-bind-html="c.trustAsHtml(data[item])" style="font-size:14px;"></div>
+                <span style="color:darkgray; font-weight:bold;font-size: 14px;" ng-if="data[item] !=='N/A' && item == 'Name(s) of file(s)'">* Files have been saved in this <a target='_blank' href="https://nih.sharepoint.com/:f:/r/sites/GRP-NCI-CRS/Shared%20Documents/Analysis?csf=1&e=5Rp6CS">Analysis folder</a> (CRS Sharepoint).</span>
               </div>
               <div>
                 <h4 style="font-weight:bold;">Author</h4> 
@@ -848,7 +785,7 @@
                      max-results-to-show="10"></auto-complete>
                 </tags-input>
                 -->
-                <md-chips ng-model="c.tags" readonly="true" md-removable="true" md-on-remove="c.tagRemoving($chip)">
+                <md-chips ng-model="c.tags" readonly="true" md-removable="c.isSu || c.author_id == c.currentUserID" md-on-remove="c.tagRemoving($chip)">
     						</md-chips>
               </div>
               <md-list>
@@ -897,7 +834,7 @@
               </label>
             </div>
             <div class="section-content" ng-if="c.links.length > 0">
-              <a target="_blank" href="#" ng-click="c.openArticle(lk);" ng-repeat="lk in c.links">
+              <a ng-click="c.openArticle(lk);" ng-repeat="lk in c.links">
                 <i class="glyphicon glyphicon-file"></i> {{lk.title}}
               </a>
             </div>
@@ -947,7 +884,7 @@
     </div>
 		-->
     <!-- Linked Records section -->
-    <div class="row row-space">
+    <div class="row row-space" ng-if="c.isSu || c.author_id == c.currentUserID">
       <div class="col-md-9 upload-block">
         <div class="upload-header">
           <h4>Caution/Warning</h4>
@@ -967,7 +904,7 @@
       </div>
     </div>
     <!-- Linked Records section -->
-    <div class="row row-space">
+    <div class="row row-space" ng-if="c.isSu || c.author_id == c.currentUserID">
       <div class="col-md-9 upload-block">
         <div class="upload-header">
           <h4>Linked Records</h4>
@@ -1004,7 +941,7 @@
               <md-list-item class="" ng-repeat="article in c.links">
                 <div class="md-list-item-text">
                   <h5>
-                    <a target="_blank" href="#" ng-click="c.openArticle(article);">
+                    <a ng-click="c.openArticle(article);">
                       <i class="glyphicon glyphicon-file"></i> {{article.title}}
                     </a>
                   </h5>

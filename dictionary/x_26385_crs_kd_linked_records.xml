@@ -4,5 +4,6 @@
         <element label="Article Number" max_length="100" name="article_number" type="string"/>
         <element label="Category" max_length="100" name="category" type="string"/>
         <element label="Reference Article" max_length="100" name="reference_article" type="string"/>
+        <element label="Reference Category" max_length="100" name="reference_category" type="string"/>
     </element>
 </database>

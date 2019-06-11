@@ -14,10 +14,16 @@
 		"u_kb_template_top_accomplishment":{
 						kb:"f5644dcadb54ab0054d8ff621f9619d7",
 						cat:"bef4810edb54ab0054d8ff621f9619e8",
-						schema:["x_26385_crs_kd_u_kb_title","x_26385_crs_kd_u_kb_cancer_site_type","x_26385_crs_kd_u_kb_description",
-								"x_26385_crs_kd_u_kb_doc","x_26385_crs_kd_u_kb_fiscal_year","x_26385_crs_kd_u_kb_involved_organization",
+						schema:["x_26385_crs_kd_u_kb_title","x_26385_crs_kd_u_kb_doc","x_26385_crs_kd_u_kb_fiscal_year","x_26385_crs_kd_u_kb_involved_organization",
 								"x_26385_crs_kd_u_kb_references","x_26385_crs_kd_u_kb_research_type","x_26385_crs_kd_u_kb_special_topic"]
 					},
+		"u_kb_template_gpra":{
+						kb:"f5644dcadb54ab0054d8ff621f9619d7",
+						cat:"1989ff10dba92f00b86770c08c9619ba",
+						schema:["x_26385_crs_kd_u_kb_title","x_26385_crs_kd_u_kb_measure_id",
+								"x_26385_crs_kd_u_kb_doc","x_26385_crs_kd_u_kb_research_type","x_26385_crs_kd_u_kb_special_topic",
+								"x_26385_crs_kd_u_kb_contacts","x_26385_crs_kd_u_kb_description","x_26385_crs_kd_u_kb_summary","x_26385_crs_kd_u_kb_background",
+								"x_26385_crs_kd_u_kb_target_context_and_conditions","x_26385_crs_kd_u_kb_fiscal_year"]},
 		"u_kb_template_literature_summary":{
 						kb:"f5644dcadb54ab0054d8ff621f9619d7",
 						cat:"741b4320dbec3f00b86770c08c961965",
@@ -25,12 +31,42 @@
 								"x_26385_crs_kd_u_kb_research_type","x_26385_crs_kd_u_kb_special_topic",
 								"x_26385_crs_kd_u_kb_description","x_26385_crs_kd_u_kb_references","x_26385_crs_kd_u_kb_funding","x_26385_crs_kd_u_kb_journal","x_26385_crs_kd_u_kb_fiscal_year"]
 					},
+		"u_kb_template_significant_items":{
+						kb:"f5644dcadb54ab0054d8ff621f9619d7",
+						cat:"a25c4d4bdbb3670054d8ff621f961921",
+						schema:["x_26385_crs_kd_u_kb_title","x_26385_crs_kd_u_kb_cancer_site_type","x_26385_crs_kd_u_kb_research_type","x_26385_crs_kd_u_kb_special_topic",
+								"x_26385_crs_kd_u_kb_action_taken_or_to_be_taken","x_26385_crs_kd_u_kb_congressional_language","x_26385_crs_kd_u_kb_crs_author",
+								"x_26385_crs_kd_u_kb_references","x_26385_crs_kd_u_kb_fiscal_year"]},
+		"u_kb_template_miscellaneous":{
+						kb:"f5644dcadb54ab0054d8ff621f9619d7",
+						cat:"5250a7ffdbc92f40b86770c08c96190a",
+						schema:["x_26385_crs_kd_u_kb_title","x_26385_crs_kd_u_kb_cancer_site_type","x_26385_crs_kd_u_kb_research_type","x_26385_crs_kd_u_kb_special_topic",
+								"x_26385_crs_kd_u_kb_description","x_26385_crs_kd_u_kb_fiscal_year"]},
+		"u_kb_template_final_reports":{
+						kb:"f5644dcadb54ab0054d8ff621f9619d7",
+						cat:"e9dc4d8fdb73670054d8ff621f961967",
+						schema:["x_26385_crs_kd_u_kb_title","x_26385_crs_kd_u_kb_cancer_site_type","x_26385_crs_kd_u_kb_research_type","x_26385_crs_kd_u_kb_special_topic",
+								"x_26385_crs_kd_u_kb_description","x_26385_crs_kd_u_kb_fiscal_year"]},
 		"u_kb_template_miscellaneous_me":{
 					   kb:"2c42d2dedba47340b86770c08c9619a9",
 					   cat: "6c821adedba47340b86770c08c961913",
 					   schema:["x_26385_crs_kd_u_kb_title","x_26385_crs_kd_u_kb_description","x_26385_crs_kd_u_kb_moonshot_recommendation",
 							   "x_26385_crs_kd_u_kb_cross_cutting_themes_and_goals","x_26385_crs_kd_u_kb_fiscal_year",
 							   "x_26385_crs_kd_u_kb_cmit","x_26385_crs_kd_u_kb_point_of_contact_and_contact_information"]
+				   },
+		"u_kb_template_miscellaneous_int":{
+					   kb:"ff315a9edba47340b86770c08c961999",
+					   cat: "27acfaf1dbb1b30054d8ff621f9619a0",
+					   schema:["x_26385_crs_kd_u_kb_title","x_26385_crs_kd_u_kb_crs_poc_s","x_26385_crs_kd_u_kb_project",
+							   "x_26385_crs_kd_u_kb_date","x_26385_crs_kd_u_kb_description"]
+				   },
+		"u_kb_template_analysis":{
+					   kb:"ff315a9edba47340b86770c08c961999",
+					   cat: "237cb6b1dbb1b30054d8ff621f961920",
+					   schema:["x_26385_crs_kd_u_kb_title","x_26385_crs_kd_u_kb_analyst_s","x_26385_crs_kd_u_kb_date","x_26385_crs_kd_u_kb_requested_by",
+		  "x_26385_crs_kd_u_kb_output_conclusions","x_26385_crs_kd_u_kb_reason_for_analysis_main_question","x_26385_crs_kd_u_kb_major_caveats",
+		  "x_26385_crs_kd_u_kb_tools_and_data_source_s","x_26385_crs_kd_u_kb_other_tools_and_sources","x_26385_crs_kd_u_kb_other_attributes","x_26385_crs_kd_u_kb_name_s_of_file_s",
+		  "x_26385_crs_kd_u_kb_other_notes"]
 				   },
 		"u_kb_template_presentations":{
 					   kb:"ff315a9edba47340b86770c08c961999",
@@ -85,7 +121,7 @@
         <sys_created_on>2019-04-11 18:14:13</sys_created_on>
         <sys_customer_update>false</sys_customer_update>
         <sys_id>5802e2b8db7c370054d8ff621f96195e</sys_id>
-        <sys_mod_count>17</sys_mod_count>
+        <sys_mod_count>21</sys_mod_count>
         <sys_name>saveSubmission</sys_name>
         <sys_package display_value="CRS Knowledge Database" source="x_26385_crs_kd">404e613b4f9213007221e321a310c738</sys_package>
         <sys_policy/>
@@ -93,7 +129,7 @@
         <sys_scope display_value="CRS Knowledge Database">404e613b4f9213007221e321a310c738</sys_scope>
         <sys_update_name>sys_ws_operation_5802e2b8db7c370054d8ff621f96195e</sys_update_name>
         <sys_updated_by>yuw5@nih.gov</sys_updated_by>
-        <sys_updated_on>2019-05-16 16:04:02</sys_updated_on>
+        <sys_updated_on>2019-06-07 18:57:04</sys_updated_on>
         <web_service_definition display_value="export">01e1bbe7db6a53005358dc50cf961994</web_service_definition>
         <web_service_version/>
     </sys_ws_operation>

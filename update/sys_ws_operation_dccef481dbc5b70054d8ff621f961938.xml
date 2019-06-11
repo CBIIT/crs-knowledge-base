@@ -36,6 +36,27 @@
 											{label: "Fiscal Year", type: "checkbox", field: "x_26385_crs_kd_u_kb_fiscal_year",
 											 items: ['2016','2017','2018','2019']}
 										   ],
+		"u_kb_template_gpra":[{label: "Title", type: "string", field: "x_26385_crs_kd_u_kb_title", required:"1"},
+											{label: "Measure Id", type: "string",field: "x_26385_crs_kd_u_kb_measure_id"},
+											
+											{label: "DOC", type: "checkbox", 
+											 field: "x_26385_crs_kd_u_kb_doc",
+											 items: ["CBIIT","CCCT","CCG","CCR","CCT","CGH","CRCHD","CSSI","DCB","DCCPS","DCEG","DCP","DCTD","OHAM","SBIR"]},
+											{label: "Research Type", type: "checkbox", field: "x_26385_crs_kd_u_kb_research_type",
+											 items: ["Basic","Clinical","Cancer Control","Translational","Translational-Pre-Clinical","Translational-Post-Clinical","Epidemiological",
+													 "Population Science","Implementation Science","Survivorship","Diagnosis",
+													 "Treatment","Prevention","Detection"]},
+											{label: "Special Topic", type: "checkbox", field: "x_26385_crs_kd_u_kb_special_topic",
+											 items: ['Big data/Data sharing','Metastatic cancer','Minority health/Health disparities',
+															 'Moonshot','Pediatric','Rare','Training/Workforce development']},
+											{label: "Contacts", type: "string", field: "x_26385_crs_kd_u_kb_contacts"},
+											{label: "Description", type: "html", field: "x_26385_crs_kd_u_kb_description"},
+											{label: "Summary", type: "html", field: "x_26385_crs_kd_u_kb_summary"},
+											{label: "Background", type: "html", field: "x_26385_crs_kd_u_kb_background"},
+							                {label: "Target Context and Conditions", type: "html", field: "x_26385_crs_kd_u_kb_target_context_and_conditions"},
+							                {label: "Fiscal Year", type: "checkbox", field: "x_26385_crs_kd_u_kb_fiscal_year",
+											 items: ['2016','2017','2018','2019']}
+										   ],
 		"u_kb_template_literature_summary":[{label: "Title", type: "string", field: "x_26385_crs_kd_u_kb_title", required:"1"},
 											{label: "Journal", type: "string", field: "x_26385_crs_kd_u_kb_journal"},
 											{label: "Cancer Site/Type", type: "checkbox", 
@@ -54,6 +75,63 @@
 											{label: "Description", type: "html", field: "x_26385_crs_kd_u_kb_description"},
 											{label: "References",type: "customize", field: "x_26385_crs_kd_u_kb_references"},
 											{label: "Funding", type: "customize", field: "x_26385_crs_kd_u_kb_funding"},
+											{label: "Fiscal Year", type: "checkbox", field: "x_26385_crs_kd_u_kb_fiscal_year",
+											 items: ['2016','2017','2018','2019']}
+										   ],
+		"u_kb_template_significant_items":[{label: "Title", type: "string", field: "x_26385_crs_kd_u_kb_title", required:"1"},
+											{label: "Cancer Site/Type", type: "checkbox", 
+											 field: "x_26385_crs_kd_u_kb_cancer_site_type",
+											 items: ['Bladder','Brain','Breast','Central nervous system','Cervical','Colon/colorectal',
+											 'Endometrial','Esophageal','Gallbladder','Gastric/Stomach','Glioblastoma','Head and neck',
+											 'Kidney','Leukemia','Liver','Lung','Lymphoma','Melanoma','Multiple myeloma','Neuroblastoma',
+											 'Ovarian','Pancreatic','Prostate','Sarcoma','Skin','Thyroid']},
+											{label: "Research Type", type: "checkbox", field: "x_26385_crs_kd_u_kb_research_type",
+											 items: ["Basic","Clinical","Cancer Control","Translational","Translational-Pre-Clinical","Translational-Post-Clinical","Epidemiological",
+													 "Population Science","Implementation Science","Survivorship","Diagnosis",
+													 "Treatment","Prevention","Detection"]},
+											{label: "Special Topic", type: "checkbox", field: "x_26385_crs_kd_u_kb_special_topic",
+											 items: ['Big data/Data sharing','Metastatic cancer','Minority health/Health disparities',
+															 'Moonshot','Pediatric','Rare','Training/Workforce development']},
+											{label: "Action taken or to be taken", type: "html", field: "x_26385_crs_kd_u_kb_action_taken_or_to_be_taken"},
+											{label: "Congressional Language",type: "html", field: "x_26385_crs_kd_u_kb_congressional_language"},
+											{label: "CRS Author", type: "string", field: "x_26385_crs_kd_u_kb_crs_author"},
+										   {label: "References",type: "html", field: "x_26385_crs_kd_u_kb_references"},
+											{label: "Fiscal Year", type: "checkbox", field: "x_26385_crs_kd_u_kb_fiscal_year",
+											 items: ['2016','2017','2018','2019']}
+										   ],
+		"u_kb_template_miscellaneous":[{label: "Title", type: "string", field: "x_26385_crs_kd_u_kb_title", required:"1"},
+											{label: "Cancer Site/Type", type: "checkbox", 
+											 field: "x_26385_crs_kd_u_kb_cancer_site_type",
+											 items: ['Bladder','Brain','Breast','Central nervous system','Cervical','Colon/colorectal',
+											 'Endometrial','Esophageal','Gallbladder','Gastric/Stomach','Glioblastoma','Head and neck',
+											 'Kidney','Leukemia','Liver','Lung','Lymphoma','Melanoma','Multiple myeloma','Neuroblastoma',
+											 'Ovarian','Pancreatic','Prostate','Sarcoma','Skin','Thyroid']},
+											{label: "Research Type", type: "checkbox", field: "x_26385_crs_kd_u_kb_research_type",
+											 items: ["Basic","Clinical","Cancer Control","Translational","Translational-Pre-Clinical","Translational-Post-Clinical","Epidemiological",
+													 "Population Science","Implementation Science","Survivorship","Diagnosis",
+													 "Treatment","Prevention","Detection"]},
+											{label: "Special Topic", type: "checkbox", field: "x_26385_crs_kd_u_kb_special_topic",
+											 items: ['Big data/Data sharing','Metastatic cancer','Minority health/Health disparities',
+															 'Moonshot','Pediatric','Rare','Training/Workforce development']},
+											{label: "Description", type: "html", field: "x_26385_crs_kd_u_kb_description"},
+											{label: "Fiscal Year", type: "checkbox", field: "x_26385_crs_kd_u_kb_fiscal_year",
+											 items: ['2016','2017','2018','2019']}
+										   ],
+		"u_kb_template_final_reports":[{label: "Title", type: "string", field: "x_26385_crs_kd_u_kb_title", required:"1"},
+											{label: "Cancer Site/Type", type: "checkbox", 
+											 field: "x_26385_crs_kd_u_kb_cancer_site_type",
+											 items: ['Bladder','Brain','Breast','Central nervous system','Cervical','Colon/colorectal',
+											 'Endometrial','Esophageal','Gallbladder','Gastric/Stomach','Glioblastoma','Head and neck',
+											 'Kidney','Leukemia','Liver','Lung','Lymphoma','Melanoma','Multiple myeloma','Neuroblastoma',
+											 'Ovarian','Pancreatic','Prostate','Sarcoma','Skin','Thyroid']},
+											{label: "Research Type", type: "checkbox", field: "x_26385_crs_kd_u_kb_research_type",
+											 items: ["Basic","Clinical","Cancer Control","Translational","Translational-Pre-Clinical","Translational-Post-Clinical","Epidemiological",
+													 "Population Science","Implementation Science","Survivorship","Diagnosis",
+													 "Treatment","Prevention","Detection"]},
+											{label: "Special Topic", type: "checkbox", field: "x_26385_crs_kd_u_kb_special_topic",
+											 items: ['Big data/Data sharing','Metastatic cancer','Minority health/Health disparities',
+															 'Moonshot','Pediatric','Rare','Training/Workforce development']},
+											{label: "Description", type: "html", field: "x_26385_crs_kd_u_kb_description"},
 											{label: "Fiscal Year", type: "checkbox", field: "x_26385_crs_kd_u_kb_fiscal_year",
 											 items: ['2016','2017','2018','2019']}
 										   ],
@@ -80,6 +158,31 @@
 											 items: ['2017','2018','2019','2020','2021']},
 											{label: "Point of contact and contact information", type: "string", field: "x_26385_crs_kd_u_kb_point_of_contact_and_contact_information"}
 											],
+		"u_kb_template_miscellaneous_int":[{label: "Title", type: "string", field: "x_26385_crs_kd_u_kb_title", required: "1"},
+											{label: "CRS POC(s)", type: "string", field: "x_26385_crs_kd_u_kb_crs_poc_s"},
+										    {label: "Project", type: "checkbox", field:"x_26385_crs_kd_u_kb_project",
+											 items: ["Analysis", "Annual Plan", "Early Detection and Screening Initiatives", 
+													 "Evaluation", "Health Disparities Initiatives", "Moonshot", 
+													 "P&E", "Research Funding Systems","Other"]},
+											{label: "Date", type: "date", field: "x_26385_crs_kd_u_kb_date"},
+									        {label: "Description", type: "html", field: "x_26385_crs_kd_u_kb_description"}
+									        ],
+		"u_kb_template_analysis":[{label: "Title", type: "string", field: "x_26385_crs_kd_u_kb_title", required: "1"},
+								  {label: "Analyst(s)", type: "string", field: "x_26385_crs_kd_u_kb_analyst_s"},
+								  {label: "Date", type: "date", field: "x_26385_crs_kd_u_kb_date"},
+								  {label: "Requested By", type: "html", field: "x_26385_crs_kd_u_kb_requested_by"},
+								  {label: "Output/Conclusions", type: "html", field: "x_26385_crs_kd_u_kb_output_conclusions"},
+								  {label: "Reason for analysis/Main question", type: "html", field: "x_26385_crs_kd_u_kb_reason_for_analysis_main_question"},
+								  {label: "Major caveats", type: "html", field: "x_26385_crs_kd_u_kb_major_caveats"},
+								  {label: "Tools and Data Source(s)", type: "checkbox", field: "x_26385_crs_kd_u_kb_tools_and_data_source_s", 
+								   items:["QVR","NIH RePORT","Requested from SARB","Dimensions","RCDC","Excel","Excel VBA","R"]},
+								  {label: "Other tools and sources", type: "html", field: "x_26385_crs_kd_u_kb_other_tools_and_sources"},
+								  {label: "Other Attributes", type: "checkbox", field: "x_26385_crs_kd_u_kb_other_attributes",
+								   items:["Draft data/quick and dirty","Shared with leadership","Analysis shared with member of the public","Data covered under DUDA"]},
+								  {label: "Name(s) of file(s) (please include description)", type: "html", 
+											 field: "x_26385_crs_kd_u_kb_name_s_of_file_s"},
+								  {label: "Other Notes", type: "html", field: "x_26385_crs_kd_u_kb_other_notes"}
+									        ],
 		"u_kb_template_presentations":[{label: "Title", type: "string", field: "x_26385_crs_kd_u_kb_title", required: "1"},
 											{label: "CRS POC(s)", type: "string", field: "x_26385_crs_kd_u_kb_crs_poc_s"},
 										    {label: "Project", type: "checkbox", field:"x_26385_crs_kd_u_kb_project",
@@ -205,7 +308,7 @@
         <sys_created_on>2019-04-24 15:13:42</sys_created_on>
         <sys_customer_update>false</sys_customer_update>
         <sys_id>dccef481dbc5b70054d8ff621f961938</sys_id>
-        <sys_mod_count>27</sys_mod_count>
+        <sys_mod_count>37</sys_mod_count>
         <sys_name>getDocumentWithSchema</sys_name>
         <sys_package display_value="CRS Knowledge Database" source="x_26385_crs_kd">404e613b4f9213007221e321a310c738</sys_package>
         <sys_policy/>
@@ -213,7 +316,7 @@
         <sys_scope display_value="CRS Knowledge Database">404e613b4f9213007221e321a310c738</sys_scope>
         <sys_update_name>sys_ws_operation_dccef481dbc5b70054d8ff621f961938</sys_update_name>
         <sys_updated_by>yuw5@nih.gov</sys_updated_by>
-        <sys_updated_on>2019-05-24 19:19:15</sys_updated_on>
+        <sys_updated_on>2019-06-07 18:40:18</sys_updated_on>
         <web_service_definition display_value="export">01e1bbe7db6a53005358dc50cf961994</web_service_definition>
         <web_service_version/>
     </sys_ws_operation>

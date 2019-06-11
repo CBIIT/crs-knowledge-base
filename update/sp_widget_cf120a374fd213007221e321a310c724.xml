@@ -1020,7 +1020,7 @@
         <sys_created_on>2018-06-01 19:53:54</sys_created_on>
         <sys_customer_update>false</sys_customer_update>
         <sys_id>cf120a374fd213007221e321a310c724</sys_id>
-        <sys_mod_count>1177</sys_mod_count>
+        <sys_mod_count>1179</sys_mod_count>
         <sys_name>[crs] KD Search</sys_name>
         <sys_package display_value="CRS Knowledge Database" source="x_26385_crs_kd">404e613b4f9213007221e321a310c738</sys_package>
         <sys_policy/>
@@ -1028,7 +1028,7 @@
         <sys_scope display_value="CRS Knowledge Database">404e613b4f9213007221e321a310c738</sys_scope>
         <sys_update_name>sp_widget_cf120a374fd213007221e321a310c724</sys_update_name>
         <sys_updated_by>yuw5@nih.gov</sys_updated_by>
-        <sys_updated_on>2019-05-30 20:54:21</sys_updated_on>
+        <sys_updated_on>2019-06-06 14:00:20</sys_updated_on>
         <template><![CDATA[<div class="container">
   <div class="row">
         <div class="col-md-3">
@@ -1336,7 +1336,7 @@
                         <div uib-accordion-group ng-repeat="tab in c.data.tabs" ng-if="tab.show" class="panel-default" is-open="tab.isOpen">
                           <uib-accordion-heading>
                             <div>
-                              {{tab.name}} ({{tab.list.length}}) <a ng-if="tab.tmpl == 'u_kb_template_top_accomplishment' || tab.tmpl == 'u_kb_template_literature_summary' || tab.tmpl == 'u_kb_template_miscellaneous_me' || tab.tmpl == 'u_kb_template_presentations'" href="#" ng-click="c.gotoNewSubmission(tab.tmpl,$event)" style="margin-left:20px;">+ Add new Article</a> <i class="pull-right" ng-class="{'fa fa-minus-square': tab.isOpen, 'fa fa-plus-square': !tab.isOpen}"></i>
+                              {{tab.name}} ({{tab.list.length}}) <a ng-click="c.gotoNewSubmission(tab.tmpl,$event)" style="margin-left:20px;">+ Add new Article</a> <i class="pull-right" ng-class="{'fa fa-minus-square': tab.isOpen, 'fa fa-plus-square': !tab.isOpen}"></i>
                             </div>
                           </uib-accordion-heading>
                           <ul class="list-group">

@@ -22,6 +22,21 @@
 									 'Description',
 									 'Point of contact and contact information',
 									 'Fiscal Year'],
+					"u_kb_template_miscellaneous_int": ['Title','CRS POC(s)',
+									 'Project',
+									 'Date',
+									 'Description'],
+					"u_kb_template_analysis": ['Title','Analyst(s)',
+									 'Date',
+									 'Requested By',
+									 'Output/Conclusions',
+									 'Reason for analysis/Main question',
+									 'Major caveats',
+									 'Tools and Data Source(s)',
+								     'Other tools and sources',
+								     'Other Attributes',
+								     'Name(s) of file(s)',
+									 'Other Notes'],
 					"u_kb_template_presentations": ['Title',
 													'CRS POC(s)',
 													'Project',
@@ -114,6 +129,23 @@
 								'Point of contact and contact information':"x_26385_crs_kd_u_kb_point_of_contact_and_contact_information",
                                 "Fiscal Year":"x_26385_crs_kd_u_kb_fiscal_year"
                 },
+				"u_kb_template_miscellaneous_int": {'Title':'x_26385_crs_kd_u_kb_title',
+													'CRS POC(s)':'x_26385_crs_kd_u_kb_crs_poc_s',
+									 'Project':"x_26385_crs_kd_u_kb_project",
+									 'Date':"x_26385_crs_kd_u_kb_date",
+									 'Description':"x_26385_crs_kd_u_kb_description"},
+				"u_kb_template_analysis": {'Title':"x_26385_crs_kd_u_kb_title",
+										   'Analyst(s)':"x_26385_crs_kd_u_kb_analyst_s",
+									 'Date':"x_26385_crs_kd_u_kb_date",
+									 'Requested By':"x_26385_crs_kd_u_kb_requested_by",
+									 'Output/Conclusions':"x_26385_crs_kd_u_kb_output_conclusions",
+									 'Reason for analysis/Main question':"x_26385_crs_kd_u_kb_reason_for_analysis_main_question",
+									 'Major caveats':"x_26385_crs_kd_u_kb_major_caveats",
+									 'Tools and Data Source(s)':"x_26385_crs_kd_u_kb_tools_and_data_source_s",
+								     'Other tools and sources':"x_26385_crs_kd_u_kb_other_tools_and_sources",
+								     'Other Attributes':"x_26385_crs_kd_u_kb_other_attributes",
+									 'Name(s) of file(s)':"x_26385_crs_kd_u_kb_name_s_of_file_s",
+									 'Other Notes':"x_26385_crs_kd_u_kb_other_notes"},
 		        "u_kb_template_presentations":{
 									'Title':"x_26385_crs_kd_u_kb_title",
 									'CRS POC(s)':"x_26385_crs_kd_u_kb_crs_poc_s",
@@ -304,7 +336,7 @@
         <sys_created_on>2018-06-26 20:52:59</sys_created_on>
         <sys_customer_update>false</sys_customer_update>
         <sys_id>d3bf36f3dbfa57009b0a74131f961981</sys_id>
-        <sys_mod_count>64</sys_mod_count>
+        <sys_mod_count>67</sys_mod_count>
         <sys_name>getDocumentById</sys_name>
         <sys_package display_value="CRS Knowledge Database" source="x_26385_crs_kd">404e613b4f9213007221e321a310c738</sys_package>
         <sys_policy/>
@@ -312,7 +344,7 @@
         <sys_scope display_value="CRS Knowledge Database">404e613b4f9213007221e321a310c738</sys_scope>
         <sys_update_name>sys_ws_operation_d3bf36f3dbfa57009b0a74131f961981</sys_update_name>
         <sys_updated_by>yuw5@nih.gov</sys_updated_by>
-        <sys_updated_on>2019-05-30 21:23:24</sys_updated_on>
+        <sys_updated_on>2019-06-07 18:41:59</sys_updated_on>
         <web_service_definition display_value="export">01e1bbe7db6a53005358dc50cf961994</web_service_definition>
         <web_service_version/>
     </sys_ws_operation>

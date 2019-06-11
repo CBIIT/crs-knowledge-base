@@ -22,11 +22,15 @@
 		var an = l.article_number.toString();
 		var ra = l.reference_article.toString();
 		var tem = l.category.toString();
+		var ref_tem = l.reference_category.toString();
 		if(!(tem in cat)){
 			cat[tem] = [];
 		}
+		if(!(ref_tem in cat)){
+			cat[ref_tem] = [];
+		}
 		if(an == number){
-			cat[tem].push(ra);
+			cat[ref_tem].push(ra);
 		}
 		else{
 			cat[tem].push(an);
@@ -65,7 +69,7 @@
         <sys_created_on>2019-05-06 15:09:31</sys_created_on>
         <sys_customer_update>false</sys_customer_update>
         <sys_id>7a5fe230dbd5b34054d8ff621f961948</sys_id>
-        <sys_mod_count>10</sys_mod_count>
+        <sys_mod_count>11</sys_mod_count>
         <sys_name>getLinks</sys_name>
         <sys_package display_value="CRS Knowledge Database" source="x_26385_crs_kd">404e613b4f9213007221e321a310c738</sys_package>
         <sys_policy/>
@@ -73,7 +77,7 @@
         <sys_scope display_value="CRS Knowledge Database">404e613b4f9213007221e321a310c738</sys_scope>
         <sys_update_name>sys_ws_operation_7a5fe230dbd5b34054d8ff621f961948</sys_update_name>
         <sys_updated_by>yuw5@nih.gov</sys_updated_by>
-        <sys_updated_on>2019-05-24 15:37:10</sys_updated_on>
+        <sys_updated_on>2019-06-07 14:47:23</sys_updated_on>
         <web_service_definition display_value="export">01e1bbe7db6a53005358dc50cf961994</web_service_definition>
         <web_service_version/>
     </sys_ws_operation>
