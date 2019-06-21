@@ -590,11 +590,12 @@ button:focus {&#13;
 	min-width:200px;&#13;
 }&#13;
 .filter-block{&#13;
-  padding:6px 0px 0px 0px;&#13;
+  padding:0px;&#13;
 }&#13;
 &#13;
 .filter-options-list{&#13;
   padding: 0px;&#13;
+  margin-bottom:0px;&#13;
 }&#13;
 &#13;
 .filter-item{&#13;
@@ -970,6 +971,9 @@ md-chips-wrap {&#13;
   min-height: 32px;&#13;
   box-shadow: none !important;&#13;
   padding: 0px !important;&#13;
+}&#13;
+.tinymce_table_scope table, .tinymce_table_scope table td, .tinymce_table_scope table th, .tinymce_table_scope table caption{&#13;
+	border: 1px solid gray !important;&#13;
 }</css>
         <name>NERD_CSS</name>
         <sys_class_name>sp_css</sys_class_name>
@@ -977,7 +981,7 @@ md-chips-wrap {&#13;
         <sys_created_on>2018-09-04 15:57:11</sys_created_on>
         <sys_customer_update>false</sys_customer_update>
         <sys_id>b46b9296db54eb00b86770c08c961998</sys_id>
-        <sys_mod_count>204</sys_mod_count>
+        <sys_mod_count>210</sys_mod_count>
         <sys_name>NERD_CSS</sys_name>
         <sys_package display_value="CRS Knowledge Database" source="x_26385_crs_kd">404e613b4f9213007221e321a310c738</sys_package>
         <sys_policy/>
@@ -985,6 +989,6 @@ md-chips-wrap {&#13;
         <sys_scope display_value="CRS Knowledge Database">404e613b4f9213007221e321a310c738</sys_scope>
         <sys_update_name>sp_css_b46b9296db54eb00b86770c08c961998</sys_update_name>
         <sys_updated_by>yuw5@nih.gov</sys_updated_by>
-        <sys_updated_on>2019-05-23 20:56:23</sys_updated_on>
+        <sys_updated_on>2019-06-21 20:45:12</sys_updated_on>
     </sp_css>
 </record_update>

@@ -22,8 +22,12 @@
 	c.data.selectedProject = [];
 	c.data.selectedThemesGoals = [];
 	c.data.selectedRecommendation = [];
+	c.data.selectedCategories = [];
 	
-	c.data.selectedCategory = [];
+	c.categories_dict = {};
+	c.data.categories = [];
+	
+	c.resultLen = 0;
 	
 	if(s.kb_knowledge_base){
 		var kb_id = s.kb_knowledge_base;
@@ -40,7 +44,6 @@
 	c.data.maxSize = 5;
 	c.data.pageSize = {};
 	c.data.bigCurrentPage = {};
-	c.selectedCategories = {};
 	
 	c.pageChanged = function() {
     
@@ -63,6 +66,10 @@
 		
 			NERDSearch.getFilters(params,c.data.sessionId).then(function(res){
 				var stat = res.data.result;
+				c.data.categories = stat.categories;
+				c.data.categories.forEach(function(ct){
+					c.categories_dict[ct.id] = ct.name;
+				});
 				c.data.filters = stat.filters;
 				c.data.tmp = stat.tmp;
 				c.data.count = stat.count;
@@ -128,6 +135,10 @@
 		
 			NERDSearch.getFilters(params,c.data.sessionId).then(function(res){
 				var stat = res.data.result;
+				c.data.categories = stat.categories;
+				c.data.categories.forEach(function(ct){
+					c.categories_dict[ct.id] = ct.name;
+				});
 				c.data.filters = stat.filters;
 				
 				c.data.tmp = stat.tmp;
@@ -164,7 +175,10 @@
 		
 			NERDSearch.getFilters(params,c.data.sessionId).then(function(res){
 				var stat = res.data.result;
-				
+				c.data.categories = stat.categories;
+				c.data.categories.forEach(function(ct){
+					c.categories_dict[ct.id] = ct.name;
+				});
 				c.data.filters = stat.filters;
 				c.data.tmp = stat.tmp;
 				c.data.count = stat.count;
@@ -231,7 +245,8 @@
 									selectedResearchTypes: c.data.selectedResearchType.length > 0 ? c.data.selectedResearchType.join(",") : "",
 			            selectedSpecialTopics: c.data.selectedSpecialTopic.length > 0 ? c.data.selectedSpecialTopic.join(",") : "",
 									selectedTags: c.data.selectedTags.length > 0 ? c.data.selectedTags.join(",") : "",
-									selectedMyTags: c.data.selectedMyTags.length > 0 ? c.data.selectedMyTags.join(",") : ""
+									selectedMyTags: c.data.selectedMyTags.length > 0 ? c.data.selectedMyTags.join(",") : "",
+									selectedCategories: c.data.selectedCategories.length > 0 ? c.data.selectedCategories.join(",") : ""
 								 };
 		
 			NERDSearch.getList(params,c.data.sessionId).then(function(res){
@@ -239,15 +254,12 @@
 				
 				var idx = 0;
 				c.resultLen = 0;
-				c.data.selectedCategory = [];
 				
 				c.data.tabs.forEach(function(t){
 					t.isOpen = true;
-					c.selectedCategories[t.name] = idx++;
 					c.resultLen += t.list.length;
 					c.data.pageSize[t.name] = 10;
 					c.data.bigCurrentPage[t.name] = 1;
-					c.data.selectedCategory.push(t.name);
 				});
 				document.getElementById("cb_selectAll").checked = false;
 				c.selectedCount = 0;
@@ -264,7 +276,8 @@
 									selectedProject: c.data.selectedProject.length > 0 ? c.data.selectedProject.join(",") : "",
 									knowledgeBaseID: c.data.selectedKnowledgeBase.id,
 									selectedTags: c.data.selectedTags.length > 0 ? c.data.selectedTags.join(",") : "",
-									selectedMyTags: c.data.selectedMyTags.length > 0 ? c.data.selectedMyTags.join(",") : ""
+									selectedMyTags: c.data.selectedMyTags.length > 0 ? c.data.selectedMyTags.join(",") : "",
+									selectedCategories: c.data.selectedCategories.length > 0 ? c.data.selectedCategories.join(",") : ""
 								 };
 		
 			NERDSearch.getList(params,c.data.sessionId).then(function(res){
@@ -272,15 +285,12 @@
 				
 				var idx = 0;
 				c.resultLen = 0;
-				c.data.selectedCategory = [];
 				
 				c.data.tabs.forEach(function(t){
 					t.isOpen = true;
-					c.selectedCategories[t.name] = idx++;
 					c.resultLen += t.list.length;
 					c.data.pageSize[t.name] = 10;
 					c.data.bigCurrentPage[t.name] = 1;
-					c.data.selectedCategory.push(t.name);
 				});
 				document.getElementById("cb_selectAll").checked = false;
 				c.selectedCount = 0;
@@ -300,7 +310,8 @@
 									selectedThemesGoals: c.data.selectedThemesGoals.length > 0 ? c.data.selectedThemesGoals.join(",") : "",
 									selectedRecommendation: c.data.selectedRecommendation.length > 0 ? c.data.selectedRecommendation.join(",") : "",
 									selectedTags: c.data.selectedTags.length > 0 ? c.data.selectedTags.join(",") : "",
-									selectedMyTags: c.data.selectedMyTags.length > 0 ? c.data.selectedMyTags.join(",") : ""
+									selectedMyTags: c.data.selectedMyTags.length > 0 ? c.data.selectedMyTags.join(",") : "",
+									selectedCategories: c.data.selectedCategories.length > 0 ? c.data.selectedCategories.join(",") : ""
 								 };
 		
 			NERDSearch.getList(params,c.data.sessionId).then(function(res){
@@ -308,15 +319,12 @@
 				
 				var idx = 0;
 				c.resultLen = 0;
-				c.data.selectedCategory = [];
 				
 				c.data.tabs.forEach(function(t){
 					t.isOpen = true;
-					c.selectedCategories[t.name] = idx++;
 					c.resultLen += t.list.length;
 					c.data.pageSize[t.name] = 10;
 					c.data.bigCurrentPage[t.name] = 1;
-					c.data.selectedCategory.push(t.name);
 				});
 				document.getElementById("cb_selectAll").checked = false;
 				c.selectedCount = 0;
@@ -382,6 +390,10 @@
 			hasFilter = true;
 			criteria += "&f12="+c.data.selectedMyTags.join('|');
 		}
+		if(c.data.selectedCategories.length > 0){
+			hasFilter = true;
+			criteria += "&f13="+c.data.selectedCategories.join('|');
+		}
 		//redirect to detail page
 		s.xpage = 'kd_article';
 		s.aid = sys_id;
@@ -409,45 +421,30 @@
 	
 	c.selectAll_Category = function(){
 		var selectAll = document.getElementById("selectAll_Category");
-		c.data.selectedCategory = [];
-		c.resultLen = 0 ;
+		c.data.selectedCategories = [];
 		if(selectAll.checked){
 			var tmp = [];
-			c.data.tabs.map(function(obj){
-				tmp.push(obj.name);
-				obj.show = true;
-				c.resultLen += obj.list.length;
+			c.data.categories.map(function(obj){
+				tmp.push(obj.id);
 			});
-			c.data.selectedCategory = tmp;
-			 
+			c.data.selectedCategories = tmp;
 		}
-		else{
-			c.data.tabs.map(function(obj){
-				obj.show = false;
-			});
-			c.resultLen = 0;
-		}
+		c.search();
 		
 	}
 	
-	c.updateFilter = function(cat){
-		if(cat.selected){
-			c.data.selectedCategory.push(cat.name);
+	c.updateCategoryData = function(item){
+		
+		if(item.selected){
+			c.data.selectedCategories.push(item.id);
 		}
 		else{
-			var idx = c.data.selectedCategory.indexOf(cat.name);
+			var idx = c.data.selectedCategories.indexOf(item.id);
 			if (idx > -1) {
-				c.data.selectedCategory.splice(idx, 1);
+				c.data.selectedCategories.splice(idx, 1);
 			}
 		}
-		
-		var idx = c.selectedCategories[cat.name];
-		c.resultLen += cat.selected?c.data.tabs[idx].list.length: -c.data.tabs[idx].list.length;
-		if(c.resultLen == 0){
-			document.getElementById("cb_selectAll").checked = false;
-			c.isExportable = false;
-		}
-		c.data.tabs[idx].show = !c.data.tabs[idx].show;
+		c.search();
 	}
 	
 	c.reset = function() {
@@ -466,6 +463,8 @@
 		
 		c.data.selectedTags = [];
 		c.data.selectedMyTags = [];
+		
+		c.data.selectedCategories = [];
 		c.search();
 	};
 	
@@ -820,7 +819,7 @@
 					} 
 
 					today = yyyy + "-"+ mm + "-" + dd;	
-					a.setAttribute('download', "NERD_report_"+today+".doc");
+					a.setAttribute('download', c.data.selectedKnowledgeBase.name + "_export_"+today+".doc");
 					a.click();
           document.body.removeChild(a);
       }
@@ -853,42 +852,6 @@
 			var data = [];
 			var div = document.createElement("div");
 			content.forEach(function(ct){
-					//var tmp = {};
-					//tmp["Date entered"] = ct.published;
-					//tmp.Database = ct.database;
-					//tmp.Category = ct.category;
-					//tmp.Title = ct.title;
-					//tmp["Research Type"] = ct.x_26385_crs_kd_u_kb_research_type;
-					//tmp["Fiscal Year"] = ct.x_26385_crs_kd_u_kb_fiscal_year;
-				if(ct["Description"] !== ""){
-					div.innerHTML = ct["Description"];
-					ct["Description"] = div.textContent || div.innerText || "";
-				}
-
-				if(ct["References"] !== ""){
-					div.innerHTML = ct["References"];
-					ct["References"] = div.textContent || div.innerText || "";
-				}
-
-				if(ct["Involved organization"] !== ""){
-					div.innerHTML = ct["Involved organization"];
-					ct["Involved organization"] = div.textContent || div.innerText || "";
-				}
-
-				if(ct["Summary"] !== ""){
-					div.innerHTML = ct["Summary"];
-					ct["Summary"] = div.textContent || div.innerText || "";
-				}
-
-				if(ct["Background"] !== ""){
-					div.innerHTML = ct["Background"];
-					ct["Background"] = div.textContent || div.innerText || "";
-				}
-
-				if(ct["Target Context and Conditions"] !== ""){
-					div.innerHTML = ct["Target Context and Conditions"];
-					ct["Target Context and Conditions"] = div.textContent || div.innerText || "";
-				}
 				data.push(ct);
 			});
 			
@@ -914,7 +877,7 @@
 			} 
 
 			today = yyyy + "-"+ mm + "-" + dd;
-			XLSX.writeFile(wb, "NERD_report_"+today+".xlsx");
+			XLSX.writeFile(wb, c.data.selectedKnowledgeBase.name + "_export_"+today+".xlsx");
 		}, function(error_resp){
 			console.log(error_resp);
 		});
@@ -950,7 +913,7 @@
 					dt += '<h3>Category:</h3>';
 					dt += '<p>'+ct.category+'</p>';
 				  for(var key in ct){
-						if(key != 'title'){
+						if(key != 'title' && key != 'category'){
 							dt += '<h3>'+key+':</h3>';
 							dt += '<p>'+ct[key]+'</p>';
 						}
@@ -988,6 +951,7 @@
 		}
 		c.data.selectedTags = $rootScope.selectedTags?$rootScope.selectedTags : [];
 		c.data.selectedMyTags = $rootScope.selectedMyTags?$rootScope.selectedMyTags : [];
+		c.data.selectedCategories = $rootScope.selectedCategories?$rootScope.selectedCategories : [];
 	}
 	c.search();
 }]]></client_script>
@@ -1020,7 +984,7 @@
         <sys_created_on>2018-06-01 19:53:54</sys_created_on>
         <sys_customer_update>false</sys_customer_update>
         <sys_id>cf120a374fd213007221e321a310c724</sys_id>
-        <sys_mod_count>1179</sys_mod_count>
+        <sys_mod_count>1227</sys_mod_count>
         <sys_name>[crs] KD Search</sys_name>
         <sys_package display_value="CRS Knowledge Database" source="x_26385_crs_kd">404e613b4f9213007221e321a310c738</sys_package>
         <sys_policy/>
@@ -1028,7 +992,7 @@
         <sys_scope display_value="CRS Knowledge Database">404e613b4f9213007221e321a310c738</sys_scope>
         <sys_update_name>sp_widget_cf120a374fd213007221e321a310c724</sys_update_name>
         <sys_updated_by>yuw5@nih.gov</sys_updated_by>
-        <sys_updated_on>2019-06-06 14:00:20</sys_updated_on>
+        <sys_updated_on>2019-06-20 22:11:48</sys_updated_on>
         <template><![CDATA[<div class="container">
   <div class="row">
         <div class="col-md-3">
@@ -1187,11 +1151,11 @@
                         </div>
                       </div>
                     </div>
-                  
+                  	<!--
                   	<div class="form-group form-btns">
                        <button type="submit" class="btn btn-link" ng-click="c.reset();">reset</button> 
                   	</div>
-
+										-->
                     <!-- end form -->
                 </div>
             </div>
@@ -1220,10 +1184,10 @@
 
                     <div class="panel-head panel-relative">
                       <div class="panel-title">
-                        <span class="count text">{{c.resultLen}} Results</span>
+                        <span class="count text"><input type="checkbox" class="checkbox checkbox-all" id="cb_selectAll" name="selectAll" value="all"> Select All ( {{c.resultLen}} Results )</span>
                       </div>
                       <div class="panel-action" ng-if="c.isExportable">
-                        <button class="btn btn-link" ng-click="c.export2Excel()">
+                        <button class="btn btn-link" ng-click="c.export2Excel()" ng-if="c.data.selectedKnowledgeBase.name == 'NERD'">
                           <span class="glyphicon glyphicon-share"></span>
                      			Export to Excel 
                         </button>
@@ -1238,7 +1202,7 @@
                         </span>
                       </div>
                       <div class="panel-action" ng-if="!c.isExportable">
-                        <button class="btn btn-disable">
+                        <button class="btn btn-disable" ng-if="c.data.selectedKnowledgeBase.name == 'NERD'">
                           <span class="glyphicon glyphicon-share"></span>
                      			Export to Excel
                         </button>
@@ -1255,18 +1219,17 @@
                     </div>
                   
                     <div class="panel-head panel-relative">
-                      <div class="filter-select">
-                        <span class="panel-bar">
-                          <input type="checkbox" class="checkbox checkbox-all" id="cb_selectAll" name="selectAll" value="all"> Select All
-                        </span>
-                      </div>
-                      <div class="col-md-8 filter-block">
-                        <ul class="filter-options-list" ng-show="c.data.selectedCancerSite.length > 0 || c.data.selectedResearchType.length > 0 || 
+                      <div class="col-md-9 filter-block">
+                        <ul class="filter-options-list" ng-show="c.data.selectedCategories.length > 0 || c.data.selectedCancerSite.length > 0 || c.data.selectedResearchType.length > 0 || 
                                                                  c.data.selectedSpecialTopic.length > 0 || c.data.selectedDoc.length > 0 || 
                                                                  c.data.selectedYear.length > 0 || c.data.selectedCmit.length > 0 || 
                                                                  c.data.selectedThemesGoals.length > 0 || c.data.selectedRecommendation.length > 0 ||
                                                                  c.data.selectedProject.length > 0 ||
                                                                  c.data.selectedTags.length > 0 || c.data.selectedMyTags.length > 0">
+                          <li class="filter-item" role="button" ng-repeat="t in c.data.selectedCategories">
+                            <span>Category: {{c.categories_dict[t]}}</span>
+                            <a class="remove-button" role="link" ng-click="c.updateCategoryData({'id':t})">×</a>
+                          </li>
                           <li class="filter-item" role="button" ng-repeat="t in c.data.selectedCancerSite">
                             <span>{{t.substring(1,t.length-1)}}</span>
                             <a class="remove-button" role="link" ng-click="c.updateCancerSiteData({'id':t})">×</a>
@@ -1311,9 +1274,14 @@
                             <span>{{t.substring(1,t.length-1)}}</span>
                             <a class="remove-button" role="link" ng-click="c.updateMyTagData({'id':t})">×</a>
                           </li>
+                          <li class="filter-item" role="button" style="border:0px;">
+                            <span class="panel-bar">
+                              <a href="javascript:void(0);" ng-click="c.reset();">Clear all filters</a>
+                            </span>
+                          </li>
                         </ul>
                       </div>
-                      <div class="button-group">
+                      <div class="col-md-3 button-group" style="text-align:right;padding:0px;">
                         <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown"><span class="filter-btn-label">Category  </span> <span class="caret"></span></button>
                         <span class="tooltip-icon" 
                               uib-tooltip="Categories are the type of information collected. " 
@@ -1322,10 +1290,10 @@
                         </span>
                         <ul class="dropdown-menu">
                           <li class="dropdown-options">
-                            <input type="checkbox" id="selectAll_Category" class="chekbox-input ng-pristine ng-untouched ng-valid ng-empty" ng-click="c.selectAll_Category()" ng-checked="c.data.selectedCategory.length != 0  && c.data.selectedCategory.length == c.data.tabs.length">&nbsp;All
+                            <input type="checkbox" id="selectAll_Category" class="chekbox-input ng-pristine ng-untouched ng-valid ng-empty" ng-click="c.selectAll_Category()" ng-checked="c.data.selectedCategories.length != 0  && c.data.selectedCategories.length == c.data.categories.length">&nbsp;All
                           </li>
-                          <li class="dropdown-options" ng-repeat="cat in c.data.tabs">
-                            <input type="checkbox" class="chekbox-input ng-pristine ng-untouched ng-valid ng-empty" ng-model="cat.selected" ng-click="c.updateFilter(cat)" value="{{cat.name}}" role="checkbox" aria-invalid="false" ng-checked="c.data.selectedCategory.indexOf(cat.name) > -1">&nbsp;{{cat.name}}
+                          <li class="dropdown-options" ng-repeat="cat in c.data.categories">
+                            <input type="checkbox" class="chekbox-input ng-pristine ng-untouched ng-valid ng-empty" ng-model="cat.selected" ng-click="c.updateCategoryData(cat)" value="{{cat.id}}" role="checkbox" aria-invalid="false" ng-checked="c.data.selectedCategories.indexOf(cat.id) > -1">&nbsp;{{cat.name}}
                           </li>
                         </ul>
                       </div>
@@ -1342,7 +1310,7 @@
                           <ul class="list-group">
                             <li class="list-group-item item-row" ng-repeat="result in tab.list" ng-show="$index >= (c.data.bigCurrentPage[tab.name] -1) * c.data.pageSize[tab.name] && $index < c.data.bigCurrentPage[tab.name] * c.data.pageSize[tab.name]">
                               <div class="checkbox-side">
-                                <input type="checkbox" ng-model="cb_checkbox" ng-change="c.change(cb_checkbox)" class="checkbox content-checkbox" id="cb_{{result.sys_id}}" name="selections" value="{{result.sys_id}},{{result.kb_knowledge_base}},{{result.kb_category}}" >
+                                <input type="checkbox" ng-model="cb_checkbox" ng-change="c.change(cb_checkbox)" class="checkbox content-checkbox" id="cb_{{result.sys_id}}" name="selections" value="{{result.sys_id}},{{result.kb_knowledge_base}},{{result.template}}" >
                               </div>
                               <div class="content-side">
                                 <i class="glyphicon glyphicon-file"></i>

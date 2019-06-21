@@ -59,12 +59,19 @@
 	*/
 	c.mceOptions = {
 		resize: true,
+		content_css : '/133734fbdb4ab30054d8ff621f9619f2.spcssdbx',
 		height: 200,
 		autoresize_min_height: 200,
-		menubar: false,
+		menubar: "table",
 		statusbar: false,
-		plugins: 'link autoresize'
-		//toolbar: 'undo redo | bold italic | alignleft aligncenter alignright alignjustify | bullist numlist'
+		plugins: 'link autoresize table',
+		default_link_target: "_blank",
+		toolbar: 'undo redo | fontsizeselect bold italic | alignleft aligncenter alignright alignjustify | bullist numlist | link | table',
+		table_default_styles: {
+			'width': '50%',
+			'border-collapse': 'collapse',
+			'table-layout': 'fixed'
+		}
   }
 	
 	if(s.template){
@@ -184,7 +191,17 @@
 	};
 	
 	c.addAttachment = function(event){
+		var el = event.currentTarget;
+		//c.attachments.pop();
+    var node = el.parentNode;
+		var content = angular.element("<div style=\"margin-bottom:10px;\">"
+			+"<input type=\"file\" style=\"width:80%;float:left;cursor: pointer;\" name=\"file2upload\" class=\"form-control\">"
+			+"<span class=\"attachment-action\" ng-click=\"c.addAttachment($event)\"><i class=\"fa fa-plus\"></i></span>"
+			+"<span class=\"attachment-action\" ng-click=\"c.deleteAttachment($event)\" ng-show = \"c.attachments.length > 1\"><i class=\"fa fa-minus\"></i></span>"
+			+"</div>");
+		content.insertAfter(node);
 		c.attachments.push({name: 'file2upload'});
+		$compile(content)($scope);
 	};
 	
 	c.deleteAttachment = function(event){
@@ -409,7 +426,7 @@
 					c.save_text = "Save";
 					var v = rp;
 				  if(v == "1"){
-						//window.showMessageBox("Article has been successfully saved.",{xpage:'kd_submissions'});
+						//window.showMessageBox("Article has been successfully saved.");
 						window.showMessageBox("Article has been successfully saved.",{xpage:'kd_search', kb_knowledge_base:c.kb, template: null});
 					}
 					else{
@@ -462,7 +479,7 @@
         <sys_created_on>2019-04-09 20:37:48</sys_created_on>
         <sys_customer_update>false</sys_customer_update>
         <sys_id>38acf450db7cb30054d8ff621f961997</sys_id>
-        <sys_mod_count>313</sys_mod_count>
+        <sys_mod_count>341</sys_mod_count>
         <sys_name>[crs] KD New Submission</sys_name>
         <sys_package display_value="CRS Knowledge Database" source="x_26385_crs_kd">404e613b4f9213007221e321a310c738</sys_package>
         <sys_policy/>
@@ -470,7 +487,7 @@
         <sys_scope display_value="CRS Knowledge Database">404e613b4f9213007221e321a310c738</sys_scope>
         <sys_update_name>sp_widget_38acf450db7cb30054d8ff621f961997</sys_update_name>
         <sys_updated_by>yuw5@nih.gov</sys_updated_by>
-        <sys_updated_on>2019-06-07 19:10:50</sys_updated_on>
+        <sys_updated_on>2019-06-21 21:03:55</sys_updated_on>
         <template><![CDATA[<div id="crs-article">
   <div class="container">
     <div class="row row-space">
@@ -552,8 +569,8 @@
                   </div>
                 </div>
                 <div ng-if="entry.type == 'file'">
-                  <div ng-repeat="item in c.attachments" style="margin-bottom:10px;">
-                    <input type="file" style="width:80%;float:left;cursor: pointer;" name="{{item.name}}" class="form-control">
+                  <div style="margin-bottom:10px;">
+                    <input type="file" style="width:80%;float:left;cursor: pointer;" name="file2upload" class="form-control">
                     <span class="attachment-action" ng-click="c.addAttachment($event)"><i class="fa fa-plus"></i></span>
                   	<span class="attachment-action" ng-click="c.deleteAttachment($event)" ng-show = "c.attachments.length > 1"><i class="fa fa-minus"></i></span>
                   </div>

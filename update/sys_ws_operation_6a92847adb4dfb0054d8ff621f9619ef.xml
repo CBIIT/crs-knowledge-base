@@ -13,8 +13,9 @@
 		"u_kb_template_top_accomplishment":{
 						kb:"f5644dcadb54ab0054d8ff621f9619d7",
 						cat:"bef4810edb54ab0054d8ff621f9619e8",
-						schema:["x_26385_crs_kd_u_kb_title","x_26385_crs_kd_u_kb_doc","x_26385_crs_kd_u_kb_fiscal_year","x_26385_crs_kd_u_kb_involved_organization",
-								"x_26385_crs_kd_u_kb_references","x_26385_crs_kd_u_kb_research_type","x_26385_crs_kd_u_kb_special_topic"]
+						schema:["x_26385_crs_kd_u_kb_title","x_26385_crs_kd_u_kb_cancer_site_type","x_26385_crs_kd_u_kb_doc","x_26385_crs_kd_u_kb_fiscal_year",
+								"x_26385_crs_kd_u_kb_involved_organization","x_26385_crs_kd_u_kb_description","x_26385_crs_kd_u_kb_pmid_references","x_26385_crs_kd_u_kb_references",
+								"x_26385_crs_kd_u_kb_research_type","x_26385_crs_kd_u_kb_special_topic"]
 					},
 		"u_kb_template_gpra":{
 						kb:"f5644dcadb54ab0054d8ff621f9619d7",
@@ -36,7 +37,7 @@
 						schema:["x_26385_crs_kd_u_kb_title","x_26385_crs_kd_u_kb_cancer_site_type","x_26385_crs_kd_u_kb_research_type","x_26385_crs_kd_u_kb_special_topic",
 								"x_26385_crs_kd_u_kb_action_taken_or_to_be_taken","x_26385_crs_kd_u_kb_congressional_language","x_26385_crs_kd_u_kb_crs_author",
 								"x_26385_crs_kd_u_kb_references","x_26385_crs_kd_u_kb_fiscal_year"]},
-		"u_kb_template_miscellenaous":{
+		"u_kb_template_miscellaneous":{
 						kb:"f5644dcadb54ab0054d8ff621f9619d7",
 						cat:"5250a7ffdbc92f40b86770c08c96190a",
 						schema:["x_26385_crs_kd_u_kb_title","x_26385_crs_kd_u_kb_cancer_site_type","x_26385_crs_kd_u_kb_research_type","x_26385_crs_kd_u_kb_special_topic",
@@ -239,7 +240,7 @@
         <sys_created_on>2019-04-29 21:36:12</sys_created_on>
         <sys_customer_update>false</sys_customer_update>
         <sys_id>6a92847adb4dfb0054d8ff621f9619ef</sys_id>
-        <sys_mod_count>17</sys_mod_count>
+        <sys_mod_count>20</sys_mod_count>
         <sys_name>saveVersion</sys_name>
         <sys_package display_value="CRS Knowledge Database" source="x_26385_crs_kd">404e613b4f9213007221e321a310c738</sys_package>
         <sys_policy/>
@@ -247,7 +248,7 @@
         <sys_scope display_value="CRS Knowledge Database">404e613b4f9213007221e321a310c738</sys_scope>
         <sys_update_name>sys_ws_operation_6a92847adb4dfb0054d8ff621f9619ef</sys_update_name>
         <sys_updated_by>yuw5@nih.gov</sys_updated_by>
-        <sys_updated_on>2019-06-07 18:57:21</sys_updated_on>
+        <sys_updated_on>2019-06-20 16:03:40</sys_updated_on>
         <web_service_definition display_value="export">01e1bbe7db6a53005358dc50cf961994</web_service_definition>
         <web_service_version/>
     </sys_ws_operation>

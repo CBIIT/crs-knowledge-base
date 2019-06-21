@@ -26,13 +26,13 @@
 											 items: ["CBIIT","CCCT","CCG","CCR","CCT","CGH","CRCHD","CSSI","DCB","DCCPS","DCEG","DCP","DCTD","OHAM","SBIR"]},
 											{label: "Research Type", type: "checkbox", field: "x_26385_crs_kd_u_kb_research_type",
 											 items: ["Basic","Clinical","Cancer Control","Translational","Translational-Pre-Clinical","Translational-Post-Clinical","Epidemiological",
-													 "Population Science","Implementation Science","Survivorship","Diagnosis",
-													 "Treatment","Prevention","Detection"]},
+													 "Population Science","Implementation Science","Survivorship"]},
 											{label: "Special Topic", type: "checkbox", field: "x_26385_crs_kd_u_kb_special_topic",
 											 items: ['Big data/Data sharing','Metastatic cancer','Minority health/Health disparities',
 															 'Moonshot','Pediatric','Rare','Training/Workforce development']},
 											{label: "Involved organization", type: "html", field: "x_26385_crs_kd_u_kb_involved_organization"},
-											{label: "References", type: "html", field: "x_26385_crs_kd_u_kb_references"},
+											{label: "References",type: "customize", field: "x_26385_crs_kd_u_kb_pmid_references"},
+											{label: "Other References", type: "html", field: "x_26385_crs_kd_u_kb_references"},
 											{label: "Fiscal Year", type: "checkbox", field: "x_26385_crs_kd_u_kb_fiscal_year",
 											 items: ['2016','2017','2018','2019']}
 										   ],
@@ -44,8 +44,7 @@
 											 items: ["CBIIT","CCCT","CCG","CCR","CCT","CGH","CRCHD","CSSI","DCB","DCCPS","DCEG","DCP","DCTD","OHAM","SBIR"]},
 											{label: "Research Type", type: "checkbox", field: "x_26385_crs_kd_u_kb_research_type",
 											 items: ["Basic","Clinical","Cancer Control","Translational","Translational-Pre-Clinical","Translational-Post-Clinical","Epidemiological",
-													 "Population Science","Implementation Science","Survivorship","Diagnosis",
-													 "Treatment","Prevention","Detection"]},
+													 "Population Science","Implementation Science","Survivorship"]},
 											{label: "Special Topic", type: "checkbox", field: "x_26385_crs_kd_u_kb_special_topic",
 											 items: ['Big data/Data sharing','Metastatic cancer','Minority health/Health disparities',
 															 'Moonshot','Pediatric','Rare','Training/Workforce development']},
@@ -67,8 +66,7 @@
 											 'Ovarian','Pancreatic','Prostate','Sarcoma','Skin','Thyroid']},
 											{label: "Research Type", type: "checkbox", field: "x_26385_crs_kd_u_kb_research_type",
 											 items: ["Basic","Clinical","Cancer Control","Translational","Translational-Pre-Clinical","Translational-Post-Clinical","Epidemiological",
-													 "Population Science","Implementation Science","Survivorship","Diagnosis",
-													 "Treatment","Prevention","Detection"]},
+													 "Population Science","Implementation Science","Survivorship"]},
 											{label: "Special Topic", type: "checkbox", field: "x_26385_crs_kd_u_kb_special_topic",
 											 items: ['Big data/Data sharing','Metastatic cancer','Minority health/Health disparities',
 															 'Moonshot','Pediatric','Rare','Training/Workforce development']},
@@ -87,8 +85,7 @@
 											 'Ovarian','Pancreatic','Prostate','Sarcoma','Skin','Thyroid']},
 											{label: "Research Type", type: "checkbox", field: "x_26385_crs_kd_u_kb_research_type",
 											 items: ["Basic","Clinical","Cancer Control","Translational","Translational-Pre-Clinical","Translational-Post-Clinical","Epidemiological",
-													 "Population Science","Implementation Science","Survivorship","Diagnosis",
-													 "Treatment","Prevention","Detection"]},
+													 "Population Science","Implementation Science","Survivorship"]},
 											{label: "Special Topic", type: "checkbox", field: "x_26385_crs_kd_u_kb_special_topic",
 											 items: ['Big data/Data sharing','Metastatic cancer','Minority health/Health disparities',
 															 'Moonshot','Pediatric','Rare','Training/Workforce development']},
@@ -108,8 +105,7 @@
 											 'Ovarian','Pancreatic','Prostate','Sarcoma','Skin','Thyroid']},
 											{label: "Research Type", type: "checkbox", field: "x_26385_crs_kd_u_kb_research_type",
 											 items: ["Basic","Clinical","Cancer Control","Translational","Translational-Pre-Clinical","Translational-Post-Clinical","Epidemiological",
-													 "Population Science","Implementation Science","Survivorship","Diagnosis",
-													 "Treatment","Prevention","Detection"]},
+													 "Population Science","Implementation Science","Survivorship"]},
 											{label: "Special Topic", type: "checkbox", field: "x_26385_crs_kd_u_kb_special_topic",
 											 items: ['Big data/Data sharing','Metastatic cancer','Minority health/Health disparities',
 															 'Moonshot','Pediatric','Rare','Training/Workforce development']},
@@ -126,8 +122,7 @@
 											 'Ovarian','Pancreatic','Prostate','Sarcoma','Skin','Thyroid']},
 											{label: "Research Type", type: "checkbox", field: "x_26385_crs_kd_u_kb_research_type",
 											 items: ["Basic","Clinical","Cancer Control","Translational","Translational-Pre-Clinical","Translational-Post-Clinical","Epidemiological",
-													 "Population Science","Implementation Science","Survivorship","Diagnosis",
-													 "Treatment","Prevention","Detection"]},
+													 "Population Science","Implementation Science","Survivorship"]},
 											{label: "Special Topic", type: "checkbox", field: "x_26385_crs_kd_u_kb_special_topic",
 											 items: ['Big data/Data sharing','Metastatic cancer','Minority health/Health disparities',
 															 'Moonshot','Pediatric','Rare','Training/Workforce development']},
@@ -308,7 +303,7 @@
         <sys_created_on>2019-04-24 15:13:42</sys_created_on>
         <sys_customer_update>false</sys_customer_update>
         <sys_id>dccef481dbc5b70054d8ff621f961938</sys_id>
-        <sys_mod_count>37</sys_mod_count>
+        <sys_mod_count>39</sys_mod_count>
         <sys_name>getDocumentWithSchema</sys_name>
         <sys_package display_value="CRS Knowledge Database" source="x_26385_crs_kd">404e613b4f9213007221e321a310c738</sys_package>
         <sys_policy/>
@@ -316,7 +311,7 @@
         <sys_scope display_value="CRS Knowledge Database">404e613b4f9213007221e321a310c738</sys_scope>
         <sys_update_name>sys_ws_operation_dccef481dbc5b70054d8ff621f961938</sys_update_name>
         <sys_updated_by>yuw5@nih.gov</sys_updated_by>
-        <sys_updated_on>2019-06-07 18:40:18</sys_updated_on>
+        <sys_updated_on>2019-06-20 15:42:56</sys_updated_on>
         <web_service_definition display_value="export">01e1bbe7db6a53005358dc50cf961994</web_service_definition>
         <web_service_version/>
     </sys_ws_operation>

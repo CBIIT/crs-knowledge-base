@@ -8,6 +8,7 @@
         <element label="DOC" max_length="500" name="x_26385_crs_kd_u_kb_doc" text_index="true" type="string"/>
         <element label="Fiscal Year" max_length="500" name="x_26385_crs_kd_u_kb_fiscal_year" text_index="true" type="string"/>
         <element attributes="edge_encryption_enabled=true" label="Involved organization" max_length="8000" name="x_26385_crs_kd_u_kb_involved_organization" text_index="true" type="html"/>
+        <element label="PMID References" max_length="500" name="x_26385_crs_kd_u_kb_pmid_references" text_index="true" type="string"/>
         <element attributes="edge_encryption_enabled=true" label="References" max_length="8000" name="x_26385_crs_kd_u_kb_references" text_index="true" type="html"/>
         <element label="Research Type" max_length="500" name="x_26385_crs_kd_u_kb_research_type" text_index="true" type="string"/>
         <element label="Special Topic" max_length="500" name="x_26385_crs_kd_u_kb_special_topic" text_index="true" type="string"/>

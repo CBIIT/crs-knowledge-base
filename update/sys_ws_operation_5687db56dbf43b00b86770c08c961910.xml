@@ -21,6 +21,32 @@
 	var record = gr.get(article_id);
 	var attachment_sys_id = attachement.writeBase64(gr, fileName , fileType, fileContents);
 	
+	//save attachment information to versions table
+	var number = gr.number.toString();
+	var version = gr.x_26385_crs_kd_u_kb_article_version;
+	var v = new GlideRecord('x_26385_crs_kd_versions');
+	v.addQuery("article_number", number);
+	v.addQuery("article_version", version);
+	v.addQuery("article_field", "attachments");
+	v.query();
+	if(v.getRowCount() == 0){
+		var k = new GlideRecord('x_26385_crs_kd_versions');
+		k.initialize(); 
+		k.article_field = "attachments";
+		k.article_version = version;
+		k.article_number = number;
+		k.article_field_value = attachment_sys_id;
+		k.insert();
+	}
+	else{
+		v.next();
+		var attachments_str = v.article_field_value.toString();
+		var attachments = attachments_str.split(",");
+		attachments.push(attachment_sys_id);
+		v.article_field_value = attachments.join(",");
+		v.update();
+	}
+	
 	if(attachment_sys_id != null && attachment_sys_id.length > 0){
 		return "1";
 	}else{
@@ -41,7 +67,7 @@
         <sys_created_on>2019-04-16 13:06:34</sys_created_on>
         <sys_customer_update>false</sys_customer_update>
         <sys_id>5687db56dbf43b00b86770c08c961910</sys_id>
-        <sys_mod_count>0</sys_mod_count>
+        <sys_mod_count>1</sys_mod_count>
         <sys_name>saveAttachment</sys_name>
         <sys_package display_value="CRS Knowledge Database" source="x_26385_crs_kd">404e613b4f9213007221e321a310c738</sys_package>
         <sys_policy/>
@@ -49,7 +75,7 @@
         <sys_scope display_value="CRS Knowledge Database">404e613b4f9213007221e321a310c738</sys_scope>
         <sys_update_name>sys_ws_operation_5687db56dbf43b00b86770c08c961910</sys_update_name>
         <sys_updated_by>yuw5@nih.gov</sys_updated_by>
-        <sys_updated_on>2019-04-16 13:06:34</sys_updated_on>
+        <sys_updated_on>2019-06-21 15:55:43</sys_updated_on>
         <web_service_definition display_value="export">01e1bbe7db6a53005358dc50cf961994</web_service_definition>
         <web_service_version/>
     </sys_ws_operation>

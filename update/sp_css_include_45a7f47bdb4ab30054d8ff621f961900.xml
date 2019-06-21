@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<record_update table="sp_css_include">
+    <sp_css_include action="INSERT_OR_UPDATE">
+        <name>NERD_TinyMCE_CSS</name>
+        <source>local</source>
+        <sp_css display_value="NERD_TinyMCE_CSS">133734fbdb4ab30054d8ff621f9619f2</sp_css>
+        <sys_class_name>sp_css_include</sys_class_name>
+        <sys_created_by>yuw5@nih.gov</sys_created_by>
+        <sys_created_on>2019-06-21 20:33:12</sys_created_on>
+        <sys_customer_update>false</sys_customer_update>
+        <sys_id>45a7f47bdb4ab30054d8ff621f961900</sys_id>
+        <sys_mod_count>0</sys_mod_count>
+        <sys_name>NERD_TinyMCE_CSS</sys_name>
+        <sys_package display_value="CRS Knowledge Database" source="x_26385_crs_kd">404e613b4f9213007221e321a310c738</sys_package>
+        <sys_policy/>
+        <sys_replace_on_upgrade>false</sys_replace_on_upgrade>
+        <sys_scope display_value="CRS Knowledge Database">404e613b4f9213007221e321a310c738</sys_scope>
+        <sys_update_name>sp_css_include_45a7f47bdb4ab30054d8ff621f961900</sys_update_name>
+        <sys_updated_by>yuw5@nih.gov</sys_updated_by>
+        <sys_updated_on>2019-06-21 20:33:12</sys_updated_on>
+        <url/>
+    </sp_css_include>
+</record_update>
