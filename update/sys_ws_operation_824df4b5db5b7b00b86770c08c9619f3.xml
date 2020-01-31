@@ -1,0 +1,167 @@
+<?xml version="1.0" encoding="UTF-8"?><record_update table="sys_ws_operation">
+    <sys_ws_operation action="INSERT_OR_UPDATE">
+        <active>true</active>
+        <consumes>application/json,application/xml,text/xml</consumes>
+        <consumes_customized>false</consumes_customized>
+        <default_operation_uri/>
+        <enforce_acl>cf9d01d3e73003009d6247e603f6a990</enforce_acl>
+        <http_method>POST</http_method>
+        <name>updateDraft</name>
+        <operation_script><![CDATA[(function process(/*RESTAPIRequest*/ request, /*RESTAPIResponse*/ response) {
+
+    // implement resource here
+	var templates = {"NERD":{
+		"Top Accomplishments": "u_kb_template_top_accomplishment",
+		"Other Accomplishments": "u_kb_template_other_accomplishment",
+		"Collaborations": "u_kb_template_collaboration"
+	}};
+	var metadata = {
+		"u_kb_template_top_accomplishment":["x_26385_crs_kd_u_kb_title","x_26385_crs_kd_u_kb_cancer_site_type","x_26385_crs_kd_u_kb_doc","x_26385_crs_kd_u_kb_fiscal_year","x_26385_crs_kd_u_kb_description",
+								"x_26385_crs_kd_u_kb_involved_organization","x_26385_crs_kd_u_kb_pmid_references","x_26385_crs_kd_u_kb_references","x_26385_crs_kd_u_kb_research_type",
+								"x_26385_crs_kd_u_kb_special_topic","x_26385_crs_kd_u_kb_doc_contact","x_26385_crs_kd_u_kb_crs_contact"],
+		"u_kb_template_other_accomplishment":["x_26385_crs_kd_u_kb_title","x_26385_crs_kd_u_kb_other_accomplishment_type","x_26385_crs_kd_u_kb_cancer_site_type","x_26385_crs_kd_u_kb_doc","x_26385_crs_kd_u_kb_fiscal_year","x_26385_crs_kd_u_kb_description",
+								"x_26385_crs_kd_u_kb_involved_organization","x_26385_crs_kd_u_kb_pmid_references","x_26385_crs_kd_u_kb_references","x_26385_crs_kd_u_kb_research_type",
+								"x_26385_crs_kd_u_kb_special_topic","x_26385_crs_kd_u_kb_doc_contact","x_26385_crs_kd_u_kb_crs_contact"],
+		"u_kb_template_collaboration":["x_26385_crs_kd_u_kb_title",
+									   "x_26385_crs_kd_u_kb_acronym",
+										"x_26385_crs_kd_u_kb_fiscal_year",
+										"x_26385_crs_kd_u_kb_description",
+										"x_26385_crs_kd_u_kb_website_url_s",
+										"x_26385_crs_kd_u_kb_fiscal_year_originated",
+										"x_26385_crs_kd_u_kb_doc",
+										"x_26385_crs_kd_u_kb_other_docs",
+										"x_26385_crs_kd_u_kb_poc",
+										"x_26385_crs_kd_u_kb_pmid_references",
+										"x_26385_crs_kd_u_kb_nih_ics_od_collaborators",
+										"x_26385_crs_kd_u_kb_nih_ics_od_collaborators_other_specify",
+										"x_26385_crs_kd_u_kb_hhs_agency_collaborators",
+										"x_26385_crs_kd_u_kb_hhs_agency_collaborators_other_specify",
+										"x_26385_crs_kd_u_kb_other_federal_agency_collaborators",
+										"x_26385_crs_kd_u_kb_federal_collaborators_other_specify",
+										"x_26385_crs_kd_u_kb_government_collaborators",
+										"x_26385_crs_kd_u_kb_government_collaborators_other_specify",
+										"x_26385_crs_kd_u_kb_foreign_government_collaborators",
+										"x_26385_crs_kd_u_kb_foreign_collaborators_other_specify",
+										"x_26385_crs_kd_u_kb_non_governmental_collaborators",
+										"x_26385_crs_kd_u_kb_non_gov_collaborators_other_specify",
+										"x_26385_crs_kd_u_kb_other_collaborators",
+										"x_26385_crs_kd_u_kb_collaborative_activity_type",
+										"x_26385_crs_kd_u_kb_collaborative_activity_other_specify",
+										"x_26385_crs_kd_u_kb_meeting_type",
+										"x_26385_crs_kd_u_kb_meeting_type_one_time_specify_date",
+										"x_26385_crs_kd_u_kb_meeting_type_recurring_specify_start_end",
+										"x_26385_crs_kd_u_kb_faca_committee",
+										"x_26385_crs_kd_u_kb_related_to_regulatory_activity",
+										"x_26385_crs_kd_u_kb_nih_funding",
+										"x_26385_crs_kd_u_kb_products_outputs",
+										"x_26385_crs_kd_products_outputs_other_specify",
+										"x_26385_crs_kd_u_kb_research_resource_type",
+										"x_26385_crs_kd_u_kb_research_resource_type_other_specify",
+										"x_26385_crs_kd_u_kb_existing_activities_type",
+										"x_26385_crs_kd_u_kb_nih_strategic_alignment_primary",
+										"x_26385_crs_kd_u_kb_nih_strategic_alignment_other",
+										"x_26385_crs_kd_u_kb_hhs_strategic_plan_alignment_primary",
+										"x_26385_crs_kd_u_kb_hhs_strategic_plan_alignment_other"
+		]
+					};
+	
+	var params = request.body.data.params;
+	var attachments = params.attachments.toString();
+	var sub = new GlideRecord("x_26385_crs_kd_submissions");
+	sub.addQuery("sys_id",params.sub_id);
+	sub.query();
+	sub.next();
+	sub.submission_priority = params["submission_priority"];
+	sub.submission_title = params["x_26385_crs_kd_u_kb_title"];
+	/*
+	var other_info = {};
+	if(params.doc_contact_info){
+		other_info.doc_contact_info = params.doc_contact_info;
+	}
+	if(params.crs_contact_info){
+		other_info.crs_contact_info = params.crs_contact_info;
+	}
+	sub.submission_other_info = JSON.stringify(other_info);
+	*/
+	sub.update();
+	var number = sub.submission_number.toString();
+	var template = templates[sub.getDisplayValue("submission_knowledge_base")][sub.getDisplayValue("submission_category")];
+	var item = new GlideRecord(template);
+	item.addQuery("number",number);
+	item.query();
+	item.next();
+	metadata[template].forEach(function(field){
+			var str = params[field];
+			if(str != undefined){
+				var pos = str.indexOf('data:image/gif;base64,');
+				if(pos > -1){
+					var pos_end = 0;
+					var gr = new GlideRecord(template);
+					var record = gr.get(sys_id);
+					while(pos != -1){
+						idx_start = pos;
+						var part = str.slice(pos + 22);
+						pos_end = part.indexOf('"');
+						var b64 = part.slice(0, pos_end);
+						var attachement = new GlideSysAttachment();
+						var attachment_sys_id = attachement.writeBase64(gr, "img_" + Date.now() , "image/png", b64);
+						var new_str = str.slice(0, pos) + "sys_attachment.do?sys_id=" + attachment_sys_id + part.slice(pos_end);
+						str = new_str;
+						pos = str.indexOf('data:image/gif;base64,');
+					}
+
+				}
+			}
+			item[field] = str;
+			if(field == 'x_26385_crs_kd_u_kb_funding' && params[field].split('|')[0] == 'Yes'){
+				item.x_26385_crs_kd_u_kb_caution_warning = "No NCI Funding.";
+			}
+		});
+	item.update();
+	
+	//delete attachments if any
+	var toDelete = [];
+	var existing_att = attachments == "" ? [] : attachments.split(',');
+	var att = new GlideRecord('sys_attachment');
+	att.addQuery("table_sys_id", item.sys_id.toString());
+	att.addQuery('content_type','STARTSWITH','application/');
+	att.query();
+	while (att.next()){
+		if(existing_att.indexOf(att.sys_id.toString()) == -1){
+			toDelete.push(att.sys_id.toString());
+		}
+	}
+	if(toDelete.length > 0){
+		gs.eventQueue('x_26385_crs_kd.submission_attachment_del',sub, toDelete.join(','), "");
+	}
+	
+	return {sub_id: params.sub_id, sys_id: item.sys_id.toString()};
+	
+})(request, response);]]></operation_script>
+        <operation_uri>/api/x_26385_crs_kd/export/updateDraft</operation_uri>
+        <produces>application/json,application/xml,text/xml</produces>
+        <produces_customized>false</produces_customized>
+        <relative_path>/updateDraft</relative_path>
+        <request_example/>
+        <requires_acl_authorization>false</requires_acl_authorization>
+        <requires_authentication>true</requires_authentication>
+        <requires_snc_internal_role>true</requires_snc_internal_role>
+        <short_description/>
+        <sys_class_name>sys_ws_operation</sys_class_name>
+        <sys_created_by>yuw5@nih.gov</sys_created_by>
+        <sys_created_on>2019-08-16 19:26:33</sys_created_on>
+        <sys_customer_update>false</sys_customer_update>
+        <sys_id>824df4b5db5b7b00b86770c08c9619f3</sys_id>
+        <sys_mod_count>19</sys_mod_count>
+        <sys_name>updateDraft</sys_name>
+        <sys_package display_value="CRS Knowledge Database" source="x_26385_crs_kd">404e613b4f9213007221e321a310c738</sys_package>
+        <sys_policy/>
+        <sys_replace_on_upgrade>false</sys_replace_on_upgrade>
+        <sys_scope display_value="CRS Knowledge Database">404e613b4f9213007221e321a310c738</sys_scope>
+        <sys_update_name>sys_ws_operation_824df4b5db5b7b00b86770c08c9619f3</sys_update_name>
+        <sys_updated_by>yuw5@nih.gov</sys_updated_by>
+        <sys_updated_on>2020-01-30 21:20:17</sys_updated_on>
+        <web_service_definition display_value="export">01e1bbe7db6a53005358dc50cf961994</web_service_definition>
+        <web_service_version/>
+    </sys_ws_operation>
+</record_update>

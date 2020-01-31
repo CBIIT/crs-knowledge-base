@@ -1,0 +1,93 @@
+<?xml version="1.0" encoding="UTF-8"?><record_update>
+    <sys_ui_list parent="" relationship="" sys_domain="global" table="x_26385_crs_kd_nerd_user" version="2" view="">
+        <sys_ui_list_element action="INSERT_OR_UPDATE">
+            <average_value>false</average_value>
+            <element>doc</element>
+            <list_id display_value="x_26385_crs_kd_nerd_user" element="NULL" name="x_26385_crs_kd_nerd_user" parent="NULL" relationship="NULL" sys_domain="global" view="Default view">eac65e41db5bb700b86770c08c96196e</list_id>
+            <max_value>false</max_value>
+            <min_value>false</min_value>
+            <position>0</position>
+            <sum>false</sum>
+            <sys_created_by>yuw5@nih.gov</sys_created_by>
+            <sys_created_on>2019-08-14 17:44:05</sys_created_on>
+            <sys_id>aac65e41db5bb700b86770c08c96196f</sys_id>
+            <sys_mod_count>0</sys_mod_count>
+            <sys_updated_by>yuw5@nih.gov</sys_updated_by>
+            <sys_updated_on>2019-08-14 17:44:05</sys_updated_on>
+        </sys_ui_list_element>
+        <sys_ui_list_element action="INSERT_OR_UPDATE">
+            <average_value>false</average_value>
+            <element>other_information</element>
+            <list_id display_value="x_26385_crs_kd_nerd_user" element="NULL" name="x_26385_crs_kd_nerd_user" parent="NULL" relationship="NULL" sys_domain="global" view="Default view">eac65e41db5bb700b86770c08c96196e</list_id>
+            <max_value>false</max_value>
+            <min_value>false</min_value>
+            <position>1</position>
+            <sum>false</sum>
+            <sys_created_by>yuw5@nih.gov</sys_created_by>
+            <sys_created_on>2019-08-14 17:44:05</sys_created_on>
+            <sys_id>a2c65e41db5bb700b86770c08c961970</sys_id>
+            <sys_mod_count>0</sys_mod_count>
+            <sys_updated_by>yuw5@nih.gov</sys_updated_by>
+            <sys_updated_on>2019-08-14 17:44:05</sys_updated_on>
+        </sys_ui_list_element>
+        <sys_ui_list_element action="INSERT_OR_UPDATE">
+            <average_value>false</average_value>
+            <element>user</element>
+            <list_id display_value="x_26385_crs_kd_nerd_user" element="NULL" name="x_26385_crs_kd_nerd_user" parent="NULL" relationship="NULL" sys_domain="global" view="Default view">eac65e41db5bb700b86770c08c96196e</list_id>
+            <max_value>false</max_value>
+            <min_value>false</min_value>
+            <position>2</position>
+            <sum>false</sum>
+            <sys_created_by>yuw5@nih.gov</sys_created_by>
+            <sys_created_on>2019-08-14 17:44:05</sys_created_on>
+            <sys_id>a6c65e41db5bb700b86770c08c961970</sys_id>
+            <sys_mod_count>0</sys_mod_count>
+            <sys_updated_by>yuw5@nih.gov</sys_updated_by>
+            <sys_updated_on>2019-08-14 17:44:05</sys_updated_on>
+        </sys_ui_list_element>
+        <sys_ui_list_element action="INSERT_OR_UPDATE">
+            <average_value>false</average_value>
+            <element>user_type</element>
+            <list_id display_value="x_26385_crs_kd_nerd_user" element="NULL" name="x_26385_crs_kd_nerd_user" parent="NULL" relationship="NULL" sys_domain="global" view="Default view">eac65e41db5bb700b86770c08c96196e</list_id>
+            <max_value>false</max_value>
+            <min_value>false</min_value>
+            <position>3</position>
+            <sum>false</sum>
+            <sys_created_by>yuw5@nih.gov</sys_created_by>
+            <sys_created_on>2019-08-14 17:44:05</sys_created_on>
+            <sys_id>aac65e41db5bb700b86770c08c961970</sys_id>
+            <sys_mod_count>0</sys_mod_count>
+            <sys_updated_by>yuw5@nih.gov</sys_updated_by>
+            <sys_updated_on>2019-08-14 17:44:05</sys_updated_on>
+        </sys_ui_list_element>
+        <sys_ui_list action="INSERT_OR_UPDATE">
+            <average_value>false</average_value>
+            <element/>
+            <max_value>false</max_value>
+            <min_value>false</min_value>
+            <name>x_26385_crs_kd_nerd_user</name>
+            <parent/>
+            <position/>
+            <relationship/>
+            <sum>false</sum>
+            <sys_class_name>sys_ui_list</sys_class_name>
+            <sys_created_by>yuw5@nih.gov</sys_created_by>
+            <sys_created_on>2019-08-14 17:44:05</sys_created_on>
+            <sys_customer_update>false</sys_customer_update>
+            <sys_domain>global</sys_domain>
+            <sys_id>eac65e41db5bb700b86770c08c96196e</sys_id>
+            <sys_mod_count>0</sys_mod_count>
+            <sys_name>x_26385_crs_kd_nerd_user</sys_name>
+            <sys_package display_value="CRS Knowledge Database" source="x_26385_crs_kd">404e613b4f9213007221e321a310c738</sys_package>
+            <sys_policy/>
+            <sys_replace_on_upgrade>false</sys_replace_on_upgrade>
+            <sys_scope display_value="CRS Knowledge Database">404e613b4f9213007221e321a310c738</sys_scope>
+            <sys_update_name>sys_ui_list_x_26385_crs_kd_nerd_user_null</sys_update_name>
+            <sys_updated_by>yuw5@nih.gov</sys_updated_by>
+            <sys_updated_on>2019-08-14 17:44:05</sys_updated_on>
+            <sys_user/>
+            <view display_value="Default view" name="NULL">Default view</view>
+            <view_name/>
+        </sys_ui_list>
+    </sys_ui_list>
+</record_update>

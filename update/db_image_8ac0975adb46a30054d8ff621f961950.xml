@@ -1,5 +1,4 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<record_update table="db_image">
+<?xml version="1.0" encoding="UTF-8"?><record_update table="db_image">
     <db_image action="INSERT_OR_UPDATE">
         <active>true</active>
         <category>Service Portal</category>
@@ -30,17 +29,19 @@
         <chunk_size_bytes>734003</chunk_size_bytes>
         <compressed>true</compressed>
         <content_type>image/jpeg</content_type>
+        <encryption_context/>
         <file_name>image</file_name>
         <image_height>182</image_height>
         <image_width>576</image_width>
         <size_bytes>208305</size_bytes>
         <size_compressed>197509</size_compressed>
+        <state>available</state>
         <sys_created_by>yuw5@nih.gov</sys_created_by>
         <sys_created_on>2019-05-08 14:27:33</sys_created_on>
         <sys_id>7bfd74a5db51f340b86770c08c961956</sys_id>
-        <sys_mod_count>2</sys_mod_count>
-        <sys_updated_by>yuw5@nih.gov</sys_updated_by>
-        <sys_updated_on>2019-05-08 14:27:34</sys_updated_on>
+        <sys_mod_count>3</sys_mod_count>
+        <sys_updated_by>guest</sys_updated_by>
+        <sys_updated_on>2019-07-15 19:18:03</sys_updated_on>
         <table_name>ZZ_YYdb_image</table_name>
         <table_sys_id>8ac0975adb46a30054d8ff621f961950</table_sys_id>
     </sys_attachment>

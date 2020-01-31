@@ -1,0 +1,114 @@
+<?xml version="1.0" encoding="UTF-8"?><record_update>
+    <sys_ui_section caption="" section_id="8000bf99db133b00b86770c08c96192f" sys_domain="global" table="x_26385_crs_kd_submissions" version="3" view="">
+        <sys_ui_element action="INSERT_OR_UPDATE">
+            <element>submission_knowledge_base</element>
+            <position>0</position>
+            <sys_created_by>yuw5@nih.gov</sys_created_by>
+            <sys_created_on>2019-08-15 18:52:21</sys_created_on>
+            <sys_id>0000bf99db133b00b86770c08c961933</sys_id>
+            <sys_mod_count>0</sys_mod_count>
+            <sys_ui_formatter/>
+            <sys_ui_section caption="NULL" display_value="" name="x_26385_crs_kd_submissions" sys_domain="global" view="Default view">8000bf99db133b00b86770c08c96192f</sys_ui_section>
+            <sys_updated_by>yuw5@nih.gov</sys_updated_by>
+            <sys_updated_on>2019-08-15 18:52:21</sys_updated_on>
+            <sys_user/>
+            <type/>
+        </sys_ui_element>
+        <sys_ui_element action="INSERT_OR_UPDATE">
+            <element>submisson_category</element>
+            <position>1</position>
+            <sys_created_by>yuw5@nih.gov</sys_created_by>
+            <sys_created_on>2019-08-15 18:52:21</sys_created_on>
+            <sys_id>8400bf99db133b00b86770c08c961933</sys_id>
+            <sys_mod_count>0</sys_mod_count>
+            <sys_ui_formatter/>
+            <sys_ui_section caption="NULL" display_value="" name="x_26385_crs_kd_submissions" sys_domain="global" view="Default view">8000bf99db133b00b86770c08c96192f</sys_ui_section>
+            <sys_updated_by>yuw5@nih.gov</sys_updated_by>
+            <sys_updated_on>2019-08-15 18:52:21</sys_updated_on>
+            <sys_user/>
+            <type/>
+        </sys_ui_element>
+        <sys_ui_element action="INSERT_OR_UPDATE">
+            <element>submission_number</element>
+            <position>2</position>
+            <sys_created_by>yuw5@nih.gov</sys_created_by>
+            <sys_created_on>2019-08-15 18:52:21</sys_created_on>
+            <sys_id>0c00bf99db133b00b86770c08c961933</sys_id>
+            <sys_mod_count>0</sys_mod_count>
+            <sys_ui_formatter/>
+            <sys_ui_section caption="NULL" display_value="" name="x_26385_crs_kd_submissions" sys_domain="global" view="Default view">8000bf99db133b00b86770c08c96192f</sys_ui_section>
+            <sys_updated_by>yuw5@nih.gov</sys_updated_by>
+            <sys_updated_on>2019-08-15 18:52:21</sys_updated_on>
+            <sys_user/>
+            <type/>
+        </sys_ui_element>
+        <sys_ui_element action="INSERT_OR_UPDATE">
+            <element>submission_priority</element>
+            <position>3</position>
+            <sys_created_by>yuw5@nih.gov</sys_created_by>
+            <sys_created_on>2019-08-15 18:52:21</sys_created_on>
+            <sys_id>8000bf99db133b00b86770c08c961934</sys_id>
+            <sys_mod_count>0</sys_mod_count>
+            <sys_ui_formatter/>
+            <sys_ui_section caption="NULL" display_value="" name="x_26385_crs_kd_submissions" sys_domain="global" view="Default view">8000bf99db133b00b86770c08c96192f</sys_ui_section>
+            <sys_updated_by>yuw5@nih.gov</sys_updated_by>
+            <sys_updated_on>2019-08-15 18:52:21</sys_updated_on>
+            <sys_user/>
+            <type/>
+        </sys_ui_element>
+        <sys_ui_element action="INSERT_OR_UPDATE">
+            <element>submission_approval_action</element>
+            <position>4</position>
+            <sys_created_by>yuw5@nih.gov</sys_created_by>
+            <sys_created_on>2019-08-15 18:52:21</sys_created_on>
+            <sys_id>0800bf99db133b00b86770c08c961934</sys_id>
+            <sys_mod_count>0</sys_mod_count>
+            <sys_ui_formatter/>
+            <sys_ui_section caption="NULL" display_value="" name="x_26385_crs_kd_submissions" sys_domain="global" view="Default view">8000bf99db133b00b86770c08c96192f</sys_ui_section>
+            <sys_updated_by>yuw5@nih.gov</sys_updated_by>
+            <sys_updated_on>2019-08-15 18:52:21</sys_updated_on>
+            <sys_user/>
+            <type/>
+        </sys_ui_element>
+        <sys_ui_element action="INSERT_OR_UPDATE">
+            <element>submission_stage</element>
+            <position>5</position>
+            <sys_created_by>yuw5@nih.gov</sys_created_by>
+            <sys_created_on>2019-08-15 18:52:21</sys_created_on>
+            <sys_id>8c00bf99db133b00b86770c08c961934</sys_id>
+            <sys_mod_count>0</sys_mod_count>
+            <sys_ui_formatter/>
+            <sys_ui_section caption="NULL" display_value="" name="x_26385_crs_kd_submissions" sys_domain="global" view="Default view">8000bf99db133b00b86770c08c96192f</sys_ui_section>
+            <sys_updated_by>yuw5@nih.gov</sys_updated_by>
+            <sys_updated_on>2019-08-15 18:52:21</sys_updated_on>
+            <sys_user/>
+            <type/>
+        </sys_ui_element>
+        <sys_ui_section action="INSERT_OR_UPDATE">
+            <caption/>
+            <header>false</header>
+            <name>x_26385_crs_kd_submissions</name>
+            <roles/>
+            <sys_class_name>sys_ui_section</sys_class_name>
+            <sys_created_by>yuw5@nih.gov</sys_created_by>
+            <sys_created_on>2019-08-15 18:52:21</sys_created_on>
+            <sys_customer_update>false</sys_customer_update>
+            <sys_domain>global</sys_domain>
+            <sys_id>8000bf99db133b00b86770c08c96192f</sys_id>
+            <sys_mod_count>0</sys_mod_count>
+            <sys_name>x_26385_crs_kd_submissions</sys_name>
+            <sys_overrides/>
+            <sys_package display_value="CRS Knowledge Database" source="x_26385_crs_kd">404e613b4f9213007221e321a310c738</sys_package>
+            <sys_policy/>
+            <sys_replace_on_upgrade>false</sys_replace_on_upgrade>
+            <sys_scope display_value="CRS Knowledge Database">404e613b4f9213007221e321a310c738</sys_scope>
+            <sys_update_name>sys_ui_section_8000bf99db133b00b86770c08c96192f</sys_update_name>
+            <sys_updated_by>yuw5@nih.gov</sys_updated_by>
+            <sys_updated_on>2019-08-15 18:52:21</sys_updated_on>
+            <sys_user/>
+            <title>false</title>
+            <view display_value="Default view" name="NULL">Default view</view>
+            <view_name/>
+        </sys_ui_section>
+    </sys_ui_section>
+</record_update>

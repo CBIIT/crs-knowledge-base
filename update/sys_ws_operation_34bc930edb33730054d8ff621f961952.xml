@@ -1,0 +1,150 @@
+<?xml version="1.0" encoding="UTF-8"?><record_update table="sys_ws_operation">
+    <sys_ws_operation action="INSERT_OR_UPDATE">
+        <active>true</active>
+        <consumes>application/json,application/xml,text/xml</consumes>
+        <consumes_customized>false</consumes_customized>
+        <default_operation_uri/>
+        <enforce_acl>cf9d01d3e73003009d6247e603f6a990</enforce_acl>
+        <http_method>POST</http_method>
+        <name>multiPublish2NERD</name>
+        <operation_script><![CDATA[(function process(/*RESTAPIRequest*/ request, /*RESTAPIResponse*/ response) {
+
+	var templates = {"NERD":{
+		"Top Accomplishments": "u_kb_template_top_accomplishment",
+		"Other Accomplishments": "u_kb_template_other_accomplishment",
+		"Collaborations": "u_kb_template_collaboration"
+	}};
+	
+    var sub_ids = request.body.data.sub_ids;
+	
+	var gr = new GlideRecord('x_26385_crs_kd_submissions');
+	gr.addQuery('sys_id','IN',sub_ids);
+	gr.query();
+	var count = 0;
+	while(gr.next()){
+		if(gr.submission_stage == 'CRS Review'){
+			gr.submission_approval_action = 'approved';
+			var other_info = JSON.parse(gr.submission_other_info.toString());
+			other_info.old_value = {};
+	
+			//update version to 1.0
+			var template = templates[gr.getDisplayValue("submission_knowledge_base")][gr.getDisplayValue("submission_category")];
+			var number = gr.submission_number.toString();
+			var submission = new GlideRecord(template);
+			submission.addQuery('number',number);
+			submission.query();
+			submission.next();
+			submission.active = true;
+			submission.x_26385_crs_kd_u_kb_record_version = "1.0";
+			if(template == 'u_kb_template_top_accomplishment' || template == 'u_kb_template_other_accomplishment'){
+				//for Top accomplishment entries
+				var rt = submission.x_26385_crs_kd_u_kb_research_type.toString();
+				var st = submission.x_26385_crs_kd_u_kb_special_topic.toString();
+				if(rt == '{Population Science}'){
+					other_info.old_value.x_26385_crs_kd_u_kb_research_type = rt;
+					submission.x_26385_crs_kd_u_kb_research_type = '{Epidemiological-Population Science}';
+				}
+				else if(rt == '{Science Education and Literacy Programs}'){
+					other_info.old_value.x_26385_crs_kd_u_kb_research_type = rt;
+					submission.x_26385_crs_kd_u_kb_research_type = '';
+					other_info.old_value.x_26385_crs_kd_u_kb_special_topic = st;
+					if(st == ''){
+						submission.x_26385_crs_kd_u_kb_special_topic = '{Training/Workforce development-Science Education and Literacy Programs}';
+					}
+					else{
+						submission.x_26385_crs_kd_u_kb_special_topic = st + ',{Training/Workforce development-Science Education and Literacy Programs}';
+					}
+				}
+				else if(rt == '{Research Workforce Recruitment, Training, and Retention Program}'){
+					other_info.old_value.x_26385_crs_kd_u_kb_research_type = rt;
+					submission.x_26385_crs_kd_u_kb_research_type = '';
+					other_info.old_value.x_26385_crs_kd_u_kb_special_topic = st;
+					if(st == ''){
+						submission.x_26385_crs_kd_u_kb_special_topic = '{Training/Workforce development-Research Workforce Recruitment, Training, and Retention Program}';
+					}
+					else{
+						submission.x_26385_crs_kd_u_kb_special_topic = st + ',{Training/Workforce development-Research Workforce Recruitment, Training, and Retention Program}';
+					}
+				}
+				else if(rt == '{Cancer Control}'){
+					other_info.old_value.x_26385_crs_kd_u_kb_research_type = rt;
+					submission.x_26385_crs_kd_u_kb_research_type = '{Epidemiological-Cancer Control}';
+				}
+				else if(rt == '{Health Communication Programs}' || rt == '{Other}'){
+					other_info.old_value.x_26385_crs_kd_u_kb_research_type = rt;
+					submission.x_26385_crs_kd_u_kb_research_type = '';
+					other_info.old_value.x_26385_crs_kd_u_kb_special_topic = st;
+					submission.x_26385_crs_kd_u_kb_special_topic = (st =='' ? rt : st + ',' + rt);
+				}
+			}
+			submission.author = gs.getUserID();
+			submission.update();
+			
+			//save attachment information to versions table
+			var attachment_sys_ids = [];
+			var att = new GlideRecord('sys_attachment');
+			att.addQuery("table_sys_id", submission.sys_id.toString());
+			att.addQuery('content_type','STARTSWITH','application/');
+			att.query();
+			while (att.next()){
+				attachment_sys_ids.push(att.sys_id.toString());
+			}
+			if(attachment_sys_ids.length != 0){
+				var k = new GlideRecord('x_26385_crs_kd_versions');
+				k.initialize(); 
+				k.article_field = "attachments";
+				k.record_version = "1.0";
+				k.article_number = number;
+				k.article_field_value = attachment_sys_ids.join();
+				k.insert();
+			}
+	
+			//save annotation to versions table
+			var a = new GlideRecord('x_26385_crs_kd_versions');
+				a.initialize(); 
+				a.article_field = "annotation";
+				a.record_version = "1.0";
+				a.article_number = number;
+				a.article_field_value = "DOC Version";
+				a.insert();
+			
+			other_info.old_value.author = gr.submission_author.toString();
+			gr.submission_other_info = JSON.stringify(other_info);
+			gr.submission_crs_reviewer = gs.getUserID();
+			gr.submission_author = gs.getUserID();
+			gr.update();
+
+			count++;
+		}
+	}
+	
+	return count;
+
+})(request, response);]]></operation_script>
+        <operation_uri>/api/x_26385_crs_kd/export/multiPublish2NERD</operation_uri>
+        <produces>application/json,application/xml,text/xml</produces>
+        <produces_customized>false</produces_customized>
+        <relative_path>/multiPublish2NERD</relative_path>
+        <request_example/>
+        <requires_acl_authorization>false</requires_acl_authorization>
+        <requires_authentication>true</requires_authentication>
+        <requires_snc_internal_role>true</requires_snc_internal_role>
+        <short_description/>
+        <sys_class_name>sys_ws_operation</sys_class_name>
+        <sys_created_by>yuw5@nih.gov</sys_created_by>
+        <sys_created_on>2019-09-11 22:07:01</sys_created_on>
+        <sys_customer_update>false</sys_customer_update>
+        <sys_id>34bc930edb33730054d8ff621f961952</sys_id>
+        <sys_mod_count>5</sys_mod_count>
+        <sys_name>multiPublish2NERD</sys_name>
+        <sys_package display_value="CRS Knowledge Database" source="x_26385_crs_kd">404e613b4f9213007221e321a310c738</sys_package>
+        <sys_policy/>
+        <sys_replace_on_upgrade>false</sys_replace_on_upgrade>
+        <sys_scope display_value="CRS Knowledge Database">404e613b4f9213007221e321a310c738</sys_scope>
+        <sys_update_name>sys_ws_operation_34bc930edb33730054d8ff621f961952</sys_update_name>
+        <sys_updated_by>yuw5@nih.gov</sys_updated_by>
+        <sys_updated_on>2020-01-15 21:37:53</sys_updated_on>
+        <web_service_definition display_value="export">01e1bbe7db6a53005358dc50cf961994</web_service_definition>
+        <web_service_version/>
+    </sys_ws_operation>
+</record_update>

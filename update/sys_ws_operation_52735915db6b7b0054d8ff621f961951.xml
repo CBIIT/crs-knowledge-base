@@ -1,0 +1,151 @@
+<?xml version="1.0" encoding="UTF-8"?><record_update table="sys_ws_operation">
+    <sys_ws_operation action="INSERT_OR_UPDATE">
+        <active>true</active>
+        <consumes>application/json,application/xml,text/xml</consumes>
+        <consumes_customized>false</consumes_customized>
+        <default_operation_uri/>
+        <enforce_acl>cf9d01d3e73003009d6247e603f6a990</enforce_acl>
+        <http_method>POST</http_method>
+        <name>submission2Excel</name>
+        <operation_script><![CDATA[(function process(/*RESTAPIRequest*/ request, /*RESTAPIResponse*/ response) {
+	var templates = {"NERD":{
+		"Top Accomplishments": "u_kb_template_top_accomplishment",
+		"Other Accomplishments": "u_kb_template_other_accomplishment",
+		"Collaborations": "u_kb_template_collaboration"
+	}};
+	var data = request.body.data;
+	var subs = data.subs;
+	var body = {};
+	body.content = [];
+	var dt = {};
+	var gr = new GlideRecord('x_26385_crs_kd_submissions');
+	gr.addQuery('sys_id', "IN", subs);
+	gr.query();
+	while(gr.next()){
+		//Title, Description, DOC contact, Fiscal Year, Ranking
+		var template = templates[gr.getDisplayValue("submission_knowledge_base")][gr.getDisplayValue("submission_category")];
+		var number = gr.submission_number.toString();
+		var tmp = {};
+		tmp["Title"] = gr.submission_title.toString();
+		
+		var item = new GlideRecord(template);
+		item.addQuery('number', number);
+		item.query();
+		item.next();
+		
+		tmp["Description"] = item.x_26385_crs_kd_u_kb_description.toString().replace(/<p>/g, '').replace(/<\/p>/g, '');
+		tmp["Point of Contact"] = "";
+		if(template == 'u_kb_template_top_accomplishment' || template == 'u_kb_template_other_accomplishment'){
+			tmp["Point of Contact"] = item.x_26385_crs_kd_u_kb_doc_contact.toString();
+		}
+		else if(template == 'u_kb_template_collaboration'){
+			tmp["Point of Contact"] = item.x_26385_crs_kd_u_kb_poc.toString();
+		}
+		tmp["Fiscal Year"] = item.x_26385_crs_kd_u_kb_fiscal_year.toString().slice(1, -1).replace(/},{/g, ',');
+		tmp["Ranking"] = gr.submission_priority.toString();
+		if(template == 'u_kb_template_collaboration'){
+			tmp["For Existing activities, please specify"] = item.x_26385_crs_kd_u_kb_existing_activities_type.toString().replace(/{/g, '').replace(/}/g, '');
+			tmp["Acronym"] = item.x_26385_crs_kd_u_kb_acronym.toString();
+			tmp["Website URL(s)"] = item.x_26385_crs_kd_u_kb_website_url_s.toString();
+			tmp["FY the Collaborative Activity Originated"] = item.x_26385_crs_kd_u_kb_fiscal_year_originated.toString().replace(/{/g, '').replace(/}/g, '');
+			tmp["Lead DOC"] = item.x_26385_crs_kd_u_kb_doc.toString().replace(/{/g, '').replace(/}/g, '');
+			tmp["Other DOCs"] = item.x_26385_crs_kd_u_kb_other_docs.toString().replace(/{/g, '').replace(/}/g, '');
+			tmp["References"] = item.x_26385_crs_kd_u_kb_pmid_references.toString();
+			
+			tmp["NIH ICs/OD Collaborators"] = item.x_26385_crs_kd_u_kb_nih_ics_od_collaborators.toString().replace(/{/g, '').replace(/}/g, '');
+			if(tmp["NIH ICs/OD Collaborators"].indexOf('Other') > -1){
+				tmp["NIH ICs/OD Collaborators"] = tmp["NIH ICs/OD Collaborators"].replace("Other","Other: "+ item.x_26385_crs_kd_u_kb_nih_ics_od_collaborators_other_specify.toString());
+			}
+			
+			tmp["HHS Agency Collaborators"] = item.x_26385_crs_kd_u_kb_hhs_agency_collaborators.toString().replace(/{/g, '').replace(/}/g, '');
+			if(tmp["HHS Agency Collaborators"].indexOf('Other') > -1){
+				tmp["HHS Agency Collaborators"] = tmp["HHS Agency Collaborators"].replace("Other","Other: " + item.x_26385_crs_kd_u_kb_hhs_agency_collaborators_other_specify.toString());
+			}
+			
+			tmp["Other Federal Agency Collaborators"] = item.x_26385_crs_kd_u_kb_other_federal_agency_collaborators.toString().replace(/{/g, '').replace(/}/g, '');
+			if(tmp["Other Federal Agency Collaborators"].indexOf('Other') > -1){
+				tmp["Other Federal Agency Collaborators"] = tmp["Other Federal Agency Collaborators"].replace("Other","Other: " + item.x_26385_crs_kd_u_kb_federal_collaborators_other_specify.toString());
+			}
+			
+			tmp["Tribal/State/Local Government Collaborators"] = item.x_26385_crs_kd_u_kb_government_collaborators.toString().replace(/{/g, '').replace(/}/g, '');
+			if(tmp["Tribal/State/Local Government Collaborators"].indexOf('Other') > -1){
+				tmp["Tribal/State/Local Government Collaborators"] = tmp["Tribal/State/Local Government Collaborators"].replace("Other","Other: " + item.x_26385_crs_kd_u_kb_government_collaborators_other_specify.toString());
+			}
+			
+			tmp["Foreign Government Collaborators"] = item.x_26385_crs_kd_u_kb_foreign_government_collaborators.toString().replace(/{/g, '').replace(/}/g, '');
+			if(tmp["Foreign Government Collaborators"].indexOf('Other') > -1){
+				tmp["Foreign Government Collaborators"] = tmp["Foreign Government Collaborators"].replace("Other","Other: " + item.x_26385_crs_kd_u_kb_foreign_collaborators_other_specify.toString());
+			}
+			
+			tmp["Non-Governmental Collaborators"] = item.x_26385_crs_kd_u_kb_non_governmental_collaborators.toString().replace(/{/g, '').replace(/}/g, '');
+			if(tmp["Non-Governmental Collaborators"].indexOf('Other') > -1){
+				tmp["Non-Governmental Collaborators"] = tmp["Non-Governmental Collaborators"].replace("Other","Other: " + item.x_26385_crs_kd_u_kb_non_gov_collaborators_other_specify.toString());
+			}
+			
+			tmp["Other Collaborators"] = item.x_26385_crs_kd_u_kb_other_collaborators.toString();
+			tmp["Select type of collaborative activity"] = item.x_26385_crs_kd_u_kb_collaborative_activity_type.toString().replace(/{/g, '').replace(/}/g, '');
+			if(tmp["Select type of collaborative activity"].indexOf('Other') > -1){
+				tmp["Select type of collaborative activity"] = tmp["Select type of collaborative activity"].replace("Other","Other: " + item.x_26385_crs_kd_u_kb_collaborative_activity_other_specify.toString());
+			}
+			
+			tmp["IF MEETING IS SELECTED ABOVE, please specify meeting Type"] = item.x_26385_crs_kd_u_kb_meeting_type.toString().replace(/{/g, '').replace(/}/g, '');
+			if(tmp["IF MEETING IS SELECTED ABOVE, please specify meeting Type"].indexOf('One-time') > -1){
+				tmp["IF MEETING IS SELECTED ABOVE, please specify meeting Type"] = tmp["IF MEETING IS SELECTED ABOVE, please specify meeting Type"].replace("One-time","One-time: " + item.x_26385_crs_kd_u_kb_meeting_type_one_time_specify_date.toString());
+			}
+			else if(tmp["IF MEETING IS SELECTED ABOVE, please specify meeting Type"].indexOf('Recurring') > -1){
+				tmp["IF MEETING IS SELECTED ABOVE, please specify meeting Type"] = tmp["IF MEETING IS SELECTED ABOVE, please specify meeting Type"].replace("Recurring","Recurring: from " + item.x_26385_crs_kd_u_kb_meeting_type_recurring_specify_start_end.toString());
+			}
+			
+			tmp["IF COMMITTEE IS SELECTED ABOVE, Is this a FACA committee"] = item.x_26385_crs_kd_u_kb_faca_committee.toString().replace(/{/g, '').replace(/}/g, '');
+			
+			tmp["Is this collaboration related to a regulatory activity?"] = item.x_26385_crs_kd_u_kb_related_to_regulatory_activity.toString().replace(/{/g, '').replace(/}/g, '');
+			tmp["Was NIH funding provided for this activity?"] = item.x_26385_crs_kd_u_kb_nih_funding.toString().replace(/{/g, '').replace(/}/g, '');
+			
+			tmp["Products/Outputs"] = item.x_26385_crs_kd_u_kb_products_outputs.toString().replace(/{/g, '').replace(/}/g, '');
+			if(tmp["Products/Outputs"].indexOf('Other') > -1){
+				tmp["Products/Outputs"] = tmp["Products/Outputs"].replace("Other","Other: " + item.x_26385_crs_kd_products_outputs_other_specify.toString());
+			}
+			
+			tmp["IF RESEARCH RESOURCE IS SELECTED ABOVE, Specify Type"] = item.x_26385_crs_kd_u_kb_research_resource_type.toString().replace(/{/g, '').replace(/}/g, '');
+			if(tmp["IF RESEARCH RESOURCE IS SELECTED ABOVE, Specify Type"].indexOf('Other') > -1){
+				tmp["IF RESEARCH RESOURCE IS SELECTED ABOVE, Specify Type"] = tmp["IF RESEARCH RESOURCE IS SELECTED ABOVE, Specify Type"].replace("Other","Other: " + item.x_26385_crs_kd_u_kb_research_resource_type_other_specify.toString());
+			}
+			
+			tmp["NIH strategic alignment (primary)"] = item.x_26385_crs_kd_u_kb_nih_strategic_alignment_primary.toString().replace(/{/g, '').replace(/}/g, '');
+			tmp["NIH strategic alignment (Secondary Optional)"] = item.x_26385_crs_kd_u_kb_nih_strategic_alignment_other.toString().replace(/{/g, '').replace(/}/g, '');
+			tmp["HHS Strategic Plan Alignment (Primary)"] = item.x_26385_crs_kd_u_kb_hhs_strategic_plan_alignment_primary.toString().replace(/{/g, '').replace(/}/g, '');
+			tmp["HHS Strategic Plan Alignment (Secondary Optional)"] = item.x_26385_crs_kd_u_kb_hhs_strategic_plan_alignment_other.toString().replace(/{/g, '').replace(/}/g, '');
+			
+		}
+		body.content.push(tmp);
+	}
+	
+	response.setBody(body);	
+})(request, response);]]></operation_script>
+        <operation_uri>/api/x_26385_crs_kd/export/submission2Excel</operation_uri>
+        <produces>application/json,application/xml,text/xml</produces>
+        <produces_customized>false</produces_customized>
+        <relative_path>/submission2Excel</relative_path>
+        <request_example/>
+        <requires_acl_authorization>false</requires_acl_authorization>
+        <requires_authentication>true</requires_authentication>
+        <requires_snc_internal_role>true</requires_snc_internal_role>
+        <short_description/>
+        <sys_class_name>sys_ws_operation</sys_class_name>
+        <sys_created_by>yuw5@nih.gov</sys_created_by>
+        <sys_created_on>2019-08-27 17:44:50</sys_created_on>
+        <sys_customer_update>false</sys_customer_update>
+        <sys_id>52735915db6b7b0054d8ff621f961951</sys_id>
+        <sys_mod_count>25</sys_mod_count>
+        <sys_name>submission2Excel</sys_name>
+        <sys_package display_value="CRS Knowledge Database" source="x_26385_crs_kd">404e613b4f9213007221e321a310c738</sys_package>
+        <sys_policy/>
+        <sys_replace_on_upgrade>false</sys_replace_on_upgrade>
+        <sys_scope display_value="CRS Knowledge Database">404e613b4f9213007221e321a310c738</sys_scope>
+        <sys_update_name>sys_ws_operation_52735915db6b7b0054d8ff621f961951</sys_update_name>
+        <sys_updated_by>yuw5@nih.gov</sys_updated_by>
+        <sys_updated_on>2020-01-27 23:22:46</sys_updated_on>
+        <web_service_definition display_value="export">01e1bbe7db6a53005358dc50cf961994</web_service_definition>
+        <web_service_version/>
+    </sys_ws_operation>
+</record_update>

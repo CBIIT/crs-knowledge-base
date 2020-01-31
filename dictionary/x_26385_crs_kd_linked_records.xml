@@ -1,5 +1,4 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<database>
+<?xml version="1.0" encoding="UTF-8"?><database>
     <element label="Linked Records" max_length="40" name="x_26385_crs_kd_linked_records" type="collection">
         <element label="Article Number" max_length="100" name="article_number" type="string"/>
         <element label="Category" max_length="100" name="category" type="string"/>

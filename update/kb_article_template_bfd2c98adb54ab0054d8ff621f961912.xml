@@ -1,11 +1,11 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<record_update sys_domain="global" table="kb_article_template">
+<?xml version="1.0" encoding="UTF-8"?><record_update sys_domain="global" table="kb_article_template">
     <kb_article_template action="INSERT_OR_UPDATE">
         <active>true</active>
         <answer_ref display_value="Top accomplishment">bde2c98adb54ab0054d8ff621f961982</answer_ref>
         <article_template>Top accomplishment</article_template>
         <child_table>u_kb_template_top_accomplishment</child_table>
         <description>CRS Knowledge Base Top Accomplishment Template</description>
+        <meta_description_field/>
         <sys_class_name>kb_article_template</sys_class_name>
         <sys_created_by>zhoujim@nih.gov</sys_created_by>
         <sys_created_on>2018-09-03 14:51:59</sys_created_on>

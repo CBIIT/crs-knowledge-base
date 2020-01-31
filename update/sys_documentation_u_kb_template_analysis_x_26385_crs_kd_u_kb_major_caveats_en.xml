@@ -1,5 +1,4 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<record_update>
+<?xml version="1.0" encoding="UTF-8"?><record_update>
     <sys_documentation element="x_26385_crs_kd_u_kb_major_caveats" label="Major caveats" language="en" table="u_kb_template_analysis">
         <sys_documentation action="INSERT_OR_UPDATE">
             <element>x_26385_crs_kd_u_kb_major_caveats</element>

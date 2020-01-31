@@ -1,5 +1,4 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<record_update table="m2m_sp_widget_dependency">
+<?xml version="1.0" encoding="UTF-8"?><record_update table="m2m_sp_widget_dependency">
     <m2m_sp_widget_dependency action="INSERT_OR_UPDATE">
         <sp_dependency display_value="xlsx">6981ea5cdb32d3005358dc50cf9619ac</sp_dependency>
         <sp_widget display_value="[crs] KD Search">cf120a374fd213007221e321a310c724</sp_widget>

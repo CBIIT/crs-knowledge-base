@@ -1,5 +1,4 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<record_update table="sp_css">
+<?xml version="1.0" encoding="UTF-8"?><record_update table="sp_css">
     <sp_css action="INSERT_OR_UPDATE">
         <css>tags-input{display:block}&#13;
 tags-input *,tags-input :after,tags-input :before{-moz-box-sizing:border-box;-webkit-box-sizing:border-box;box-sizing:border-box}&#13;

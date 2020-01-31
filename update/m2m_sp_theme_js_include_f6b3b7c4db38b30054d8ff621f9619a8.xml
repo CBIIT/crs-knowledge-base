@@ -1,5 +1,4 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<record_update table="m2m_sp_theme_js_include">
+<?xml version="1.0" encoding="UTF-8"?><record_update table="m2m_sp_theme_js_include">
     <m2m_sp_theme_js_include action="INSERT_OR_UPDATE">
         <order>10</order>
         <sp_js_include display_value="NERD_AngularJS_Material_JS">2ce33bc4db38b30054d8ff621f9619ad</sp_js_include>

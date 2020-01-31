@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8"?><record_update table="sys_security_acl_role">
+    <sys_security_acl_role action="INSERT_OR_UPDATE">
+        <sys_class_name>sys_security_acl_role</sys_class_name>
+        <sys_created_by>yuw5@nih.gov</sys_created_by>
+        <sys_created_on>2019-08-15 18:03:24</sys_created_on>
+        <sys_customer_update>false</sys_customer_update>
+        <sys_id>43c42399dbdff700b86770c08c961912</sys_id>
+        <sys_mod_count>0</sys_mod_count>
+        <sys_name>x_26385_crs_kd_submissions.x_26385_crs_kd.submissions_user</sys_name>
+        <sys_package display_value="CRS Knowledge Database" source="x_26385_crs_kd">404e613b4f9213007221e321a310c738</sys_package>
+        <sys_policy/>
+        <sys_replace_on_upgrade>false</sys_replace_on_upgrade>
+        <sys_scope display_value="CRS Knowledge Database">404e613b4f9213007221e321a310c738</sys_scope>
+        <sys_security_acl display_value="x_26385_crs_kd_submissions">3ac4ef59dbdff700b86770c08c9619f2</sys_security_acl>
+        <sys_update_name>sys_security_acl_role_43c42399dbdff700b86770c08c961912</sys_update_name>
+        <sys_updated_by>yuw5@nih.gov</sys_updated_by>
+        <sys_updated_on>2019-08-15 18:03:24</sys_updated_on>
+        <sys_user_role display_value="x_26385_crs_kd.submissions_user" name="x_26385_crs_kd.submissions_user">36c4af59dbdff700b86770c08c961908</sys_user_role>
+        <transaction_id/>
+    </sys_security_acl_role>
+</record_update>

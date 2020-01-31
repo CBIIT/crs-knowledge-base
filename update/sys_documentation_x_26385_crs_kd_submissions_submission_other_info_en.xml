@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8"?><record_update>
+    <sys_documentation element="submission_other_info" label="Submission Other Info" language="en" table="x_26385_crs_kd_submissions">
+        <sys_documentation action="INSERT_OR_UPDATE">
+            <element>submission_other_info</element>
+            <help/>
+            <hint/>
+            <label>Submission Other Info</label>
+            <language>en</language>
+            <name>x_26385_crs_kd_submissions</name>
+            <plural>Submission Other Infos</plural>
+            <sys_class_name>sys_documentation</sys_class_name>
+            <sys_created_by>yuw5@nih.gov</sys_created_by>
+            <sys_created_on>2019-08-22 14:13:02</sys_created_on>
+            <sys_customer_update>false</sys_customer_update>
+            <sys_id>bc3376e3db93b300b86770c08c9619df</sys_id>
+            <sys_mod_count>0</sys_mod_count>
+            <sys_name>Submission Other Info</sys_name>
+            <sys_package display_value="CRS Knowledge Database" source="x_26385_crs_kd">404e613b4f9213007221e321a310c738</sys_package>
+            <sys_policy/>
+            <sys_replace_on_upgrade>false</sys_replace_on_upgrade>
+            <sys_scope display_value="CRS Knowledge Database">404e613b4f9213007221e321a310c738</sys_scope>
+            <sys_update_name>sys_documentation_x_26385_crs_kd_submissions_submission_other_info_en</sys_update_name>
+            <sys_updated_by>yuw5@nih.gov</sys_updated_by>
+            <sys_updated_on>2019-08-22 14:13:02</sys_updated_on>
+            <url/>
+            <url_target/>
+        </sys_documentation>
+    </sys_documentation>
+</record_update>

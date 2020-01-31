@@ -1,11 +1,11 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<record_update sys_domain="global" table="kb_article_template">
+<?xml version="1.0" encoding="UTF-8"?><record_update sys_domain="global" table="kb_article_template">
     <kb_article_template action="INSERT_OR_UPDATE">
         <active>true</active>
         <answer_ref display_value="Significant Items">9cc53d09db776300b86770c08c961902</answer_ref>
         <article_template>Significant Items</article_template>
         <child_table>u_kb_template_significant_items</child_table>
         <description>This is the template for CRS knowledge base articles.</description>
+        <meta_description_field/>
         <sys_class_name>kb_article_template</sys_class_name>
         <sys_created_by>yuw5@nih.gov</sys_created_by>
         <sys_created_on>2019-02-21 15:40:00</sys_created_on>

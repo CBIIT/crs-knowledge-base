@@ -1,5 +1,4 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<database>
+<?xml version="1.0" encoding="UTF-8"?><database>
     <element label="Deleted Attachments" max_length="40" name="x_26385_crs_kd_deleted_attachments" type="collection">
         <element label="Attachment Sys ID" max_length="100" name="attachment_sys_id" type="string"/>
         <element label="Table Sys ID" max_length="100" name="table_sys_id" type="string"/>

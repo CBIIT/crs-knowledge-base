@@ -1,5 +1,4 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<record_update>
+<?xml version="1.0" encoding="UTF-8"?><record_update>
     <sys_documentation element="x_26385_crs_kd_u_kb_tools_and_data_source_s" label="Tools and Data Source(s)" language="en" table="u_kb_template_analysis">
         <sys_documentation action="INSERT_OR_UPDATE">
             <element>x_26385_crs_kd_u_kb_tools_and_data_source_s</element>

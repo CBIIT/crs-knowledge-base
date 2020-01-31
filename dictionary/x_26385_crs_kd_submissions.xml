@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="UTF-8"?><database>
+    <element extends="task" label="Submissions" max_length="40" name="x_26385_crs_kd_submissions" sizeclass="137" type="collection">
+        <element label="CRS Comment" max_length="4000" name="crs_comment" type="string"/>
+        <element label="DOC Comment" max_length="4000" name="doc_comment" type="string"/>
+        <element label="Submission Approval Action" max_length="100" name="submission_approval_action" type="string"/>
+        <element label="Submission Author" max_length="32" name="submission_author" reference="sys_user" type="reference"/>
+        <element label="Submission Category" max_length="32" name="submission_category" reference="kb_category" type="reference"/>
+        <element label="Submission CRS Reviewer" max_length="32" name="submission_crs_reviewer" reference="sys_user" type="reference"/>
+        <element label="Submission DOC" max_length="100" name="submission_doc" type="string"/>
+        <element label="Submission DOC Reviewer" max_length="32" name="submission_doc_reviewer" reference="sys_user" type="reference"/>
+        <element label="Submission Knowledge Base" max_length="32" name="submission_knowledge_base" reference="kb_knowledge_base" type="reference"/>
+        <element label="Submission Number" max_length="100" name="submission_number" type="string"/>
+        <element label="Submission Other Info" max_length="5000" name="submission_other_info" type="string"/>
+        <element label="Submission Priority" max_length="100" name="submission_priority" type="string"/>
+        <element label="Submission Stage" max_length="100" name="submission_stage" type="string"/>
+        <element label="Submission Title" max_length="1000" name="submission_title" type="string"/>
+        <index name="index">
+            <element name="submission_category"/>
+        </index>
+        <index name="index2">
+            <element name="submission_knowledge_base"/>
+        </index>
+        <index name="index3">
+            <element name="submission_crs_reviewer"/>
+        </index>
+        <index name="index4">
+            <element name="submission_author"/>
+        </index>
+        <index name="index5">
+            <element name="submission_doc_reviewer"/>
+        </index>
+    </element>
+</database>

@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8"?><record_update>
+    <sys_documentation element="submission_stage" label="Submission Stage" language="en" table="x_26385_crs_kd_submissions">
+        <sys_documentation action="INSERT_OR_UPDATE">
+            <element>submission_stage</element>
+            <help/>
+            <hint/>
+            <label>Submission Stage</label>
+            <language>en</language>
+            <name>x_26385_crs_kd_submissions</name>
+            <plural>Submission Stages</plural>
+            <sys_class_name>sys_documentation</sys_class_name>
+            <sys_created_by>yuw5@nih.gov</sys_created_by>
+            <sys_created_on>2019-08-15 18:04:57</sys_created_on>
+            <sys_customer_update>false</sys_customer_update>
+            <sys_id>71256f99dbdff700b86770c08c96194a</sys_id>
+            <sys_mod_count>0</sys_mod_count>
+            <sys_name>Submission Stage</sys_name>
+            <sys_package display_value="CRS Knowledge Database" source="x_26385_crs_kd">404e613b4f9213007221e321a310c738</sys_package>
+            <sys_policy/>
+            <sys_replace_on_upgrade>false</sys_replace_on_upgrade>
+            <sys_scope display_value="CRS Knowledge Database">404e613b4f9213007221e321a310c738</sys_scope>
+            <sys_update_name>sys_documentation_x_26385_crs_kd_submissions_submission_stage_en</sys_update_name>
+            <sys_updated_by>yuw5@nih.gov</sys_updated_by>
+            <sys_updated_on>2019-08-15 18:04:57</sys_updated_on>
+            <url/>
+            <url_target/>
+        </sys_documentation>
+    </sys_documentation>
+</record_update>

@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="UTF-8"?><record_update table="sys_ws_operation">
+    <sys_ws_operation action="INSERT_OR_UPDATE">
+        <active>true</active>
+        <consumes>application/json,application/xml,text/xml</consumes>
+        <consumes_customized>false</consumes_customized>
+        <default_operation_uri/>
+        <enforce_acl>cf9d01d3e73003009d6247e603f6a990</enforce_acl>
+        <http_method>POST</http_method>
+        <name>submit2CRS</name>
+        <operation_script><![CDATA[(function process(/*RESTAPIRequest*/ request, /*RESTAPIResponse*/ response) {
+
+    var sub_id = request.body.data.sub_id;
+	
+	var gr = new GlideRecord('x_26385_crs_kd_submissions');
+	gr.addQuery('sys_id',sub_id);
+	gr.query();
+	gr.next();
+	gr.submission_approval_action = 'approved';
+	var other_info = JSON.parse(gr.submission_other_info.toString());
+	if(other_info.rejectedByCRS){
+		//was rejected by CRS, need to send a notification
+		var email = gr.submission_crs_reviewer.email;
+		gs.eventQueue('x_26385_crs_kd.resubmit2CRS',gr, "", email);
+	}
+	other_info.rejectedByCRS = 0;
+	gr.submission_other_info = JSON.stringify(other_info);
+	gr.submission_doc_reviewer = gs.getUserID();
+	gr.update();
+	
+	return 1;
+
+})(request, response);]]></operation_script>
+        <operation_uri>/api/x_26385_crs_kd/export/submit2CRS</operation_uri>
+        <produces>application/json,application/xml,text/xml</produces>
+        <produces_customized>false</produces_customized>
+        <relative_path>/submit2CRS</relative_path>
+        <request_example/>
+        <requires_acl_authorization>false</requires_acl_authorization>
+        <requires_authentication>true</requires_authentication>
+        <requires_snc_internal_role>true</requires_snc_internal_role>
+        <short_description/>
+        <sys_class_name>sys_ws_operation</sys_class_name>
+        <sys_created_by>yuw5@nih.gov</sys_created_by>
+        <sys_created_on>2019-08-16 20:56:26</sys_created_on>
+        <sys_customer_update>false</sys_customer_update>
+        <sys_id>e6d595b1dbdb7b00b86770c08c9619ae</sys_id>
+        <sys_mod_count>3</sys_mod_count>
+        <sys_name>submit2CRS</sys_name>
+        <sys_package display_value="CRS Knowledge Database" source="x_26385_crs_kd">404e613b4f9213007221e321a310c738</sys_package>
+        <sys_policy/>
+        <sys_replace_on_upgrade>false</sys_replace_on_upgrade>
+        <sys_scope display_value="CRS Knowledge Database">404e613b4f9213007221e321a310c738</sys_scope>
+        <sys_update_name>sys_ws_operation_e6d595b1dbdb7b00b86770c08c9619ae</sys_update_name>
+        <sys_updated_by>yuw5@nih.gov</sys_updated_by>
+        <sys_updated_on>2019-09-11 21:54:07</sys_updated_on>
+        <web_service_definition display_value="export">01e1bbe7db6a53005358dc50cf961994</web_service_definition>
+        <web_service_version/>
+    </sys_ws_operation>
+</record_update>

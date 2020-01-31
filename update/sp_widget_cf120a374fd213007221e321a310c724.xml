@@ -1,5 +1,4 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<record_update table="sp_widget">
+<?xml version="1.0" encoding="UTF-8"?><record_update table="sp_widget">
     <sp_widget action="INSERT_OR_UPDATE">
         <category>custom</category>
         <client_script><![CDATA[function($rootScope, $scope, $location, $http,NERDSearch) {
@@ -29,17 +28,39 @@
 	
 	c.resultLen = 0;
 	
-	if(s.kb_knowledge_base){
-		var kb_id = s.kb_knowledge_base;
+	c.isSu = $rootScope.user.role.indexOf('su') > -1;
+	c.isCu = $rootScope.user.role.indexOf('cu') > -1;
+	c.isRu = $rootScope.user.role.indexOf('ru') > -1;
+	c.isCr = $rootScope.user.role.indexOf('cr') > -1;
+	c.isDpc = $rootScope.user.role.indexOf('dpc') > -1;
+	c.isSm = $rootScope.user.role.indexOf('sm') > -1;
+	c.currentUserID = $rootScope.user.id;
+	c.doc = $rootScope.user.doc;
+	
+	if(c.isRu){
+		var tmp_kbs = [];
 		c.data.knowledgeBases.forEach(function(kb){
-			if(kb_id == kb.id){
-				c.data.selectedKnowledgeBase = kb;
+			if(kb.name == "NERD"){
+				tmp_kbs.push(kb);
 			}
 		});
+		c.data.knowledgeBases = tmp_kbs;
+		c.data.selectedKnowledgeBase = tmp_kbs[0]	;
 	}
 	else{
-		c.data.selectedKnowledgeBase = c.data.knowledgeBases[0]	;
+		if(s.kb_knowledge_base){
+			var kb_id = s.kb_knowledge_base;
+			c.data.knowledgeBases.forEach(function(kb){
+				if(kb_id == kb.id){
+					c.data.selectedKnowledgeBase = kb;
+				}
+			});
+		}
+		else{
+			c.data.selectedKnowledgeBase = c.data.knowledgeBases[0]	;
+		}
 	}
+	
 	
 	c.data.maxSize = 5;
 	c.data.pageSize = {};
@@ -48,6 +69,10 @@
 	c.pageChanged = function() {
     
   };
+	
+	c.clearSearchBox = function(){
+		c.data.searchString = '';
+	};
 	
 	c.swithKnowledgeBase = function(){
 		//c.createFilter();
@@ -112,8 +137,11 @@
 				c.data.specialTopic = [];
 				cache = c.data.tmp.specialTopic;
 				cache.sort();
+				var toNotDisplay = ['{Health Communication Programs}','{Meeting/Workshop/Conference}','{Report/Guidelines/Policy}','{Research Resources and Infrastructure}','{Technology Development}','{Women\'s health}','{Other}'];
 				cache.forEach(function(elem){
-					c.data.specialTopic.push({id: elem, name: elem.substring(1, elem.length -1), count: c.data.count.specialTopic[elem]});
+					if(toNotDisplay.indexOf(elem) == -1){
+						c.data.specialTopic.push({id: elem, name: elem.substring(1, elem.length -1), count: c.data.count.specialTopic[elem]});
+					}
 				});
 				c.data.fiscalYear = [];
 				cache = c.data.tmp.fiscalYear;
@@ -128,7 +156,7 @@
 				console.log(error);
 			});
 		}
-		else if(c.data.selectedKnowledgeBase.name == "CRS Internal"){
+		else if(c.data.selectedKnowledgeBase.name == "ROCK"){
 			var params = {
 									knowledgeBaseID: c.data.selectedKnowledgeBase.id
 								 };
@@ -256,7 +284,7 @@
 				c.resultLen = 0;
 				
 				c.data.tabs.forEach(function(t){
-					t.isOpen = true;
+					t.isOpen = false;
 					c.resultLen += t.list.length;
 					c.data.pageSize[t.name] = 10;
 					c.data.bigCurrentPage[t.name] = 1;
@@ -270,7 +298,7 @@
 				console.log(error);
 			});
 		}
-		else if(c.data.selectedKnowledgeBase.name == "CRS Internal"){
+		else if(c.data.selectedKnowledgeBase.name == "ROCK"){
 			var params = {
 									searchString: c.data.searchString && c.data.searchString !== ""? c.data.searchString : "",
 									selectedProject: c.data.selectedProject.length > 0 ? c.data.selectedProject.join(",") : "",
@@ -287,7 +315,7 @@
 				c.resultLen = 0;
 				
 				c.data.tabs.forEach(function(t){
-					t.isOpen = true;
+					t.isOpen = false;
 					c.resultLen += t.list.length;
 					c.data.pageSize[t.name] = 10;
 					c.data.bigCurrentPage[t.name] = 1;
@@ -321,7 +349,7 @@
 				c.resultLen = 0;
 				
 				c.data.tabs.forEach(function(t){
-					t.isOpen = true;
+					t.isOpen = false;
 					c.resultLen += t.list.length;
 					c.data.pageSize[t.name] = 10;
 					c.data.bigCurrentPage[t.name] = 1;
@@ -337,6 +365,21 @@
 		}
 		
 	};
+	
+	c.openUserGuide = function(){
+		var params = {
+									knowledgeBaseID: c.data.selectedKnowledgeBase.id
+								 };
+		
+			NERDSearch.getUserGuide(params,c.data.sessionId).then(function(res){
+				var attachment = res.data.result;
+				//$location.search(s).replace();
+				var url = '/sys_attachment.do?view=true&sys_id='+ attachment;
+				window.open(url, '_blank');
+			}, function(error){
+				console.log(error);
+			});
+	}
 	
 	c.gotoDetail = function(sys_id,template_id, number){
 		var hasFilter = false;
@@ -408,11 +451,11 @@
 		window.open(url, '_blank');
 	}
 	
-	c.gotoNewSubmission = function(tmpl,ev){
+	c.gotoNewEntry = function(tmpl,ev){
 		//redirect to detail page
 		ev.stopPropagation();
 		var p = {};
-		p.xpage = 'kd_new_submission';
+		p.xpage = 'kd_new_entry';
 		p.template = tmpl;
 		//$location.search(s).replace();
 		var url = '/nerd?xpage='+p.xpage+'&template='+p.template;
@@ -488,7 +531,7 @@
 					for (var i = 0; i < elements.length; i++) {
 						elements[i].checked = true;
 					}
-					c.isExportable = true;
+					c.isExportable = elements.length > 0;
 				} else {
 					for (var j = 0; j < elements.length; j++) {
 						elements[j].checked = false;
@@ -550,7 +593,7 @@
 		c.search();
 	}
 	
-	c.selectAll_My_Tag = function(){
+	c.selectAll_MyTag = function(){
 		var selectAll = document.getElementById("selectAll_My_Tag");
 		c.data.selectedMyTags = [];
 		if(selectAll.checked){
@@ -850,13 +893,21 @@
 		$http(req).then(function(resp){
 			var content = resp.data.result.content;
 			var data = [];
-			var div = document.createElement("div");
+			var links = [];
 			content.forEach(function(ct){
+				links.push(ct.link);
+				delete ct.link;
 				data.push(ct);
 			});
 			
 			/* generate a worksheet */
 			var ws = XLSX.utils.json_to_sheet(data);
+			var len = data.length;
+			for(var idx = 0; idx < len; idx++){
+				ws["B" + (idx + 2)].f = '=HYPERLINK("'+ links[idx]+'","'+ data[idx].Title + '") ';
+			}
+			
+			ws["B1"].v = "Title (Link to the record in NERD)";
 
 			/* add to workbook */
 			var wb = XLSX.utils.book_new();
@@ -946,7 +997,7 @@
 			c.data.selectedThemesGoals = $rootScope.selectedThemesGoals?$rootScope.selectedThemesGoals : [];
 			c.data.selectedRecommendation = $rootScope.selectedRecommendation?$rootScope.selectedRecommendation : [];
 		}
-		else if(c.data.selectedKnowledgeBase.name == "CRS Internal"){
+		else if(c.data.selectedKnowledgeBase.name == "ROCK"){
 			c.data.selectedProject = $rootScope.selectedProject?$rootScope.selectedProject : [];
 		}
 		c.data.selectedTags = $rootScope.selectedTags?$rootScope.selectedTags : [];
@@ -957,7 +1008,20 @@
 }]]></client_script>
         <controller_as>c</controller_as>
         <css>
-</css>
+.search-input-clear{
+		position: absolute;
+    right: 50px;
+    z-index: 9999;
+    top: 6px;
+    font-size: 14px;
+    border-radius: 5px;
+    border: 1px solid lightgray;
+    background: white;
+}
+
+.search-input-clear:hover{
+   background: lightgray;
+}</css>
         <data_table>sp_instance</data_table>
         <demo_data/>
         <description/>
@@ -975,7 +1039,7 @@
 	data.sessionId = gs.getSession().getSessionToken();
 	data.knowledgeBases = [];
 	data.knowledgeBases.push({name:"NERD", id:"f5644dcadb54ab0054d8ff621f9619d7"});
-	data.knowledgeBases.push({name:"CRS Internal", id:"ff315a9edba47340b86770c08c961999"});
+	data.knowledgeBases.push({name:"ROCK", id:"ff315a9edba47340b86770c08c961999"});
 	data.knowledgeBases.push({name:"Moonshot Evaluation", id:"2c42d2dedba47340b86770c08c9619a9"});
 })();]]></script>
         <servicenow>false</servicenow>
@@ -984,7 +1048,7 @@
         <sys_created_on>2018-06-01 19:53:54</sys_created_on>
         <sys_customer_update>false</sys_customer_update>
         <sys_id>cf120a374fd213007221e321a310c724</sys_id>
-        <sys_mod_count>1227</sys_mod_count>
+        <sys_mod_count>1283</sys_mod_count>
         <sys_name>[crs] KD Search</sys_name>
         <sys_package display_value="CRS Knowledge Database" source="x_26385_crs_kd">404e613b4f9213007221e321a310c738</sys_package>
         <sys_policy/>
@@ -992,7 +1056,7 @@
         <sys_scope display_value="CRS Knowledge Database">404e613b4f9213007221e321a310c738</sys_scope>
         <sys_update_name>sp_widget_cf120a374fd213007221e321a310c724</sys_update_name>
         <sys_updated_by>yuw5@nih.gov</sys_updated_by>
-        <sys_updated_on>2019-06-20 22:11:48</sys_updated_on>
+        <sys_updated_on>2020-01-16 15:24:46</sys_updated_on>
         <template><![CDATA[<div class="container">
   <div class="row">
         <div class="col-md-3">
@@ -1018,7 +1082,7 @@
                     </div>
 
                     <div class="form-group">
-                      <div class="control-label" for="cancerSiteSelect">Filters: <span class="tooltip-icon" uib-tooltip="Search tags across this Knowledge Base." tooltip-placement="right" tooltip-class="tooltipClass"><i class="fa fa-question-circle" aria-hidden="true"></i></span>
+                      <div class="control-label" for="cancerSiteSelect">Filters: <span class="tooltip-icon" uib-tooltip="Filters may differ according to the category type. Please refer to the user guide for more information." tooltip-placement="right" tooltip-class="tooltipClass"><i class="fa fa-question-circle" aria-hidden="true"></i></span>
                       </div>
                       <div class="facet-scroll"> 
                         <div class="filter-section" ng-if="c.data.filters.includes('cancerSite') && c.data.cancerSite.length > 0">
@@ -1159,7 +1223,11 @@
                     <!-- end form -->
                 </div>
             </div>
-
+						<!--
+            <div ng-if="c.data.selectedKnowledgeBase.name == 'NERD'" style="text-align:center;font-weigth:bold;">
+              <a ng-click="c.openUserGuide()">User Guide</a>
+          	</div>
+						-->
             <!-- End of search column -->
         </div>
 
@@ -1171,7 +1239,10 @@
                     <label for="inputSuccess" class="control-label sr-only">${Search}</label>
                     <div class="input-group">
                         <input type="text" class="form-control" name="kbSearchInput" id="kbSearchInput" placeholder="{{::data.enterSearchStr}}" ng-model="c.data.searchString">
-                        <span class="input-group-btn">
+                      	<button class="search-input-clear" ng-show="c.data.searchString != null && c.data.searchString != ''" ng-click="c.clearSearchBox()">
+                        	<i class="fa fa-times" aria-hidden="true"></i>
+                        </button>
+                      	<span class="input-group-btn">
                             <button type="submit" class="btn btn-default" ng-click="c.search('0');">
                                 <span class="glyphicon glyphicon-search" aria-hidden="true"></span>
                             </button>
@@ -1304,7 +1375,7 @@
                         <div uib-accordion-group ng-repeat="tab in c.data.tabs" ng-if="tab.show" class="panel-default" is-open="tab.isOpen">
                           <uib-accordion-heading>
                             <div>
-                              {{tab.name}} ({{tab.list.length}}) <a ng-click="c.gotoNewSubmission(tab.tmpl,$event)" style="margin-left:20px;">+ Add new Article</a> <i class="pull-right" ng-class="{'fa fa-minus-square': tab.isOpen, 'fa fa-plus-square': !tab.isOpen}"></i>
+                              {{tab.name}} ({{tab.list.length}}) <a ng-click="c.gotoNewEntry(tab.tmpl,$event)" style="margin-left:20px;">+ Add new entry</a> <i class="pull-right" ng-class="{'fa fa-minus-square': tab.isOpen, 'fa fa-plus-square': !tab.isOpen}"></i>
                             </div>
                           </uib-accordion-heading>
                           <ul class="list-group">

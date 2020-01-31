@@ -1,5 +1,4 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<record_update table="sys_ws_operation">
+<?xml version="1.0" encoding="UTF-8"?><record_update table="sys_ws_operation">
     <sys_ws_operation action="INSERT_OR_UPDATE">
         <active>true</active>
         <consumes>application/json,application/xml,text/xml</consumes>
@@ -9,7 +8,48 @@
         <http_method>GET</http_method>
         <name>getDocumentById</name>
         <operation_script><![CDATA[(function process(/*RESTAPIRequest*/ request, /*RESTAPIResponse*/ response) {
-	var template = {"u_kb_template_top_accomplishment":['Title','Cancer Site/Type','Research Type','Special Topic','Description','References','Other References','Involved organization', 'DOC', 'Fiscal Year'],
+	var template = {"u_kb_template_top_accomplishment":['Title','Cancer Site/Type','Research Type','Special Topic','Description','References','Other References','Collaborations', 'DOC', 'Fiscal Year','Point of Contact','CRS Contact'],
+					"u_kb_template_other_accomplishment":['Title','Cancer Site/Type','Research Type','Special Topic','Other Accomplishment Type','Description','References','Other References','Collaborations', 'DOC', 'Fiscal Year','Point of Contact','CRS Contact'],
+					"u_kb_template_collaboration":["Title",
+					"For Existing activities, please specify",
+					"Acronym",
+					"Fiscal Year",
+					"Description",
+					"Website URL(s)",
+					"FY the Collaborative Activity Originated",
+					"Lead DOC",
+					"Other DOCs",
+					"POC",
+					"References",
+					"NIH ICs/OD Collaborators",
+					"Specify the OTHER NIH ICs/OD Collaborators",
+					"HHS Agency Collaborators",
+					"Specify the OTHER HHS Agency Collaborators",
+					"Other Federal Agency Collaborators",
+					"Specify the OTHER Federal Agency Collaborators",
+					"Tribal/State/Local Government Collaborators",
+					"Specify the OTHER Tribal/State/Local Government Collaborators",
+					"Foreign Government Collaborators",
+					"Specify the OTHER Foreign Government Collaborators",
+					"Non-Governmental Collaborators",
+					"Specify the OTHER Non-Governmental Collaborators",
+					"Other Collaborators",
+					"Select type of collaborative activity",
+					"Specify the OTHER Collaborative Activity",
+					"IF MEETING IS SELECTED ABOVE, please specify meeting Type",
+					"Specify One-time date",
+					"Specify Recurring start and end date",
+					"IF COMMITTEE IS SELECTED ABOVE, Is this a FACA committee",
+					"Is this collaboration related to a regulatory activity?",
+					"Was NIH funding provided for this activity?",
+					"Products/Outputs",
+					"Specify the OTHER Products/Outputs",
+					"IF RESEARCH RESOURCE IS SELECTED ABOVE, Specify Type",
+					"Specify the OTHER RESEARCH RESOURCE",
+					"NIH strategic alignment (primary)",
+					"NIH strategic alignment (Secondary Optional)",
+					"HHS Strategic Plan Alignment (Primary)",
+					"HHS Strategic Plan Alignment (Secondary Optional)"],
 					 "u_kb_template_literature_summary": ['Title','Cancer Site/Type', 'Research Type','Description','References','Funding','Journal','Special Topic','Fiscal Year'],
 					 "u_kb_template_gpra": ['Title','Measure ID','Research Type','Special Topic','DOC','Contacts','Description',
 											'Summary','Background','Target Context and Conditions', 'Fiscal Year'],
@@ -35,7 +75,7 @@
 									 'Tools and Data Source(s)',
 								     'Other tools and sources',
 								     'Other Attributes',
-								     'Name(s) of file(s)',
+								     'Name and description of file(s)*',
 									 'Other Notes'],
 					"u_kb_template_presentations": ['Title',
 													'CRS POC(s)',
@@ -64,12 +104,71 @@
                                 "Description":"x_26385_crs_kd_u_kb_description",
                                 "DOC":"x_26385_crs_kd_u_kb_doc",
 								"Fiscal Year":"x_26385_crs_kd_u_kb_fiscal_year",
-                                "Involved organization":"x_26385_crs_kd_u_kb_involved_organization",
+                                "Collaborations":"x_26385_crs_kd_u_kb_involved_organization",
 								"References":"x_26385_crs_kd_u_kb_pmid_references",
                                 "Other References":"x_26385_crs_kd_u_kb_references",
                                 "Research Type":"x_26385_crs_kd_u_kb_research_type",
-					            "Special Topic":"x_26385_crs_kd_u_kb_special_topic"
+					            "Special Topic":"x_26385_crs_kd_u_kb_special_topic",
+								"Point of Contact":"x_26385_crs_kd_u_kb_doc_contact",
+								"CRS Contact":"x_26385_crs_kd_u_kb_crs_contact"
                 },
+				"u_kb_template_other_accomplishment":{
+                                "Title":"x_26385_crs_kd_u_kb_title",
+                                "Cancer Site/Type":"x_26385_crs_kd_u_kb_cancer_site_type", 
+								"Other Accomplishment Type":"x_26385_crs_kd_u_kb_other_accomplishment_type", 
+                                "Description":"x_26385_crs_kd_u_kb_description",
+                                "DOC":"x_26385_crs_kd_u_kb_doc",
+								"Fiscal Year":"x_26385_crs_kd_u_kb_fiscal_year",
+                                "Collaborations":"x_26385_crs_kd_u_kb_involved_organization",
+								"References":"x_26385_crs_kd_u_kb_pmid_references",
+                                "Other References":"x_26385_crs_kd_u_kb_references",
+                                "Research Type":"x_26385_crs_kd_u_kb_research_type",
+					            "Special Topic":"x_26385_crs_kd_u_kb_special_topic",
+								"Point of Contact":"x_26385_crs_kd_u_kb_doc_contact",
+								"CRS Contact":"x_26385_crs_kd_u_kb_crs_contact"
+                },
+				"u_kb_template_collaboration":{
+					"Title": "x_26385_crs_kd_u_kb_title",
+					"For Existing activities, please specify": "x_26385_crs_kd_u_kb_existing_activities_type",
+					"Acronym": "x_26385_crs_kd_u_kb_acronym",
+					"Fiscal Year": "x_26385_crs_kd_u_kb_fiscal_year",
+					"Description": "x_26385_crs_kd_u_kb_description",
+					"Website URL(s)": "x_26385_crs_kd_u_kb_website_url_s",
+					"FY the Collaborative Activity Originated": "x_26385_crs_kd_u_kb_fiscal_year_originated",
+					"Lead DOC": "x_26385_crs_kd_u_kb_doc",
+					"Other DOCs": "x_26385_crs_kd_u_kb_other_docs",
+					"POC": "x_26385_crs_kd_u_kb_poc",
+					"References": "x_26385_crs_kd_u_kb_pmid_references",
+					"NIH ICs/OD Collaborators": "x_26385_crs_kd_u_kb_nih_ics_od_collaborators",
+					"Specify the OTHER NIH ICs/OD Collaborators": "x_26385_crs_kd_u_kb_nih_ics_od_collaborators_other_specify",
+					"HHS Agency Collaborators": "x_26385_crs_kd_u_kb_hhs_agency_collaborators",
+					"Specify the OTHER HHS Agency Collaborators": "x_26385_crs_kd_u_kb_hhs_agency_collaborators_other_specify",
+					"Other Federal Agency Collaborators": "x_26385_crs_kd_u_kb_other_federal_agency_collaborators",
+					"Specify the OTHER Federal Agency Collaborators": "x_26385_crs_kd_u_kb_federal_collaborators_other_specify",
+					"Tribal/State/Local Government Collaborators": "x_26385_crs_kd_u_kb_government_collaborators",
+					"Specify the OTHER Tribal/State/Local Government Collaborators": "x_26385_crs_kd_u_kb_government_collaborators_other_specify",
+					"Foreign Government Collaborators": "x_26385_crs_kd_u_kb_foreign_government_collaborators",
+					"Specify the OTHER Foreign Government Collaborators": "x_26385_crs_kd_u_kb_foreign_collaborators_other_specify",
+					"Non-Governmental Collaborators": "x_26385_crs_kd_u_kb_non_governmental_collaborators",
+					"Specify the OTHER Non-Governmental Collaborators": "x_26385_crs_kd_u_kb_non_gov_collaborators_other_specify",
+					"Other Collaborators": "x_26385_crs_kd_u_kb_other_collaborators",
+					"Select type of collaborative activity": "x_26385_crs_kd_u_kb_collaborative_activity_type",
+					"Specify the OTHER Collaborative Activity": "x_26385_crs_kd_u_kb_collaborative_activity_other_specify",
+					"IF MEETING IS SELECTED ABOVE, please specify meeting Type": "x_26385_crs_kd_u_kb_meeting_type",
+					"Specify One-time date": "x_26385_crs_kd_u_kb_meeting_type_one_time_specify_date",
+					"Specify Recurring start and end date": "x_26385_crs_kd_u_kb_meeting_type_recurring_specify_start_end",
+					"IF COMMITTEE IS SELECTED ABOVE, Is this a FACA committee": "x_26385_crs_kd_u_kb_faca_committee",
+					"Is this collaboration related to a regulatory activity?": "x_26385_crs_kd_u_kb_related_to_regulatory_activity",
+					"Was NIH funding provided for this activity?": "x_26385_crs_kd_u_kb_nih_funding",
+					"Products/Outputs": "x_26385_crs_kd_u_kb_products_outputs",
+					"Specify the OTHER Products/Outputs": "x_26385_crs_kd_products_outputs_other_specify",
+					"IF RESEARCH RESOURCE IS SELECTED ABOVE, Specify Type": "x_26385_crs_kd_u_kb_research_resource_type",
+					"Specify the OTHER RESEARCH RESOURCE": "x_26385_crs_kd_u_kb_research_resource_type_other_specify",
+					"NIH strategic alignment (primary)": "x_26385_crs_kd_u_kb_nih_strategic_alignment_primary",
+					"NIH strategic alignment (Secondary Optional)": "x_26385_crs_kd_u_kb_nih_strategic_alignment_other",
+					"HHS Strategic Plan Alignment (Primary)": "x_26385_crs_kd_u_kb_hhs_strategic_plan_alignment_primary",
+					"HHS Strategic Plan Alignment (Secondary Optional)": "x_26385_crs_kd_u_kb_hhs_strategic_plan_alignment_other"
+				},
                 "u_kb_template_literature_summary":{
                                 "Title":"x_26385_crs_kd_u_kb_title",
 								"Cancer Site/Type":"x_26385_crs_kd_u_kb_cancer_site_type", 
@@ -145,7 +244,7 @@
 									 'Tools and Data Source(s)':"x_26385_crs_kd_u_kb_tools_and_data_source_s",
 								     'Other tools and sources':"x_26385_crs_kd_u_kb_other_tools_and_sources",
 								     'Other Attributes':"x_26385_crs_kd_u_kb_other_attributes",
-									 'Name(s) of file(s)':"x_26385_crs_kd_u_kb_name_s_of_file_s",
+									 'Name and description of file(s)*':"x_26385_crs_kd_u_kb_name_s_of_file_s",
 									 'Other Notes':"x_26385_crs_kd_u_kb_other_notes"},
 		        "u_kb_template_presentations":{
 									'Title':"x_26385_crs_kd_u_kb_title",
@@ -191,9 +290,28 @@
 	result.cat = item.getDisplayValue("kb_category");
 	result.author = item.getDisplayValue('author');
 	result.author_id = item.author.toString();
-	result.version = item.x_26385_crs_kd_u_kb_article_version.toString();
+	result.version = item.x_26385_crs_kd_u_kb_record_version.toString();
+	//get last edited by information
+	var last = new GlideRecord('x_26385_crs_kd_versions');
+	last.addQuery('article_number', result.number);
+	last.addQuery('article_field', 'annotation');
+	last.orderByDesc('sys_created_on');
+	last.query();
+	last.next();
+	result.editor = last.sys_created_by.toString();
+	result.edit_time = last.sys_created_on.toString().substring(0,10).replace(/-/g, '/');
+	var user = new GlideRecord('sys_user');
+	user.addQuery('user_name', result.editor);
+	user.query();
+	user.next();
+	result.editor = user.getDisplayValue('first_name') + " " + user.getDisplayValue('last_name');
+	result.edit_time = result.edit_time.substring(5) + '/' + result.edit_time.substring(0,4);
+	
 	result.warning = item.x_26385_crs_kd_u_kb_caution_warning.toString();
-	if(version == "" || parseFloat(version) == parseFloat(result.version)){
+	if(version != "" && version.indexOf('.') == -1){
+		version += '.0';
+	}
+	if(version == "" || version == result.version){
 		result.latest = true;
 	}
 	else{
@@ -202,12 +320,24 @@
 	
 	if(result.latest){
 		for(var j = 0; j < column_name.length; j++){
+			
+			
+			
+			
 			if(item.getDisplayValue(column_name[j]) == null || item.getDisplayValue(column_name[j]).trim().length == 0){
 				result[column_label[j]] = "N/A";					
 			}else{
 				result[column_label[j]] = item.getDisplayValue(column_name[j]);
-				if(result[column_label[j]].charAt(0) == '{'){
-					result[column_label[j]] = result[column_label[j]].replace(/{/g, '').replace(/}/g, '');
+				if(result[column_label[j]] == '{}'){
+					result[column_label[j]] = "N/A";
+				}
+				else if(result[column_label[j]].charAt(0) == '{'){
+					var arr = result[column_label[j]].split("},{");
+					result[column_label[j]] = [];
+					arr.forEach(function(m){
+						result[column_label[j]].push(m.replace(/{/g, '').replace(/}/g, ''));
+					});
+					result[column_label[j]] = result[column_label[j]].join(' <br> ');
 				}
 			 }
 		}
@@ -217,7 +347,7 @@
 		//get data from versions table
 		var v = new GlideRecord('x_26385_crs_kd_versions');
 		v.addQuery('article_number', result.number);
-		v.addQuery('article_version', version);
+		v.addQuery('record_version', version);
 		v.query();
 		if(v.getRowCount() > 0){
 			var cache = {};
@@ -226,13 +356,23 @@
 			}
 		
 			for(var k = 0; k < column_name.length; k++){
-				if(cache[column_name[k]].trim().length == 0){
+				if(cache[column_name[k]] == null || cache[column_name[k]].trim().length == 0){
 					result[column_label[k]] = "N/A";					
 				}else{
+					
 					result[column_label[k]] = cache[column_name[k]];
-					if(result[column_label[k]].charAt(0) == '{'){
-						result[column_label[k]] = result[column_label[k]].replace(/{/g, '').replace(/}/g, '');
+					if(result[column_label[k]] == '{}'){
+						result[column_label[k]] = "N/A";
 					}
+					else if(result[column_label[k]].charAt(0) == '{'){
+						var arr = result[column_label[k]].split("},{");
+						result[column_label[k]] = [];
+						arr.forEach(function(m){
+							result[column_label[k]].push(m.replace(/{/g, '').replace(/}/g, ''));
+						});
+						result[column_label[k]] = result[column_label[k]].join(' <br> ');
+					}
+					
 				 }
 			}
 		}
@@ -271,23 +411,26 @@
 	else{
 		result.your_tags = [];
 	}
-	
-	
+
 	//check if this version is editable
 	if(result.latest){
 		result.editable = true;
 	}
 	else{
 		result.editable = true;
-		var ceiling_version = Math.floor(parseFloat(result.version)) + 1;
+		var pos = result.version.indexOf('.');
+		var floor_version = result.version.substring(0, pos + 1);
+		var minor_version = result.version.substring(pos + 1);
 		var ed = new GlideRecord('x_26385_crs_kd_versions');
 			ed.addQuery('article_number', result.number);
-			ed.addQuery('article_version', '<', ceiling_version);
-			ed.addQuery('article_version', '>', result.version);
+			ed.addQuery('record_version', 'STARTSWITH', floor_version);
 			ed.addQuery('article_field', 'annotation');
 			ed.query();
-		if(ed.getRowCount() > 0){
-			result.editable = false;
+		while(ed.next()){
+			if(parseInt(ed.record_version.substring(pos+1)) > parseInt(minor_version)){
+				result.editable = false;
+				break;
+			}
 		}
 	}
 	
@@ -297,7 +440,7 @@
 	var attach = "";
 	var att = new GlideRecord('x_26385_crs_kd_versions');
 		att.addQuery('article_number', result.number);
-		att.addQuery('article_version', result.version);
+		att.addQuery('record_version', result.version);
 	//	att.addQuery('article_field', 'attachments');
 		att.query();
 	while(att.next()){
@@ -331,13 +474,14 @@
         <request_example/>
         <requires_acl_authorization>false</requires_acl_authorization>
         <requires_authentication>true</requires_authentication>
+        <requires_snc_internal_role>true</requires_snc_internal_role>
         <short_description/>
         <sys_class_name>sys_ws_operation</sys_class_name>
         <sys_created_by>zhoujim@nih.gov</sys_created_by>
         <sys_created_on>2018-06-26 20:52:59</sys_created_on>
         <sys_customer_update>false</sys_customer_update>
         <sys_id>d3bf36f3dbfa57009b0a74131f961981</sys_id>
-        <sys_mod_count>68</sys_mod_count>
+        <sys_mod_count>93</sys_mod_count>
         <sys_name>getDocumentById</sys_name>
         <sys_package display_value="CRS Knowledge Database" source="x_26385_crs_kd">404e613b4f9213007221e321a310c738</sys_package>
         <sys_policy/>
@@ -345,7 +489,7 @@
         <sys_scope display_value="CRS Knowledge Database">404e613b4f9213007221e321a310c738</sys_scope>
         <sys_update_name>sys_ws_operation_d3bf36f3dbfa57009b0a74131f961981</sys_update_name>
         <sys_updated_by>yuw5@nih.gov</sys_updated_by>
-        <sys_updated_on>2019-06-20 15:45:40</sys_updated_on>
+        <sys_updated_on>2020-01-27 23:23:31</sys_updated_on>
         <web_service_definition display_value="export">01e1bbe7db6a53005358dc50cf961994</web_service_definition>
         <web_service_version/>
     </sys_ws_operation>

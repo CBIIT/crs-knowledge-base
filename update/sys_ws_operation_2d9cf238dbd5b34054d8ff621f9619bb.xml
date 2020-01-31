@@ -1,5 +1,4 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<record_update table="sys_ws_operation">
+<?xml version="1.0" encoding="UTF-8"?><record_update table="sys_ws_operation">
     <sys_ws_operation action="INSERT_OR_UPDATE">
         <active>true</active>
         <consumes>application/json,application/xml,text/xml</consumes>
@@ -16,6 +15,7 @@
 
 	var k = new GlideRecord(template);
 	k.addQuery("number","!=", number);
+	k.addQuery("x_26385_crs_kd_u_kb_record_version","!=", "0.1");
 	k.addQuery('IR_AND_QUERY', search_text);
 	k.setLimit(10);
 	k.query();
@@ -39,13 +39,14 @@
         <request_example/>
         <requires_acl_authorization>false</requires_acl_authorization>
         <requires_authentication>true</requires_authentication>
+        <requires_snc_internal_role>true</requires_snc_internal_role>
         <short_description/>
         <sys_class_name>sys_ws_operation</sys_class_name>
         <sys_created_by>yuw5@nih.gov</sys_created_by>
         <sys_created_on>2019-05-06 15:51:54</sys_created_on>
         <sys_customer_update>false</sys_customer_update>
         <sys_id>2d9cf238dbd5b34054d8ff621f9619bb</sys_id>
-        <sys_mod_count>16</sys_mod_count>
+        <sys_mod_count>18</sys_mod_count>
         <sys_name>searchArticleByText</sys_name>
         <sys_package display_value="CRS Knowledge Database" source="x_26385_crs_kd">404e613b4f9213007221e321a310c738</sys_package>
         <sys_policy/>
@@ -53,7 +54,7 @@
         <sys_scope display_value="CRS Knowledge Database">404e613b4f9213007221e321a310c738</sys_scope>
         <sys_update_name>sys_ws_operation_2d9cf238dbd5b34054d8ff621f9619bb</sys_update_name>
         <sys_updated_by>yuw5@nih.gov</sys_updated_by>
-        <sys_updated_on>2019-05-24 19:06:46</sys_updated_on>
+        <sys_updated_on>2019-10-30 21:07:40</sys_updated_on>
         <web_service_definition display_value="export">01e1bbe7db6a53005358dc50cf961994</web_service_definition>
         <web_service_version/>
     </sys_ws_operation>

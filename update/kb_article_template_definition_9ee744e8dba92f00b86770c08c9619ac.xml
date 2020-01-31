@@ -1,5 +1,4 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<record_update sys_domain="global" table="kb_article_template_definition">
+<?xml version="1.0" encoding="UTF-8"?><record_update sys_domain="global" table="kb_article_template_definition">
     <kb_article_template_definition action="INSERT_OR_UPDATE">
         <active>true</active>
         <article_template display_value="GPRA">3e9700e8dba92f00b86770c08c961904</article_template>

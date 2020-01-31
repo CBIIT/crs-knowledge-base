@@ -1,8 +1,21 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<record_update table="sp_widget">
+<?xml version="1.0" encoding="UTF-8"?><record_update table="sp_widget">
     <sp_widget action="INSERT_OR_UPDATE">
         <category>custom</category>
-        <client_script><![CDATA[function() {  /* widget controller */  var c = this;}]]></client_script>
+        <client_script><![CDATA[function($scope,$rootScope, $location) {
+  /* widget controller */
+  var c = this;
+	var s = $location.search();
+	
+	c.isSu = $rootScope.user.role.indexOf('su') > -1;
+	c.isCu = $rootScope.user.role.indexOf('cu') > -1;
+	c.isRu = $rootScope.user.role.indexOf('ru') > -1;
+	c.isCr = $rootScope.user.role.indexOf('cr') > -1;
+	c.isDpc = $rootScope.user.role.indexOf('dpc') > -1;
+	c.isSm = $rootScope.user.role.indexOf('sm') > -1;
+	c.currentUserID = $rootScope.user.id;
+	c.doc = $rootScope.user.doc;
+
+}]]></client_script>
         <controller_as>c</controller_as>
         <css>.summary-box{
   display:table;
@@ -45,18 +58,21 @@
         <script><![CDATA[(function() {  
   var kb = new GlideRecord('kb_knowledge');
 	kb.addQuery('kb_knowledge_base','f5644dcadb54ab0054d8ff621f9619d7');
+	kb.addQuery('active', true);
 	kb.query();
 
 	data.count_1 = kb.getRowCount();
 	
 	kb = new GlideRecord('kb_knowledge');
 	kb.addQuery('kb_knowledge_base','ff315a9edba47340b86770c08c961999');
+	kb.addQuery('active', true);
 	kb.query();
 
 	data.count_2 = kb.getRowCount();
 	
 	kb = new GlideRecord('kb_knowledge');
 	kb.addQuery('kb_knowledge_base','2c42d2dedba47340b86770c08c9619a9');
+	kb.addQuery('active', true);
 	kb.query();
 
 	data.count_3 = kb.getRowCount();
@@ -67,7 +83,7 @@
         <sys_created_on>2018-07-19 15:47:10</sys_created_on>
         <sys_customer_update>false</sys_customer_update>
         <sys_id>6966d0dbdbdb97009b0a74131f961987</sys_id>
-        <sys_mod_count>48</sys_mod_count>
+        <sys_mod_count>53</sys_mod_count>
         <sys_name>[crs] KD Summary</sys_name>
         <sys_package display_value="CRS Knowledge Database" source="x_26385_crs_kd">404e613b4f9213007221e321a310c738</sys_package>
         <sys_policy/>
@@ -75,7 +91,7 @@
         <sys_scope display_value="CRS Knowledge Database">404e613b4f9213007221e321a310c738</sys_scope>
         <sys_update_name>sp_widget_6966d0dbdbdb97009b0a74131f961987</sys_update_name>
         <sys_updated_by>yuw5@nih.gov</sys_updated_by>
-        <sys_updated_on>2019-04-03 21:52:32</sys_updated_on>
+        <sys_updated_on>2020-01-16 14:59:50</sys_updated_on>
         <template><![CDATA[<div class="container">
   <div class="summary-box">
     <div class="kb-tile-block">
@@ -103,7 +119,7 @@
           </div> 
       </div>
     </div>
-    <div class="kb-tile-block">
+    <div class="kb-tile-block" ng-if="!c.isRu">
       <div class="panel panel-default"> 
           <div> 
            <div class="kb-top-pad"> 
@@ -113,7 +129,7 @@
                <img alt="" src="nci_knowledge-base.svg" aria-hidden="true" data-ng-if="!item.icon" class="ng-scope" role="presentation">
               </div> 
               <div class="link-text ng-scope"> 
-               <h5 class="ng-binding">CRS Internal</h5> 
+               <h5 class="ng-binding">ROCK</h5> 
               </div> 
              </div></a> 
            </div> 
@@ -128,7 +144,7 @@
           </div> 
       </div>
     </div>
-    <div class="kb-tile-block">
+    <div class="kb-tile-block" ng-if="!c.isRu">
       <div class="panel panel-default"> 
           <div> 
            <div class="kb-top-pad"> 

@@ -1,0 +1,1113 @@
+<?xml version="1.0" encoding="UTF-8"?><record_update table="sp_widget">
+    <sp_widget action="INSERT_OR_UPDATE">
+        <category>custom</category>
+        <client_script><![CDATA[function($scope,$rootScope, $location,$mdDialog, NERDSubmission) {
+  /* widget controller */
+  var c = this;
+	var s = $location.search();
+	
+	c.readonly = false;
+	var cb = null;
+	
+	c.isSu = $rootScope.user.role.indexOf('su') > -1;
+	c.isCu = $rootScope.user.role.indexOf('cu') > -1;
+	c.isRu = $rootScope.user.role.indexOf('ru') > -1;
+	c.isCr = $rootScope.user.role.indexOf('cr') > -1;
+	c.isDpc = $rootScope.user.role.indexOf('dpc') > -1;
+	c.isSm = $rootScope.user.role.indexOf('sm') > -1;
+	c.currentUserID = $rootScope.user.id;
+	c.doc = $rootScope.user.doc;
+	
+	c.saving = false;
+	c.submit_text = "Submit";
+	if(c.isDpc){
+		c.submit_text = "Submit to CRS";
+	}
+	else if(c.isCr){
+		c.submit_text = "Publish to NERD";
+	}
+	
+	c.dropdowns ={};
+	c.attachments = [{name: 'file2upload'}];
+	
+	c.save_text = "Save";
+	c.submit2CRS_text = "Submit to CRS";
+	c.publish_text = "Publish to NERD";
+	
+	c.mceOptions = {
+		resize: true,
+		content_css : '/133734fbdb4ab30054d8ff621f9619f2.spcssdbx',
+		height: 200,
+		menubar: false,
+		statusbar: false,
+		plugins: ' textcolor  charmap  link autoresize table',
+		default_link_target: "_blank",
+		toolbar: 'undo redo | fontselect fontsizeselect forecolor backcolor bold italic subscript superscript charmap | alignleft aligncenter alignright alignjustify | bullist numlist | link | table image',
+		table_default_styles: {
+			'width': '50%',
+			'border-collapse': 'collapse',
+			'table-layout': 'fixed'
+		},
+		setup: function(ed) {
+			ed.addCommand('uploadImage', function() {
+				
+				var inputImage = document.createElement('input');
+				inputImage.type = 'file';
+				inputImage.accept = 'image/*';
+				inputImage.click();
+				inputImage.onchange = function(){
+					var fr = new FileReader();  
+					fr.onload = function(){
+						var encoded = fr.result.replace(/^data:(.*;base64,)?/, '');
+						if ((encoded.length % 4) > 0) {
+							encoded += '='.repeat(4 - (encoded.length % 4));
+						}
+						var base64 = "data:image/gif;base64," + encoded;
+						var args = {
+													id: "image_1",
+													src: base64, // encodeURI("/" + response.sys_id + ".iix"),
+													style: "max-width: 100%; max-height: 300px;"
+											};
+						ed.execCommand('mceInsertContent', false, ed.dom.createHTML('img', args), {
+							skip_undo: 1
+						});
+					};
+					fr.readAsDataURL(inputImage.files[0]);
+					
+				};
+				
+				
+			});
+			ed.addButton('image', {
+				icon: 'image',
+				tooltip: 'Insert image',
+				onclick: function(e) {
+					ed.execCommand('uploadImage');
+				}
+			})
+				
+		}
+  }
+	
+	c.updateDropdownValues = function(field){
+		//get all the values and put to array
+		var vs = document.getElementsByName(field);
+		var i;
+		c.selected[field] = [];
+		for (i = 0; i < vs.length; i++) {
+			if(vs[i].value != '?' && c.selected[field].indexOf(vs[i].value) == -1){
+				c.selected[field].push(vs[i].value);
+			}
+			
+		}
+	}
+	
+	c.addDropdown = function(field, event){
+		var el = event.currentTarget;
+		var node = el.parentNode;
+		var timestamp = new Date().getTime();
+		var content = angular.element("<div style=\"margin-bottom:10px;float: left;width: 100%;\">"
+			+"<select class=\"form-control dropdown-slot\" name=\""+field+"\" ng-model=\"c.data['"+field+"']['"+timestamp+"']\" ng-change=\"c.updateDropdownValues('"+field+"')\" ng-options=\"option for option in c.items['"+field+"'] track by option\" style=\"font-weight:bold;\"></select>"
+			+"<span class=\"dropdown-action\" ng-click=\"c.addDropdown('"+field+"',$event)\"><i class=\"fa fa-plus\"></i></span>"
+			+"<span class=\"dropdown-action\" ng-click=\"c.deleteDropdown('"+field+"',$event)\" ng-show = \"c.dropdowns['"+field+"'].length > 1\"><i class=\"fa fa-minus\"></i></span>"
+			+"</div>");
+		content.insertAfter(node);
+		c.dropdowns[field].push({name: field});
+		$compile(content)($scope);
+	};
+	
+	c.deleteDropdown = function(field, event){
+		var el = event.currentTarget;
+		c.dropdowns[field].pop();
+    el.parentNode.parentNode.removeChild(el.parentNode);
+		c.updateDropdownValues(field);
+	};
+	
+	
+	c.reorderItems = function(items){
+		//console.log(item);
+		var result = [];
+		var len = items.length;
+		var rows = Math.floor(len/3);
+		if(len % 3 != 0){
+			rows ++;
+		}
+		var k = 0, i = 0;
+		for(k = 0; k< rows ; k++){
+			for(i = k; i< rows * 3; i = i + rows){
+				if(i < len){
+					result.push(items[i]);
+				}
+				else{
+					result.push('');
+				}
+				
+			}
+		}
+		//console.log(result);
+		return result;
+	};
+	
+	var ps = {};
+	ps.sub_id = s.sub_id;
+	ps.tmpl = s.tmpl;
+	ps.user_type = '';
+	if(c.isSu || c.isCr){
+		ps.user_type = 'crs';
+	}
+	else if(c.isDpc){
+		ps.user_type = 'dpc';
+		ps.doc = c.doc;
+	}
+	else{
+		ps.user_type = 'sm';
+	}
+	NERDSubmission.getSubmissionWithSchema(ps, c.data.sessionId).then(function(res){
+		var result = res.data.result;
+		//check if user is able to see this submission
+		if(result.valid){
+			c.schema = result.schema;
+			c.data = result.content;
+			c.data.status = result.status;
+			c.data.submission_priority = result.priority;
+			c.data.other_info = result.other_info;
+			c.items = {};
+			c.selected = {};
+			c.saved = {};
+			c.schema.forEach(function(item){
+				if(item.type == "checkbox"){
+					item.items = c.reorderItems(item.items);
+					c.items[item.field] = item.items;
+					c.selected[item.field] = c.data[item.field] == "" ? [] : c.data[item.field];
+					/*
+					c.data[item.field].forEach(function(im){
+						c.selected[item.field].push(im);
+					});
+					*/
+				}
+				else if(item.type == "date"){
+					if(c.data[item.field] != ""){
+						c.data[item.field] = c.data[item.field] + 'T05:00:00.000Z';
+						c.data[item.field] = new Date(c.data[item.field]);
+					}
+				}
+				else if(item.type == "date_range"){
+					var dt = c.data[item.field].split(',');
+					c.data[item.field] = {start:"", end:""};
+					if(dt[0] != ""){
+						var start = dt[0] + 'T05:00:00.000Z';
+						c.data[item.field].start = new Date(start);
+					}
+					if(dt[1] != ""){
+						var end = dt[1] + 'T05:00:00.000Z';
+						c.data[item.field].end = new Date(end);
+					}
+				}
+				else if(item.type == "dropdown"){
+					if(c.data[item.field].length == 0){
+						c.data[item.field] = "";
+					}
+					else{
+						c.data[item.field] = c.data[item.field][0];
+					}
+				}
+				else if(item.type == "multi-dropdown"){
+					c.items[item.field] = item.items;
+					c.dropdowns[item.field] = [];
+					c.selected[item.field] = c.data[item.field] == "" ? [] : c.data[item.field];
+					/*
+					c.data[item.field].forEach(function(im){
+						c.selected[item.field].push(im);
+					});
+					*/
+					c.saved[item.field] = [];
+					c.data[item.field] = {};
+					c.selected[item.field].forEach(function(it){
+						c.saved[item.field].push(it);
+						c.data[item.field][it] = it;
+						c.dropdowns[item.field].push({name: item.field});
+					});
+					if(c.selected[item.field].length == 0){
+						c.saved[item.field].push("first");
+						c.data[item.field]["first"] = "";
+						c.dropdowns[item.field].push({name: item.field});
+					}
+				}
+				else if(item.type == "customize"){
+					if(item.label == 'References'){
+						c.data['pmids'] = c.data[item.field];
+					}
+					if(item.label == 'Funding'){
+						var arr = c.data[item.field].split('|');
+						c.data['Funding'] = (arr[0] == "Yes");
+						c.data['Funding_info'] = arr[1];
+					}
+				}
+			});
+			if(c.data.status == "Published"){
+				c.readonly = true;
+			}
+			else if(c.data.status == "CRS Review"){
+				c.readonly = c.isSm || c.isDpc ;
+			}
+			else if(c.data.status == "DOC Review"){
+				c.readonly = c.isSm || c.isSu || c.isCr ;
+			}
+			else{
+				c.readonly = c.isDpc || c.isSu || c.isCr;
+			}
+			c.prev_attachments = result.attachments;
+			
+			$scope.$apply();
+		}
+		else{
+			c.goBacktoSubmission();
+		}
+		
+	},function(error){
+		console.log(error);
+	});
+	
+	c.addAttachment = function(event){
+		var el = event.currentTarget;
+		//c.attachments.pop();
+    var node = el.parentNode;
+		var content = angular.element("<div style=\"margin-bottom:10px;float: left;width: 100%;\">"
+			+"<input type=\"file\" style=\"width:80%;float:left;cursor: pointer;\" name=\"file2upload\" class=\"form-control\">"
+			+"<span class=\"attachment-action\" ng-click=\"c.addAttachment($event)\"><i class=\"fa fa-plus\"></i></span>"
+			+"<span class=\"attachment-action\" ng-click=\"c.deleteAttachment($event)\" ng-show = \"c.attachments.length > 1\"><i class=\"fa fa-minus\"></i></span>"
+			+"</div>");
+		content.insertAfter(node);
+		c.attachments.push({name: 'file2upload'});
+		$compile(content)($scope);
+	};
+	
+	c.deleteAttachment = function(event){
+		var el = event.currentTarget;
+		c.attachments.pop();
+    el.parentNode.parentNode.removeChild(el.parentNode);
+	};
+	
+	c.removeAttachment = function(attach_sys_id){
+		var idx = 0;
+		var count = 0;
+		c.prev_attachments.forEach(function(att){
+			if(att.attach_sys_id == attach_sys_id){
+				idx = count;
+			}
+			count ++;
+		});
+		c.prev_attachments.splice(idx, 1);
+	};
+	
+	c.toggle = function (item, list) {
+    var idx = list.indexOf(item);
+    if (idx > -1) {
+      list.splice(idx, 1);
+    }
+    else {
+      list.push(item);
+    }
+  };
+	
+	c.exists = function (item, list) {
+		return list.indexOf(item) > -1;
+  };
+
+	c.isIndeterminate = function(field) {
+    return (c.selected[field].length !== 0 &&
+        c.selected[field].length !== c.items[field].length);
+  };
+	
+	c.isChecked = function(field) {
+		return c.selected[field].length === c.items[field].length;
+  };
+
+  c.toggleAll = function(field) {
+    if (c.selected[field].length === c.items[field].length) {
+      c.selected[field] = [];
+    } else if (c.selected[field].length === 0 || c.selected[field].length > 0) {
+      c.selected[field] = c.items[field].slice(0);
+    }
+  };
+	
+	c.validate = function(){
+		var fields = [];
+		var temp = {};
+		c.schema.forEach(function(item){
+			temp[item.field] = item.type;
+			if(item.required && item.required == "1"){
+				if(item.displayWhen){
+					if(!item.displayWhen.precondition || c.data[item.displayWhen.precondition.field].indexOf(item.displayWhen.precondition.value) > -1 
+						 || c.selected[item.displayWhen.precondition.field].indexOf(item.displayWhen.precondition.value) > -1){
+						if(temp[item.displayWhen.field] == "checkbox" || temp[item.displayWhen.field] == "multi-dropdown"){
+							if(c.selected[item.displayWhen.field].indexOf(item.displayWhen.value) > -1){
+								if(item.type == "date_range"){
+									if(c.data[item.field].start == "" || c.data[item.field].end == ""){
+										fields.push(item.label);
+									}
+								}
+								else{
+									if(c.data[item.field] == ""){
+										fields.push(item.label);
+									}
+								}
+							}
+						}
+						else if(temp[item.displayWhen.field] == "dropdown"){
+							if(c.data[item.displayWhen.field].indexOf(item.displayWhen.value) > -1){
+								if(item.type == "date_range"){
+									if(c.data[item.field].start == "" || c.data[item.field].end== ""){
+										fields.push(item.label);
+									}
+								}
+								else{
+									if(c.data[item.field] == ""){
+										fields.push(item.label);
+									}
+								}
+							}
+						}
+					}
+				}
+				else{
+					if(item.type == "checkbox" || item.type == "multi-dropdown"){
+						if(c.selected[item.field].length == 0){
+							//window.showMessageBox("Please choose at least one item for " +  item.label);
+							fields.push(item.label);
+						}
+					}
+					else if(item.type == "string" || item.type == "dropdown" || item.type == "html" || item.type == "urls"){
+						if(!c.data[item.field] || c.data[item.field].trim() == ""){
+							//window.showMessageBox("Please enter " +  item.label + "for you submission.");
+							fields.push(item.label);
+						}
+					}
+				}
+				
+			}
+		});
+		
+		if(fields.length > 0){
+			window.showMessageBox("Please enter a value for fields: <br> <font color='#c6375d'>" +  fields.join(' <br> ') + "</font>");
+			return false;
+		}
+		else{
+			return true;
+		}
+	}
+	
+	c.collectData = function(){
+		var params = {};
+		params.hasFile = false;
+		params.submission_priority = c.isSm ? "-" : c.data.submission_priority;
+		
+		var temp = {};
+		
+		c.schema.forEach(function(item){
+			temp[item.field] = item.type;
+			//clear up the hidden field value
+			if(item.displayWhen){
+				var empty = false;
+				if(temp[item.displayWhen.field] == "checkbox" || temp[item.displayWhen.field] == "multi-dropdown"){
+					if(c.selected[item.displayWhen.field].indexOf(item.displayWhen.value) == -1){
+						empty = true;
+					}
+				}
+				else if(temp[item.displayWhen.field] == "dropdown"){
+					if(c.data[item.displayWhen.field].indexOf(item.displayWhen.value) == -1){
+						empty = true;
+					}
+				}
+							
+				if(empty){
+					if(item.type == 'boolean'){
+						c.data[item.field] = "No";
+					}
+					else if(item.type == 'date'){
+						c.data[item.field] = "";
+					}
+					else if(item.type == 'date_range'){
+						c.data[item.field] = {start: "", end: ""};
+					}
+					else if(item.type == 'dropdown'){
+						c.data[item.field] = "";
+					}
+					else if(item.type == 'string' || item.type == 'html'){
+						c.data[item.field] = "";
+					}
+					else if(item.type == 'urls'){
+						c.data[item.field] = "";
+					}
+				}
+			}
+			
+			if(item.display !== undefined && !item.display){
+				params[item.field] = item.type == 'boolean' ? "No" : "";
+			}
+			else if(item.type == 'date'){
+				if(c.data[item.field] == undefined){
+					params[item.field] = "";
+				}
+				else if(c.data[item.field] !== ""){
+					params[item.field] = new Date(c.data[item.field]).toISOString().substring(0, 10);
+				}
+			}
+			else if(item.type == 'date_range'){
+				var start = "", end = "";
+				if(c.data[item.field].start && c.data[item.field].end !== ""){
+					start = new Date(c.data[item.field].start).toISOString().substring(0, 10);
+				}
+				if(c.data[item.field].end && c.data[item.field].end !== ""){
+					end = new Date(c.data[item.field].end).toISOString().substring(0, 10);
+				}
+				params[item.field] = start + "," + end;
+			}
+			else if(item.type == 'dropdown'){
+				params[item.field] = '{'+ c.data[item.field] + '}';
+			}
+			else if(item.type == 'multi-dropdown'){
+				if(c.selected[item.field].length > 0){
+					params[item.field] = '{'+c.selected[item.field].join("},{") + '}';
+				}
+				else{
+					params[item.field] = "{}";
+				}
+			}
+			else if(item.type == 'checkbox'){
+				if(c.selected[item.field].length > 0){
+					var values = [];
+					c.selected[item.field].forEach(function(m){
+						if(m != ""){
+							values.push(m);
+						}
+					});
+					if(values.length > 0){
+						params[item.field] = '{'+values.join("},{") + '}';
+					}
+					else{
+						params[item.field] = "{}";
+					}
+				}
+				else{
+					params[item.field] = "{}";
+				}
+			}
+			else if(item.type == 'string' || item.type == 'html'){
+				params[item.field] = c.data[item.field];
+			}
+			else if(item.type == 'urls'){
+				var urls = c.data[item.field];
+				var links = [];
+				if(urls && urls.trim() !== ""){
+					var u = urls.trim().split(',');
+					u.forEach(function(t){
+						if(t !== ""){
+							links.push(t);
+						}
+					});
+				}
+				params[item.field] = links.join(',');
+			}
+			else if(item.type == 'customize'){
+				if(item.label == 'References'){
+					var pmids = c.data['pmids'];
+					var links = [];
+					if(pmids && pmids.trim() !== ""){
+						var p = pmids.trim().split(',');
+						p.forEach(function(t){
+							if(t !== ""){
+								links.push(t);
+							}
+						});
+					}
+					params[item.field] = links.join(',');
+				}
+				else if(item.label == 'Funding'){
+					var funding = [];
+					funding.push((c.data['Funding'] != undefined && c.data['Funding']) ? "Yes":"No");
+					funding.push(c.data['Funding_info']);
+					params[item.field] = funding.join('|');
+				}
+
+			}
+			else if(item.type == 'file'){
+				params.hasFile = true;
+			}
+		});
+		return params;
+	};
+	
+	function pReadFile(file){
+		return new Promise(function(resolve, reject){
+			var fr = new FileReader();  
+			fr.onload = function(){
+				var encoded = fr.result.replace(/^data:(.*;base64,)?/, '');
+				if ((encoded.length % 4) > 0) {
+					encoded += '='.repeat(4 - (encoded.length % 4));
+				}
+				resolve(encoded);
+			};
+			fr.readAsDataURL(file);
+		});
+	}
+	
+	c.saveAttachment = function(input,template, sys_id, sessionId, idx){
+		if(input.length <= idx){
+			return new Promise(function(resolve, reject){
+								resolve("1");
+							});
+		}
+		else if(input[idx].files.length == 0){
+			return c.saveAttachment(input,template, sys_id, sessionId, idx + 1);
+		}
+		else{
+			var file = input[idx].files[0];
+			return new Promise(function(resolve, reject){
+				pReadFile(file).then(function(base64){
+					var attach = {
+						template: template,
+						sys_id: sys_id,
+						fileName: file.name,
+						fileType: file.type,
+						fileContents : base64
+					};
+					NERDSubmission.saveAttachment(attach, sessionId).then(function(res){
+						var result = res.data.result;
+						c.saveAttachment(input, template, sys_id, sessionId, idx + 1).then(function(dt){
+							resolve(dt);
+						},
+						function(error){
+							console.log(error);
+						});
+						
+					},function(error){
+						console.log(error);
+					});
+				},function(error){
+					console.log(error);
+				});
+			});
+			
+			
+		}
+	};
+	
+	c.saveSubmission = function(cb){
+		
+		var vd = c.validate();
+		
+		if(vd){
+			
+			var input = $('input[name=file2upload]');
+			var length = input.length;
+			var pass = true;
+			var errorMessage = "";
+			var element;
+			for(var k = 0; k< length; k++){
+				element = input[k];
+				if(element.files.length == 0){
+					continue;
+				}
+				var file = element.files[0];
+				if(file.type !== 'application/pdf' && file.type !== 'application/vnd.ms-powerpoint' 
+					 && file.type !== 'application/vnd.openxmlformats-officedocument.presentationml.presentation'
+					 && file.type !== 'application/msword'
+					 && file.type !== 'application/vnd.openxmlformats-officedocument.wordprocessingml.document' 
+					 && file.type !== 'application/vnd.ms-excel' 
+					 && file.type !== 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'){
+					pass = pass && false;
+					errorMessage = 'Please attach a PDF/PPT/Word/Excel file.';
+				}
+				else if(file.size > 18874368){
+					pass = pass && false;
+					errorMessage = 'Please make sure file size is less than 18MB.';
+				}
+			};
+			
+			if(!pass){
+				window.showMessageBox(errorMessage);
+			}
+			else{
+				var params = c.collectData();
+
+				params.sub_id = ps.sub_id;
+				
+				var att_arr = [];
+				c.prev_attachments.forEach(function(att){
+					att_arr.push(att.attach_sys_id);
+				});
+				params.attachments = att_arr.length > 0 ? att_arr.join(",") : "";
+				
+				var template = ps.tmpl;
+
+				c.saving = true;
+				c.save_text = "Saving...";
+
+				var sub_id = "";
+				if(params.hasFile){
+					NERDSubmission.updateDraft(params, c.data.sessionId).then(function(res){
+						var result = res.data.result;
+						sub_id = result.sub_id;
+						return c.saveAttachment(input, template, result.sys_id, c.data.sessionId, 0);
+					},function(error){
+						console.log(error);
+					}).then(function(rp){
+						c.saving = false;
+						c.save_text = "Save";
+						var v = rp;
+						if(cb){
+							cb(sub_id);
+						}
+						else{
+							if(v == "1"){
+								//window.showMessageBox("Article has been successfully saved.");
+								window.showMessageBox("Submission has been successfully updated.",{xpage:"kd_submissions"});
+							}
+							else{
+								window.showMessageBox("Failed to update the Submission.");
+							}
+						}
+						
+					}, function(error){
+							console.log(error);
+					});
+				}
+				else{
+					NERDSubmission.updateDraft(params, c.data.sessionId).then(function(res){
+						var result = res.data.result;
+						c.saving = false;
+						c.save_text = "Save";
+						if(cb){
+							cb(result.sub_id);
+						}
+						else{
+							window.showMessageBox("Submission has been successfully updated.",{xpage:"kd_submissions"});
+						}
+					}, function(error){
+						console.log(error);
+					});
+				}
+			}
+		}
+	}
+	
+	c.submit2DOC = function(ev){
+		var vd = c.validate();
+		
+		if(vd){
+		  $mdDialog.show({
+				contentElement: '#myDialog',
+				parent: angular.element(document.body),
+				targetEvent: ev,
+				clickOutsideToClose: false
+			});
+		}
+		
+	};
+	
+	c.submitSubmission = function(){
+			c.saveSubmission(function(sub_id){
+				NERDSubmission.submit2DOC(sub_id, c.data.sessionID).then(function(rs){
+					var result = rs.data.result;
+					c.saving = false;
+					c.save_text = "Save";
+					$mdDialog.cancel();
+					window.showMessageBox("Submission has been successfully submitted.",{xpage:"kd_submissions"});
+				}, function(error){
+					console.log(error);
+				});
+			});
+	}
+	
+	c.submit2CRS = function(ev){
+		var vd = c.validate();
+		
+		if(vd){
+		  $mdDialog.show({
+				contentElement: '#crsDialog',
+				parent: angular.element(document.body),
+				targetEvent: ev,
+				clickOutsideToClose: false
+			});
+		}
+		
+	};
+	
+	c.submitSubmissionByDpc = function(){
+		c.saveSubmission(function(sub_id){
+				NERDSubmission.submit2CRS(sub_id, c.data.sessionID).then(function(rs){
+					var result = rs.data.result;
+					c.saving = false;
+					c.save_text = "Save";
+					$mdDialog.cancel();
+					window.showMessageBox("Submission has been successfully submitted.",{xpage:"kd_submissions"});
+				}, function(error){
+					console.log(error);
+				});
+			});
+	}
+	
+	c.toDOCReject = function(ev){
+		var vd = c.validate();
+		c.data.doc_comment = "";
+		if(vd){
+		  $mdDialog.show({
+				contentElement: '#docRejectDialog',
+				parent: angular.element(document.body),
+				targetEvent: ev,
+				clickOutsideToClose: false
+			});
+		}
+		
+	};
+	
+	c.rejectDOCSubmission = function(){
+		c.saveSubmission(function(sub_id){
+				var pms = {};
+				pms.sub_id = sub_id;
+				pms.doc_comment = c.data.doc_comment;
+				NERDSubmission.rejectByDOC(pms, c.data.sessionID).then(function(rs){
+					var result = rs.data.result;
+					c.saving = false;
+					c.save_text = "Save";
+					$mdDialog.cancel();
+					window.showMessageBox("Submission has been successfully returned and an email has been sent to Staff Member.",{xpage:"kd_submissions"});
+
+				}, function(error){
+					console.log(error);
+				});
+			});
+	};
+	
+	c.publish2NERD = function(ev){
+		var vd = c.validate();
+		
+		if(vd){
+		  $mdDialog.show({
+				contentElement: '#publishDialog',
+				parent: angular.element(document.body),
+				targetEvent: ev,
+				clickOutsideToClose: false
+			});
+		}
+	}
+	
+	c.publishSubmission = function(){
+		c.saveSubmission(function(sub_id){
+				NERDSubmission.publish2NERD(sub_id, c.data.sessionID).then(function(rs){
+					var result = rs.data.result;
+					c.saving = false;
+					c.save_text = "Save";
+					$mdDialog.cancel();
+					window.showMessageBox("Submission has been successfully published to CRS Knowledge Base.",{xpage:"kd_submissions"});
+				}, function(error){
+					console.log(error);
+				});
+			});
+	}
+	
+	c.cancelDialog = function(){
+		$mdDialog.cancel();
+	};
+	
+	c.goBacktoSubmission = function(){
+		s.xpage = "kd_submissions";
+		s.number = null;
+		s.sub_id = null;
+		$location.search(s).replace();
+	}
+	
+}]]></client_script>
+        <controller_as>c</controller_as>
+        <css/>
+        <data_table>sp_instance</data_table>
+        <demo_data/>
+        <description/>
+        <docs/>
+        <field_list/>
+        <has_preview>false</has_preview>
+        <id>crs-kd-submission-edit</id>
+        <internal>false</internal>
+        <link><![CDATA[function link(scope, element, attrs, controller) {  }]]></link>
+        <name>[crs] KD Submission Edit</name>
+        <option_schema/>
+        <public>false</public>
+        <roles/>
+        <script><![CDATA[(function() {
+  /* populate the 'data' object */
+  /* e.g., data.table = $sp.getValue('table'); */
+	data.sessionId = gs.getSession().getSessionToken();
+})();]]></script>
+        <servicenow>false</servicenow>
+        <sys_class_name>sp_widget</sys_class_name>
+        <sys_created_by>yuw5@nih.gov</sys_created_by>
+        <sys_created_on>2019-08-14 21:02:20</sys_created_on>
+        <sys_customer_update>false</sys_customer_update>
+        <sys_id>ea2487c5db1fb700b86770c08c9619e2</sys_id>
+        <sys_mod_count>216</sys_mod_count>
+        <sys_name>[crs] KD Submission Edit</sys_name>
+        <sys_package display_value="CRS Knowledge Database" source="x_26385_crs_kd">404e613b4f9213007221e321a310c738</sys_package>
+        <sys_policy/>
+        <sys_replace_on_upgrade>false</sys_replace_on_upgrade>
+        <sys_scope display_value="CRS Knowledge Database">404e613b4f9213007221e321a310c738</sys_scope>
+        <sys_update_name>sp_widget_ea2487c5db1fb700b86770c08c9619e2</sys_update_name>
+        <sys_updated_by>yuw5@nih.gov</sys_updated_by>
+        <sys_updated_on>2020-01-30 16:03:30</sys_updated_on>
+        <template><![CDATA[<div id="crs-article">
+  <div class="container">
+    <div class="row row-space">
+          <div class="col-md-12 article-block">     
+            <div class="block-body">
+              <div style="color:#B22222;">
+                <i class="fa fa-asterisk" aria-hidden="true" style="font-size:8px;vertical-align: middle;"></i> Required
+              </div>
+              <div>
+                <h4 style="font-weight:bold;">Author</h4> 
+                <div>
+                	{{c.data.author}}
+                </div>
+              </div>
+              <div>
+                <h4 style="font-weight:bold;">Category</h4> 
+                <div>
+                	{{c.data.cat}}
+                </div>
+              </div>
+              <div ng-show="!c.isSm && c.data.cat != 'Collaborations'">
+                <h4 style="font-weight:bold;">Rank</h4>
+                <h5>
+                  Please indicate if this is a top ranked accomplishment by choosing a number from 1 (highest rank) to 10.  As a reminder, rank the top 10 submissions from your DOC.
+                </h5>
+                <div>
+                  <div style="margin-bottom:10px;">
+                    <select class="form-control" name="submission_priority" id="submission_priority"
+                              ng-model="c.data.submission_priority" style="font-weight:bold;" ng-disabled="c.readonly">
+                      <option value="-">-</option>
+                      <option value="1">1</option>
+                      <option value="2">2</option>
+                      <option value="3">3</option>
+                      <option value="4">4</option>
+                      <option value="5">5</option>
+                      <option value="6">6</option>
+                      <option value="7">7</option>
+                      <option value="8">8</option>
+                      <option value="9">9</option>
+                      <option value="10">10</option>
+                    </select>
+                  </div>
+                </div>
+              </div>
+              
+              
+              <div class="field-section" ng-repeat="entry in c.schema track by $index" id="{{entry.field}}" 
+                   ng-show="!entry.displayWhen || ((!entry.displayWhen.precondition 
+                            													|| (c.data[entry.displayWhen.precondition.field].indexOf(entry.displayWhen.precondition.value) > -1 
+                            													|| c.selected[entry.displayWhen.precondition.field].indexOf(entry.displayWhen.precondition.value) > -1)) 
+                            											&& (c.data[entry.displayWhen.field].indexOf(entry.displayWhen.value) > -1 
+                            													|| c.selected[entry.displayWhen.field].indexOf(entry.displayWhen.value) > -1))">
+                <h4 style="font-weight:bold;"><i class="fa fa-asterisk" aria-hidden="true" ng-show="entry.required && entry.required == '1'" style="font-size:8px;color:#B22222;vertical-align: middle;"></i> {{entry.label}} {{entry.alias? '('+entry.alias+')': ''}}</h4>
+                <h5 ng-show="entry.annotation" >
+                  {{entry.annotation}}
+                </h5>
+                <div ng-if="entry.type == 'string'">
+                	<input type="text" class="form-control" name="{{entry.field}}" id="{{entry.field}}" ng-model="c.data[entry.field]" ng-disabled="c.readonly">
+                </div>
+                <div ng-if="entry.type == 'urls'">
+                	<input type="text" class="form-control" name="{{entry.field}}" id="{{entry.field}}" ng-model="c.data[entry.field]" ng-disabled="c.readonly">
+                </div>
+                <div ng-if="entry.type == 'dropdown'">
+                	<select class="form-control" name="{{entry.field}}" id="{{entry.field}}" ng-disabled="c.readonly || (entry.field == 'x_26385_crs_kd_u_kb_doc' && c.isDpc)" ng-options="option for option in entry.items track by option"
+                            ng-model="c.data[entry.field]" style="font-weight:bold;">
+              		</select>
+                </div>
+                <div ng-if="entry.type == 'multi-dropdown'">
+                  <div style="margin-bottom:10px;float: left;width: 100%;" ng-repeat="item in c.saved[entry.field]">
+                    <select class="form-control dropdown-slot" name="{{entry.field}}" ng-model="c.data[entry.field][item]" ng-disabled="c.readonly" ng-change="c.updateDropdownValues(entry.field)" ng-options="option for option in entry.items track by option" style="font-weight:bold;">
+              			</select>
+                  	<span class="dropdown-action" ng-click="c.addDropdown(entry.field, $event)" ng-if="!c.readonly"><i class="fa fa-plus"></i></span>
+                  	<span class="dropdown-action" ng-click="c.deleteDropdown(entry.field, $event)" ng-if="!c.readonly" ng-show = "c.dropdowns[entry.field].length > 1"><i class="fa fa-minus"></i></span>
+                	</div>
+                </div>
+                <div ng-if="entry.type == 'checkbox'">
+                	<div flex-xs flex="50">
+                    <md-checkbox aria-label="Select All"
+                                 ng-checked="c.isChecked(entry.field)"
+                                 md-indeterminate="c.isIndeterminate(entry.field)"
+                                 ng-click="c.toggleAll(entry.field)" ng-disabled="c.readonly">
+                      <span ng-if="c.isChecked(entry.field)">Un-</span>Select all
+                    </md-checkbox>
+                  </div>
+                  <div class="submission-checkboxes" ng-repeat="item in entry.items track by $index">
+                    <md-checkbox ng-if="item != ''" ng-checked="c.exists(item, c.selected[entry.field])" ng-click="c.toggle(item, c.selected[entry.field])" ng-disabled="c.readonly">
+                      {{ item }}
+                    </md-checkbox>
+                  </div>
+                </div>
+                <div ng-if="entry.type == 'boolean'">
+                  <div class="submission-checkboxes">
+                    <md-checkbox ng-model="c.data[entry.field]" aria-label="{{entry.label}}" ng-change="c.transform(entry.field, entry.displayWhenTrue,entry.displayWhenFalse);" ng-disabled="c.readonly">
+                    </md-checkbox>
+                  </div>
+                </div>
+                <div ng-if="entry.type == 'date'">
+                  <md-datepicker ng-model="c.data[entry.field]" md-placeholder="Enter date" ng-disabled="c.readonly"></md-datepicker>
+                </div>
+                <div ng-if="entry.type == 'date_range'">
+                  <md-datepicker ng-model="c.data[entry.field].start" md-placeholder="Enter start date"></md-datepicker>
+                  <span style="margin-left:18px;">-</span>
+                  <md-datepicker ng-model="c.data[entry.field].end" md-placeholder="Enter end date"></md-datepicker>
+                </div>
+                <div ng-if="entry.type == 'html'">
+                  <!-- <input type="text" class="form-control" name="{{entry.field}}" id="{{entry.field}}" ng-model="c.data[entry.field]">
+                  <textarea ui-tinymce="c.testMceOptions" ng-model="c.data[entry.field]"></textarea>
+                   -->
+                  <textarea aria-label="{{entry.field}}"
+                            name="{{entry.field}}"
+                            class="form-control"
+                            ng-model="c.data[entry.field]"
+                            ui-tinymce="c.mceOptions" ng-disabled="c.readonly"
+                            >
+                  </textarea>
+                  
+                  <span style="color:darkgray; font-weight:bold;font-size: 14px;" ng-if="entry.field == 'x_26385_crs_kd_u_kb_name_s_of_file_s'">* Please add files to the <a target='_blank' href="https://nih.sharepoint.com/:f:/r/sites/GRP-NCI-CRS/Shared%20Documents/Analysis?csf=1&e=5Rp6CS">Analysis folder</a> (CRS Sharepoint. Please log in using username@nih.gov).</span>
+              
+                </div>
+                <div ng-if="entry.type == 'file'">
+                  <div style="margin-bottom:10px;float:left;width:100%;">
+                    <input type="file" style="width:80%;float:left;cursor: pointer;" name="file2upload" class="form-control" ng-disabled="c.readonly">
+                    <span class="attachment-action" ng-click="c.addAttachment($event)" ng-show="!c.readonly"><i class="fa fa-plus"></i></span>
+                  	<span class="attachment-action" ng-click="c.deleteAttachment($event)" ng-show = "c.attachments.length > 1"><i class="fa fa-minus"></i></span>
+                  </div>
+                  <div style="color:darkgray;">PDF/PPT/Word/Excel only, Maximum upload size 18 MB.</div>
+                	<div class="file-list" style="border-top: 1px solid lightgray;">
+                    <div class="file-block" ng-repeat="attach in c.prev_attachments">
+                      <a target="_blank" href="sys_attachment.do?view=true&sys_id={{attach.attach_sys_id}}">
+                        <i ng-class="attach.file_type == 'application/pdf' ? 'fa fa-file-pdf-o' : 'fa fa-file-powerpoint-o'" aria-hidden="true"></i> {{attach.file_name}}</a>
+                      <a class="btn-remove" ng-click="c.removeAttachment(attach.attach_sys_id)" role="link">×</a>
+                    </div>
+                  </div>
+                </div>
+                <div ng-if="entry.type == 'customize'">
+                  <div ng-if="entry.label == 'References'">
+                    <div>
+                      <input type="text" class="form-control" name="pmids" id="pmids" ng-model="c.data['pmids']" ng-disabled="c.readonly">
+                    </div>
+                  </div>
+                  <div ng-if="entry.label == 'Funding'">
+                    <md-checkbox ng-model="c.data['Funding']" style="margin-bottom:5px;" ng-disabled="c.readonly">
+                      This study has no NCI funding
+                    </md-checkbox>
+                    <h5>
+                      Funding information
+                    </h5>
+                    <div>
+                      <input type="text" class="form-control" name="Funding_info" id="Funding_info" ng-model="c.data['Funding_info']" ng-disabled="c.readonly">
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div class="block-footer" style="text-align:center;">
+              <md-button class="md-raised" ng-disabled="c.saving" ng-if="c.data.status == 'Open' && c.isSm " style="background-color: forestgreen;color: white;" ng-click="c.submit2DOC()">{{c.submit_text}}</md-button>
+              <md-button class="md-raised" ng-disabled="c.saving" ng-if="c.data.status == 'Open' && c.isSm " style="background-color: #C6375D;color: white;" ng-click="c.saveSubmission()">{{c.save_text}}</md-button>
+              
+              <!--
+								<md-button class="md-raised" ng-disabled="c.saving" ng-if="c.data.status == 'DOC Review' && c.isDpc" style="background-color: #C6375D;color: white;" ng-click="c.submit2CRS()">{{c.submit2CRS_text}}</md-button>
+							-->
+              <md-button class="md-raised" ng-disabled="c.saving" ng-if="c.data.status == 'DOC Review' && c.isDpc && c.data.other_info.created_by == 'staff'" style="background-color: #C6375D;color: white;" ng-click="c.toDOCReject()">Return</md-button>
+              							
+              <md-button class="md-raised" ng-disabled="c.saving" ng-if="c.data.status == 'DOC Review' && c.isDpc" style="background-color: #C6375D;color: white;" ng-click="c.saveSubmission()">{{c.save_text}}</md-button>
+             
+              <md-button class="md-raised" ng-disabled="c.saving" ng-if="c.data.status == 'CRS Review' && (c.isCr || c.isSu)" style="background-color: forestgreen;color: white;" ng-click="c.publish2NERD()">{{c.publish_text}}</md-button>
+              <md-button class="md-raised" ng-disabled="c.saving" ng-if="c.data.status == 'CRS Review' && (c.isCr || c.isSu)" style="background-color: #C6375D;color: white;" ng-click="c.saveSubmission()">{{c.save_text}}</md-button>
+             
+              <md-button class="md-raised" ng-disabled="c.saving" ng-click="c.goBacktoSubmission()">Cancel</md-button>
+            </div>
+          </div>
+		</div>
+  </div>
+</div>
+
+<div style="visibility: hidden">
+  <div class="md-dialog-container" id="myDialog">
+    <md-dialog style="width: 500px;">
+      <div class="dialog_header">
+        Confirm
+      </div>
+      <div class="dialog_content" style="text-align:center;">
+        <p>
+          Are you ready to submit this entry to DOC Planning Contact?
+        </p>
+      </div>
+      <div class="dialog_footer">
+        <md-button class="md-raised" style="background-color: #C6375D;color: white;" ng-click="c.submitSubmission()">Yes</md-button>
+        <md-button class="md-raised" ng-click="c.cancelDialog()">No</md-button>
+      </div>
+    </md-dialog>
+  </div>
+</div>
+
+<div style="visibility: hidden">
+  <div class="md-dialog-container" id="docRejectDialog">
+    <md-dialog style="width:500px;">
+      <div class="dialog_header">
+        Confirm
+      </div>
+      <div class="dialog_content" style="text-align:center;">
+        <p>
+          Return this entry to Staff Member?
+        </p>
+        <p style="text-align:left;">
+          <i class="fa fa-asterisk" aria-hidden="true" style="font-size:8px;color:#B22222;vertical-align: middle;"></i> Comment:
+        </p>
+        <textarea type="text" placeholder="Enter Comment here" class="form-control" name="doc_comment" id="doc_comment" ng-model="c.data.doc_comment" rows="3"></textarea>
+      </div>
+      <div class="dialog_footer">
+        <md-button class="md-raised" ng-show="c.data.doc_comment && c.data.doc_comment != ''"  style="background-color: #C6375D;color: white;" ng-click="c.rejectDOCSubmission()">Yes</md-button>
+        <md-button class="md-raised md-primary" ng-disabled="true" ng-if="c.data.doc_comment == undefined || c.data.doc_comment == ''" >Yes</md-button>
+        <md-button class="md-raised" ng-click="c.cancelDialog()">No</md-button>
+      </div>
+    </md-dialog>
+  </div>
+</div>
+
+<div style="visibility: hidden">
+  <div class="md-dialog-container" id="crsDialog">
+    <md-dialog style="width: 500px;">
+      <div class="dialog_header">
+        Confirm
+      </div>
+      <div class="dialog_content" style="text-align:center;">
+        <p>
+          Are you ready to submit this entry to CRS?
+        </p>
+      </div>
+      <div class="dialog_footer">
+        <md-button class="md-raised" style="background-color: #C6375D;color: white;" ng-click="c.submitSubmissionByDpc()">Yes</md-button>
+        <md-button class="md-raised" ng-click="c.cancelDialog()">No</md-button>
+      </div>
+    </md-dialog>
+  </div>
+</div>
+
+<div style="visibility: hidden">
+  <div class="md-dialog-container" id="publishDialog">
+    <md-dialog style="width: 500px;">
+      <div class="dialog_header">
+        Confirm
+      </div>
+      <div class="dialog_content" style="text-align:center;">
+        <p>
+          Are you ready to publish this entry to CRS Knowledge Base?
+        </p>
+      </div>
+      <div class="dialog_footer">
+        <md-button class="md-raised" style="background-color: #C6375D;color: white;" ng-click="c.publishSubmission()">Yes</md-button>
+        <md-button class="md-raised" ng-click="c.cancelDialog()">No</md-button>
+      </div>
+    </md-dialog>
+  </div>
+</div>]]></template>
+    </sp_widget>
+</record_update>

@@ -1,5 +1,4 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<record_update table="sp_css">
+<?xml version="1.0" encoding="UTF-8"?><record_update table="sp_css">
     <sp_css action="INSERT_OR_UPDATE">
         <css>/*!&#13;
  * AngularJS Material Design&#13;
@@ -18,7 +17,7 @@ button[disabled],html input[type=button][disabled],input[type=reset][disabled],i
 textarea{vertical-align:top;overflow:auto}input[type=search]{-webkit-appearance:textfield;box-sizing:content-box;-webkit-box-sizing:content-box}&#13;
 input[type=search]::-webkit-search-cancel-button,input[type=search]::-webkit-search-decoration{-webkit-appearance:none}&#13;
 input:-webkit-autofill{text-shadow:none}&#13;
-.md-visually-hidden{border:0;clip:rect(0 0 0 0);height:1px;margin:-1px;overflow:hidden;padding:0;position:absolute;text-transform:none;width:1px}&#13;
+.md-visually-hidden{border:0;height:1px;margin:-1px;overflow:hidden;padding:0;position:absolute;text-transform:none;width:1px}&#13;
 .md-shadow{position:absolute;top:0;left:0;bottom:0;right:0;border-radius:inherit;pointer-events:none}&#13;
 .md-shadow-bottom-z-1{box-shadow:0 2px 5px 0 rgba(0,0,0,.26)}.md-shadow-bottom-z-2{box-shadow:0 4px 8px 0 rgba(0,0,0,.4)}&#13;
 .md-shadow-animated.md-shadow{transition:box-shadow .28s cubic-bezier(.4,0,.2,1)}&#13;
@@ -152,7 +151,7 @@ md-tab{position:absolute;z-index:-1;left:-9999px}&#13;
         <sys_created_on>2019-04-09 15:10:52</sys_created_on>
         <sys_customer_update>false</sys_customer_update>
         <sys_id>e7917b04db38b30054d8ff621f96197d</sys_id>
-        <sys_mod_count>10</sys_mod_count>
+        <sys_mod_count>11</sys_mod_count>
         <sys_name>NERD_AngularJS_Material_CSS</sys_name>
         <sys_package display_value="CRS Knowledge Database" source="x_26385_crs_kd">404e613b4f9213007221e321a310c738</sys_package>
         <sys_policy/>
@@ -160,6 +159,6 @@ md-tab{position:absolute;z-index:-1;left:-9999px}&#13;
         <sys_scope display_value="CRS Knowledge Database">404e613b4f9213007221e321a310c738</sys_scope>
         <sys_update_name>sp_css_e7917b04db38b30054d8ff621f96197d</sys_update_name>
         <sys_updated_by>yuw5@nih.gov</sys_updated_by>
-        <sys_updated_on>2019-04-10 14:14:44</sys_updated_on>
+        <sys_updated_on>2019-07-01 19:28:30</sys_updated_on>
     </sp_css>
 </record_update>

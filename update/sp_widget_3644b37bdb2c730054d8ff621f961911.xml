@@ -1,72 +1,584 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<record_update table="sp_widget">
+<?xml version="1.0" encoding="UTF-8"?><record_update table="sp_widget">
     <sp_widget action="INSERT_OR_UPDATE">
         <category>custom</category>
-        <client_script><![CDATA[function($scope, $location) {
+        <client_script><![CDATA[function($scope,$rootScope,$mdDialog, $location,$http, NERDSubmission) {
   /* widget controller */
   var c = this;
 	var s = $location.search();
 	c.mySubs = [];
 	c.allSubs = [];
-  c.mySubs.push({
-			title: "Article 1",
-      who: "Wei Yu",
-		  FY: "2018",
-      notes: "NERD > Literature Summaries",
-		  status: "Draft"
-    });
-	c.mySubs.push({
-			title: "Article 2",
-      who: "Wei Yu",
-		  FY: "2018",
-      notes: "Moonshot Evaluation > Miscellaneous",
-		  status: "Submitted"
-    });
+	c.allSubs_id = [];
+	var cb = null;
 	
-	c.allSubs.push({
-			title: "Article 3",
-      who: "Jone Smith",
-		  FY: "2018",
-      notes: "NERD > Literature Summaries",
-		  status: "Submitted"
-    });
-	c.allSubs.push({
-			title: "Article 4",
-      who: "James Smith",
-		  FY: "2018",
-      notes: "Moonshot Evaluation > Miscellaneous",
-		  status: "Submitted"
-    });
-	c.allSubs.push({
-			title: "Article 5",
-      who: "Jerry Smith",
-		  FY: "2018",
-      notes: "NERD > Literature Summaries",
-		  status: "Published"
-    });
-	c.allSubs.push({
-			title: "Article 6",
-      who: "Jack Smith",
-		  FY: "2018",
-      notes: "Moonshot Evaluation > Miscellaneous",
-		  status: "Published"
-    });
+	c.data.tabs = [];
 	
-	c.go2NewSubmission = function(){
+	c.current_sub_id = "";
+	c.selectedCount = 0;
+	c.selectedSub_cat = {};
+	c.selectedSub = [];
+	c.docs = ["CBIIT","CCCT","CCG","CCR","CCT","CGH","CRCHD","CSSI","DCB","DCCPS","DCEG","DCP","DCTD","Frederick","OCC","OHAM","SBIR"];
+	c.data.orderBy = "updated";
+	c.accord_open = {};
+	c.data.orderBy_cat = {};
+	c.reverse = false;
+	c.reverse_cat = {};
+	
+	c.changeSort_cat = function(tmpl){
+		if(c.data.orderBy_cat[tmpl] == 'priority'){
+			c.reverse_cat[tmpl] = false;
+		}
+		else{
+			c.reverse_cat[tmpl] = false;
+		}
+	}
+	
+	c.changeSort = function(){
+		if(c.data.orderBy == 'priority'){
+			c.reverse = false;
+		}
+		else{
+			c.reverse = false;
+		}
+	}
+	
+	c.compare = function(v1, v2) {
+		if (v1.type !== 'string') {
+      return v1.value.localeCompare(v2.value);
+    }
+		else{
+			// Compare strings alphabetically, taking locale into account
+    	var v_1 = (v1.value == '-' ? 100 : parseInt(v1.value));
+			var v_2 = (v2.value == '-' ? 100 : parseInt(v2.value));
+
+    	return (v_1 < v_2) ? -1 : 1;
+		}
+	};
+	
+	
+	c.gotoNewSubmission = function(tmpl, event){
+		event.stopPropagation(); 
+		//record filter information
+		if(c.isSm){
+			$rootScope.submission_accord_open = c.accord_open;
+		}
+		else if(c.isDpc){
+			$rootScope.submission_accord_open = c.accord_open;
+			$rootScope.submission_orderBy = c.data.orderBy_cat;
+		}
+		else{
+			$rootScope.submission_orderBy = c.data.orderBy;
+			$rootScope.submission_selectedDOC = c.data.doc;
+			$rootScope.submission_selectedCategory = c.data.category;
+		}
+		
 		s.xpage = "kd_new_submission";
+		s.tmpl = tmpl;
 		$location.search(s).replace();
 	}
 	
-	c.gotoSubmissionDetail = function(id){
-		/*
-		s.xpage = "kd_submission_view";
-		s.s_id = id;
-		$location.search(s).replace();
-		*/
+	c.deleteSubmission = function(id){
+		
 	}
+	
+	c.gotoSubmissionDetail = function(id,number, tmpl){
+		//record filter information
+		if(c.isSm){
+			$rootScope.submission_accord_open = c.accord_open;
+		}
+		else if(c.isDpc){
+			$rootScope.submission_accord_open = c.accord_open;
+			$rootScope.submission_orderBy = c.data.orderBy_cat;
+		}
+		else{
+			$rootScope.submission_orderBy = c.data.orderBy;
+			$rootScope.submission_selectedDOC = c.data.doc;
+			$rootScope.submission_selectedCategory = c.data.category;
+		}
+		
+		s.xpage = "kd_submission_edit";
+		s.number = number;
+		s.sub_id = id;
+		s.tmpl = tmpl;
+		$location.search(s).replace();
+	}
+	
+	c.isSu = $rootScope.user.role.indexOf('su') > -1;
+	c.isCu = $rootScope.user.role.indexOf('cu') > -1;
+	c.isRu = $rootScope.user.role.indexOf('ru') > -1;
+	c.isCr = $rootScope.user.role.indexOf('cr') > -1;
+	c.isDpc = $rootScope.user.role.indexOf('dpc') > -1;
+	c.isSm = $rootScope.user.role.indexOf('sm') > -1;
+	c.currentUserID = $rootScope.user.id;
+	c.doc = $rootScope.user.doc;
+	
+	c.refreshPage = function(filter){
+		var params = {};
+		var type = "all";
+		if(c.isSm){
+			type = "my";
+		}
+		if(c.isDpc){
+			type = "doc";
+		}
+		params.type = type;
+		if(type == "my" || type == "doc"){
+			params.doc = c.doc;
+		}
+		else{
+			params.doc = c.data.doc == null ? '' : c.data.doc;
+			params.category = c.data.category == null ? '' : c.data.category.id;
+		}
+		
+		NERDSubmission.getSubmissionList(params, c.data.sessionId).then(function(res){
+				var dt = res.data.result;
+
+				if(type == 'my'){
+					c.data.tabs = dt.mySubs;
+				}
+				else if(type == 'doc'){
+					c.data.tabs = dt.docSubs;
+					c.cat_ids = {};
+					c.data.tabs.forEach(function(tab){
+						c.selectedSub_cat[tab.tmpl] = [];
+						if(!c.data.orderBy_cat[tab.tmpl]){
+							c.data.orderBy_cat[tab.tmpl] = "updated";
+						}
+						
+						c.reverse_cat[tab.tmpl] = false;
+						c.cat_ids[tab.tmpl] = [];
+						var lt = tab.list;
+						lt.forEach(function(item){
+							c.cat_ids[tab.tmpl].push(item.sub_id);
+						});
+					});
+				}
+				else{
+					var dt = res.data.result;
+					c.allSubs = [];
+					c.allSubs_id = [];
+					c.selectedSub = [];
+					c.allSubs = dt.allSubs;
+					c.cats = dt.cats;
+					c.allSubs.forEach(function(ids){
+						c.allSubs_id.push(ids.sub_id);
+					});
+				}
+				$scope.$apply();
+			}, function(error){
+				console.log(error);
+			});
+		
+	}
+	
+	
+	c.toggle = function (item, list) {
+    var idx = list.indexOf(item);
+    if (idx > -1) {
+      list.splice(idx, 1);
+    }
+    else {
+      list.push(item);
+    }
+  };
+	
+	c.exists = function (item, list) {
+		return list.indexOf(item) > -1;
+  };
+	
+	c.isIndeterminate_cat = function(tmpl) {
+    return (c.selectedSub_cat[tmpl].length !== 0 &&
+        c.selectedSub_cat[tmpl].length !== c.cat_ids[tmpl].length);
+  };
+	
+	c.isChecked_cat = function(tmpl) {
+		return c.selectedSub_cat[tmpl].length === c.cat_ids[tmpl].length;
+  };
+
+  c.toggleAll_cat = function(tmpl) {
+    if (c.selectedSub_cat[tmpl].length === c.cat_ids[tmpl].length) {
+      c.selectedSub_cat[tmpl] = [];
+    } else if (c.selectedSub_cat[tmpl].length === 0 || c.selectedSub_cat.length > 0) {
+      c.selectedSub_cat[tmpl] = c.cat_ids[tmpl].slice(0);
+    }
+  };
+
+	c.isIndeterminate = function(tmpl) {
+    return (c.selectedSub.length !== 0 &&
+        c.selectedSub.length !== c.allSubs_id.length);
+  };
+	
+	c.isChecked = function(tmpl) {
+		return c.selectedSub.length === c.allSubs_id.length;
+  };
+
+  c.toggleAll = function(tmpl) {
+    if (c.selectedSub.length === c.allSubs.length) {
+      c.selectedSub = [];
+    } else if (c.selectedSub.length === 0 || c.selectedSub.length > 0) {
+      c.selectedSub = c.allSubs_id.slice(0);
+    }
+  };
+	
+	c.multiSubmit2CRS = function(tmpl, ev){
+		c.submit_message = "Are you ready to submit all the selected entries to CRS?";
+		cb = function(){
+			NERDSubmission.validation(c.selectedSub_cat[tmpl], c.data.sessionID).then(function(rs){
+				var result = rs.data.result;
+				var toSubmit = result.success;
+				NERDSubmission.multiSubmit2CRS(toSubmit, c.data.sessionID).then(function(res){
+					var count = res.data.result;
+					$mdDialog.cancel();
+					var message = "";
+					if(result.failed.length > 0){
+						message += "There are " + result.failed.length + " Submissions in which required fields need to be filled.<br>";
+					}
+					message += count + " Submissions has been successfully submitted.<br>";
+					if(toSubmit.length > count){
+						message += (toSubmit.length - count) + " submissions has already been submitted.";
+					}
+					window.showMessageBox(message);
+
+					c.refreshPage();
+
+				}, function(error){
+					console.log(error);
+				});
+
+			}, function(error){
+				console.log(error);
+			});
+			
+		};
+		$mdDialog.show({
+				contentElement: '#myDialog',
+				parent: angular.element(document.body),
+				targetEvent: ev,
+				clickOutsideToClose: false
+			});
+	};
+	
+	c.multiPublish2NERD = function(ev){
+		c.submit_message = "Are you ready to publish all the selected entries to NERD?";
+		cb = function(){
+			NERDSubmission.validation(c.selectedSub, c.data.sessionID).then(function(rs){
+				var result = rs.data.result;
+				var toSubmit = result.success;
+				
+				NERDSubmission.multiPublish2NERD(toSubmit, c.data.sessionID).then(function(res){
+					var count = res.data.result;
+					$mdDialog.cancel();
+					var message = "";
+					if(result.failed.length > 0){
+						message += "There are " + result.failed.length + " Submissions in which required fields need to be filled.<br>";
+					}
+					message += count + " Submissions has been successfully published.<br>";
+					if(toSubmit.length > count){
+						message += (toSubmit.length - count) + " submissions has already been published.";
+					}
+					window.showMessageBox(message);
+
+					c.refreshPage();
+
+				}, function(error){
+					console.log(error);
+				});
+			}, function(error){
+				console.log(error);
+			});
+		};
+		$mdDialog.show({
+				contentElement: '#myDialog',
+				parent: angular.element(document.body),
+				targetEvent: ev,
+				clickOutsideToClose: false
+			});
+	};
+	
+	c.multiReturn2DOC = function(ev){
+		c.data.multi_crs_comment  = "";
+		$mdDialog.show({
+				contentElement: '#multiCRSRejectDialog',
+				parent: angular.element(document.body),
+				targetEvent: ev,
+				clickOutsideToClose: false
+			});
+	};
+	
+	c.submit2DOC = function(sub_id,ev){
+		c.submit_message = "Are you ready to submit this entry to DOC Planning Contact?";
+		c.current_sub_id = sub_id;
+		var sub_ids = [];
+		sub_ids.push(sub_id);
+		cb = function(){
+			NERDSubmission.validation(sub_ids, c.data.sessionID).then(function(rs){
+				var result = rs.data.result;
+				var toSubmit = result.success;
+				if(toSubmit.length == 0){
+					$mdDialog.cancel();
+					window.showMessageBox("Required fields need to be filled in before submission.");
+					c.refreshPage();
+				}
+				else{
+					NERDSubmission.submit2DOC(sub_id, c.data.sessionID).then(function(res){
+						var count = res.data.result;
+						$mdDialog.cancel();
+						window.showMessageBox("Submission has been successfully submitted.");
+
+						c.refreshPage();
+
+					}, function(error){
+						console.log(error);
+					});
+				}
+			}, function(error){
+				console.log(error);
+			});
+		};
+		$mdDialog.show({
+				contentElement: '#myDialog',
+				parent: angular.element(document.body),
+				targetEvent: ev,
+				clickOutsideToClose: false
+			});
+	};
+	
+	c.submit2CRS = function(sub_id,ev){
+		c.submit_message = "Are you ready to submit this entry to CRS?";
+		c.current_sub_id = sub_id;
+		var sub_ids = [];
+		sub_ids.push(sub_id);
+		cb = function(){
+			NERDSubmission.validation(sub_ids, c.data.sessionID).then(function(rs){
+				var result = rs.data.result;
+				var toSubmit = result.success;
+				if(toSubmit.length == 0){
+					$mdDialog.cancel();
+					window.showMessageBox("Required fields need to be filled in before submission.");
+					c.refreshPage();
+				}
+				else{
+					NERDSubmission.submit2CRS(sub_id, c.data.sessionID).then(function(res){
+						var count = res.data.result;
+						$mdDialog.cancel();
+						window.showMessageBox("Submission has been successfully submitted.");
+
+						c.refreshPage();
+
+					}, function(error){
+						console.log(error);
+					});
+				}
+			}, function(error){
+				console.log(error);
+			});
+		};
+		$mdDialog.show({
+				contentElement: '#myDialog',
+				parent: angular.element(document.body),
+				targetEvent: ev,
+				clickOutsideToClose: false
+			});
+	};
+	
+	c.publish2NERD = function(sub_id,ev){
+		c.submit_message = "Are you ready to publish this entry to CRS Knowledge Base?";
+		c.current_sub_id = sub_id;
+		var sub_ids = [];
+		sub_ids.push(sub_id);
+		cb = function(){
+			NERDSubmission.validation(sub_ids, c.data.sessionID).then(function(rs){
+				var result = rs.data.result;
+				var toSubmit = result.success;
+				if(toSubmit.length == 0){
+					$mdDialog.cancel();
+					window.showMessageBox("Required fields need to be filled in before publish.");
+					c.refreshPage();
+				}
+				else{
+					NERDSubmission.publish2NERD(sub_id, c.data.sessionID).then(function(res){
+						var count = res.data.result;
+						$mdDialog.cancel();
+						window.showMessageBox("Submission has been successfully published to CRS Knowledge Base.");
+
+						c.refreshPage();
+
+					}, function(error){
+						console.log(error);
+					});
+				}
+			}, function(error){
+				console.log(error);
+			});
+		};
+		$mdDialog.show({
+				contentElement: '#myDialog',
+				parent: angular.element(document.body),
+				targetEvent: ev,
+				clickOutsideToClose: false
+			});
+	};
+	
+	c.submitSubmission = function(){
+		if(cb){
+			cb();
+		}
+	}
+	
+	c.toDOCReject = function(sub_id,ev){
+		c.data.doc_comment = "";
+		c.current_sub_id = sub_id;
+		$mdDialog.show({
+				contentElement: '#docRejectDialog',
+				parent: angular.element(document.body),
+				targetEvent: ev,
+				clickOutsideToClose: false
+			});
+	};
+	
+	c.toCRSReject = function(sub_id,ev){
+		c.data.crs_comment = "";
+		c.current_sub_id = sub_id;
+		$mdDialog.show({
+				contentElement: '#crsRejectDialog',
+				parent: angular.element(document.body),
+				targetEvent: ev,
+				clickOutsideToClose: false
+			});
+	};
+	
+	c.multiRejectDOCSubmission = function(){
+		var pms = {};
+		pms.sub_ids = c.selectedSub;
+		pms.crs_comment = c.data.multi_crs_comment;
+		NERDSubmission.multiReturn2DOC(pms, c.data.sessionID).then(function(rs){
+			var result = rs.data.result;
+			$mdDialog.cancel();
+			if(result == 1){
+				window.showMessageBox(result + " submissions has been successfully returned and an email have been sent to corresponding DOC Planning Contact.");
+			}
+			else if(result > 1){
+				window.showMessageBox(result + " submissions have been successfully returned and emails have been sent to corresponding DOC Planning Contacts.");
+			}
+			else{
+				window.showMessageBox("The selected submissions cannot be returned as they have already been published or returned.");
+			}
+			
+			c.refreshPage();
+
+		}, function(error){
+			console.log(error);
+		});
+	};
+	
+	c.rejectDOCSubmission = function(){
+		var pms = {};
+		pms.sub_id = c.current_sub_id;
+		pms.doc_comment = c.data.doc_comment;
+		NERDSubmission.rejectByDOC(pms, c.data.sessionID).then(function(rs){
+			var result = rs.data.result;
+			$mdDialog.cancel();
+			window.showMessageBox("Submission has been successfully returned and an email has been sent to Staff Member.");
+			
+			c.refreshPage();
+			
+		}, function(error){
+			console.log(error);
+		});
+	};
+	
+	c.rejectCRSSubmission = function(){
+		var pms = {};
+		pms.sub_id = c.current_sub_id;
+		pms.crs_comment = c.data.crs_comment;
+		NERDSubmission.rejectByCRS(pms, c.data.sessionID).then(function(rs){
+			var result = rs.data.result;
+			$mdDialog.cancel();
+			window.showMessageBox("Submission has been successfully returned and an email has been sent to DOC Planning Contact.");
+			
+			c.refreshPage();
+			
+		}, function(error){
+			console.log(error);
+		});
+	}
+	
+	c.export2Excel = function (tmpl) {
+		var req = {
+		 method: 'POST',
+		 url: '/api/x_26385_crs_kd/export/submission2Excel',
+		 headers: {
+			 'Content-Type': 'application/json'
+		 }
+		}
+		
+		req.data = {};
+		if(tmpl){
+			req.data.subs = c.selectedSub_cat[tmpl];
+		}
+		else{
+			req.data.subs = c.selectedSub;
+		}
+		
+		$http(req).then(function(resp){
+			var content = resp.data.result.content;
+			var data = [];
+			content.forEach(function(ct){
+				data.push(ct);
+			});
+			
+			/* generate a worksheet */
+			var ws = XLSX.utils.json_to_sheet(data);
+
+			/* add to workbook */
+			var wb = XLSX.utils.book_new();
+			XLSX.utils.book_append_sheet(wb, ws, "sheet1");
+
+			/* write workbook and force a download */
+			var today = new Date();
+			var dd = today.getDate();
+			var mm = today.getMonth()+1;
+			var yyyy = today.getFullYear();
+
+			if(dd<10) {
+					dd = '0'+dd
+			} 
+
+			if(mm<10) {
+					mm = '0'+mm
+			} 
+
+			today = yyyy + "-"+ mm + "-" + dd;
+			XLSX.writeFile(wb, "Submission_export_"+today+".xlsx");
+		}, function(error_resp){
+			console.log(error_resp);
+		});
+  }
+	
+	c.cancelDialog = function(){
+		$mdDialog.cancel();
+	};
+	
+	//Display previous criteria if any
+	
+	if(c.isSm){
+		c.accord_open = $rootScope.submission_accord_open?$rootScope.submission_accord_open:[];
+	}
+	else if(c.isDpc){
+		c.accord_open = $rootScope.submission_accord_open?$rootScope.submission_accord_open:[];
+		c.data.orderBy_cat = $rootScope.submission_orderBy?$rootScope.submission_orderBy:{};
+	}
+	else{
+		c.data.orderBy = $rootScope.submission_orderBy?$rootScope.submission_orderBy:"updated";
+		c.data.doc = $rootScope.submission_selectedDOC?$rootScope.submission_selectedDOC:"";
+		c.data.category = $rootScope.submission_selectedCategory?$rootScope.submission_selectedCategory:"";
+	}
+	
+	c.refreshPage();
 }]]></client_script>
         <controller_as>c</controller_as>
-        <css/>
+        <css>.md-list-item-inner{
+	width: 100%;
+}</css>
         <data_table>sp_instance</data_table>
         <demo_data/>
         <description/>
@@ -80,14 +592,16 @@
         <option_schema/>
         <public>false</public>
         <roles/>
-        <script><![CDATA[(function() {  /* populate the 'data' object */  /* e.g., data.table = $sp.getValue('table'); */})();]]></script>
+        <script><![CDATA[(function() {  /* populate the 'data' object */ 
+	data.sessionId = gs.getSession().getSessionToken();
+	/* e.g., data.table = $sp.getValue('table'); */})();]]></script>
         <servicenow>false</servicenow>
         <sys_class_name>sp_widget</sys_class_name>
         <sys_created_by>yuw5@nih.gov</sys_created_by>
         <sys_created_on>2019-04-08 20:43:14</sys_created_on>
         <sys_customer_update>false</sys_customer_update>
         <sys_id>3644b37bdb2c730054d8ff621f961911</sys_id>
-        <sys_mod_count>75</sys_mod_count>
+        <sys_mod_count>495</sys_mod_count>
         <sys_name>[crs] KD Submissions</sys_name>
         <sys_package display_value="CRS Knowledge Database" source="x_26385_crs_kd">404e613b4f9213007221e321a310c738</sys_package>
         <sys_policy/>
@@ -95,72 +609,254 @@
         <sys_scope display_value="CRS Knowledge Database">404e613b4f9213007221e321a310c738</sys_scope>
         <sys_update_name>sp_widget_3644b37bdb2c730054d8ff621f961911</sys_update_name>
         <sys_updated_by>yuw5@nih.gov</sys_updated_by>
-        <sys_updated_on>2019-04-12 14:34:28</sys_updated_on>
+        <sys_updated_on>2020-01-30 15:57:07</sys_updated_on>
         <template><![CDATA[<div id="crs-article">
   <div class="container">
     <div class="row row-space">
           <div class="col-md-12">
-            <div class="submission-new">
-              <a href="#" ng-click="c.go2NewSubmission()" role="link">+ Create new Submission</a>
+            
+            <div class="submission-new" ng-if="c.isCr || c.isSu" style="display:flex;">
+              <div style="padding-right:10px;line-height:35px;font-weight:bold;">
+                Order By: 
+              </div>
+              <div style="padding-right:10px;">
+                <select class="form-control" name="doc" id="doc"
+                              ng-model="c.data.orderBy" ng-change="c.changeSort()">
+                  <option value="updated">Last Modified</option>
+                  <option value="priority">Rank</option>
+                </select>
+              </div>
+							<div style="padding-right:10px;line-height:35px;font-weight:bold;">
+                Category: 
+              </div>
+              <div style="padding-right:10px;">
+                <select class="form-control" name="category" id="category"
+                              ng-model="c.data.category" ng-options="option.label for option in c.cats track by option.id" ng-change="c.refreshPage()">
+              				<option value="">All</option>
+                    </select>
+              </div>
+              <div style="padding-right:10px;line-height:35px;font-weight:bold;">
+                DOC: 
+              </div>
+              <div>
+                <select class="form-control" name="doc" id="doc"
+                              ng-model="c.data.doc" ng-options="option for option in c.docs track by option" ng-change="c.refreshPage()">
+              				<option value="">All</option>
+                    </select>
+              </div>
             </div>
-            <div ng-cloak>
+            <div class="" ng-cloak>
               <md-content>
+                
+                <uib-accordion close-others="false" ng-if="c.isSm">
+                        <div uib-accordion-group ng-repeat="tab in c.data.tabs" ng-if="tab.show" class="panel-default" is-open="c.accord_open[tab.tmpl]" style="margin-top: 20px;">
+                          <uib-accordion-heading>
+                            <div>
+                              {{tab.name}} ({{tab.list.length}}) <a ng-click="c.gotoNewSubmission(tab.tmpl,$event)" style="margin-left:20px;">+ Create new Submission</a> <i class="pull-right" ng-class="{'fa fa-minus-square': c.accord_open[tab.tmpl], 'fa fa-plus-square': !c.accord_open[tab.tmpl]}"></i>
+                            </div>
+                          </uib-accordion-heading>
+                          <md-content class="">
+                            <md-content flex>
+                              <md-list ng-if="tab.list.length == 0" style="padding: 0px;">
+                                You do not currently have any submission.
+                              </md-list>
+                              <md-list style="padding: 0px;">
+                                <md-list-item class="md-3-line" ng-repeat="item in tab.list">
+                                  <!-- <img ng-src="{{item.face}}" alt="{{item.who}}" class="md-avatar"> -->
+                                  <div class="md-list-item-text">
+
+                                    <h3><i class="glyphicon glyphicon-file"></i> <a class="kb-title ng-binding" ng-click="c.gotoSubmissionDetail(item.sub_id,item.number, tab.tmpl)" role="link">{{item.title}}</a></h3>
+                                    <!--
+                                    <div class="kb-about">
+                                      {{item.notes}}
+                                      <div ng-if="!c.isSm">
+                                        Rank: {{item.priority}}
+                                      </div>
+                                    </div>
+																		-->
+                                  </div>
+                                  <md-divider inset></md-divider>
+                                  <md-button class="md-raised md-secondary" ng-show="c.isSm && item.status == 'Open'" style="background-color: forestgreen;color: white;" ng-click="c.submit2DOC(item.sub_id,$event)">Submit</md-button>
+                                  <md-button class="md-raised md-secondary" ng-show="c.isSm && item.status == 'Open'" style="background-color: #C6375D;color: white;" ng-click="c.gotoSubmissionDetail(item.sub_id,item.number, tab.tmpl)">Edit</md-button>
+                                  <!--
+                                  <md-button class="md-raised md-secondary" ng-show="c.isSm && item.status == 'Open'" style="background-color: #C6375D;color: white;" ng-click="c.deleteSubmission(item.sub_id)">Delete</md-button>
+                                  <div class="md-secondary" ng-show="item.crs_comment !== ''" style="font-size: 14px; font-style: italic; font-weight: bold;padding-right: 10px;">
+                                    CRS Commented: {{item.crs_comment}}
+                                  </div>
+                                  -->
+                                  <md-button class="md-raised md-secondary" ng-show="c.isDpc && item.status == 'DOC Review'" style="background-color: forestgreen;color: white;" ng-click="c.submit2CRS(item.sub_id,$event)">Submit to CRS</md-button>
+                                  <md-button class="md-raised md-secondary" ng-show="c.isDpc && item.status == 'DOC Review'" style="background-color: #C6375D;color: white;" ng-click="c.gotoSubmissionDetail(item.sub_id,item.number, tab.tmpl)">Edit</md-button>
+                                  <!--
+                                  <md-button class="md-raised md-secondary" ng-show="c.isDpc && item.status == 'DOC Review'" style="background-color: #C6375D;color: white;" ng-click="c.deleteSubmission(item.sub_id)">Delete</md-button>
+                                  -->
+                                  <div class="md-secondary" ng-show="c.isSm && item.status == 'DOC Review'" style="font-size: 14px; font-style: italic; font-weight: bold;padding-right: 10px;">
+                                    Under Review
+                                  </div>
+                                  <div class="md-secondary" ng-show="item.status == 'CRS Review'" style="font-size: 14px; font-style: italic; font-weight: bold;padding-right: 10px;">
+                                    Under CRS Review
+                                  </div>
+                                  <div class="md-secondary" ng-show="item.status == 'Published'" style="font-size: 14px; font-style: italic; font-weight: bold;padding-right: 10px;">
+                                    Published
+                                  </div>
+                                </md-list-item>
+                              </md-list>
+                            </md-content>
+                          </md-content>
+                          <!--
+                          <div class="tab-paging-section">
+                            <ul ng-show="(tab.list.length / c.data.pageSize[tab.name]) > 1"  uib-pagination total-items="tab.list.length" items-per-page="c.data.pageSize[tab.name]" ng-model="c.data.bigCurrentPage[tab.name]" max-size="c.data.maxSize" class="pagination-sm" ng-change="c.pageChanged()" direction-links="false" boundary-links="true" force-ellipses="true">
+                            </ul>
+                            <div class="tab-paging-setting">
+                              <label for="my_pageSize" class="label-hidden">pageSize:</label>
+                              <select class="form-control" id="my_pageSize" ng-model="c.data.pageSize[tab.name]" ng-init="c.data.pageSize[tab.name] = '10'">
+                                <option value="5">5</option>
+                                <option value="10">10</option>
+                                <option value="15">15</option>
+                                <option value="20">20</option>
+                              </select>
+                            </div>
+                            <div class="tab-paging-label">Items per page:</div>
+                          </div>
+													-->
+                        </div>
+                      </uib-accordion>
+                
+                <uib-accordion close-others="false" ng-if="c.isDpc">
+                        <div uib-accordion-group ng-repeat="tab in c.data.tabs" ng-if="tab.show" class="panel-default" is-open="c.accord_open[tab.tmpl]" style="margin-top: 20px;">
+                          <uib-accordion-heading>
+                            <div>
+                              {{tab.name}} ({{tab.list.length}}) <a ng-click="c.gotoNewSubmission(tab.tmpl,$event)" style="margin-left:20px;">+ Create new Submission</a> <i class="pull-right" ng-class="{'fa fa-minus-square': c.accord_open[tab.tmpl], 'fa fa-plus-square': !c.accord_open[tab.tmpl]}"></i>
+                            </div>
+                          </uib-accordion-heading>
+                          <md-content class="">
+                            <md-content flex>
+                              <md-list ng-if="tab.list.length == 0" style="padding: 0px;">
+                                You do not currently have any submission.
+                              </md-list>
+                              
+                              <div style="padding-left:16px;border-bottom: 1px solid rgba(0,0,0,0.12);" ng-if="tab.list.length > 0">
+                                <md-checkbox aria-label="Select All"
+                                             ng-checked="c.isChecked_cat(tab.tmpl)"
+                                             md-indeterminate="c.isIndeterminate_cat(tab.tmpl)"
+                                             ng-click="c.toggleAll_cat(tab.tmpl)" style="margin-top:10px;">
+                                </md-checkbox>
+
+                                <md-button class="md-raised md-secondary" ng-disabled="true" ng-if="c.selectedSub_cat[tab.tmpl].length == 0" >Submit All</md-button>
+                                <md-button class="md-raised md-secondary" ng-if="c.selectedSub_cat[tab.tmpl].length > 0" style="background-color: forestgreen;color: white; " ng-click="c.multiSubmit2CRS(tab.tmpl, $event)">Submit All ({{c.selectedSub_cat[tab.tmpl].length}})</md-button>
+                                <div class="submission-orderby-div" style="display:flex;" ng-if="tab.tmpl != 'u_kb_template_collaboration'">
+                                  <div style="padding-right:10px;line-height:35px;font-weight:bold;">
+                                    Order By: 
+                                  </div>
+                                  <div>
+                                    <select class="form-control" name="doc" id="doc"
+                                                  ng-model="c.data.orderBy_cat[tab.tmpl]" ng-change="c.changeSort_cat(tab.tmpl)">
+                                      <option value="updated">Last Modified</option>
+                                      <option value="priority">Rank</option>
+                                    </select>
+                                  </div>
+                                </div>
+               
+                                <md-button class="md-raised pull-right md-secondary" ng-disabled="true" ng-if="tab.tmpl != 'u_kb_template_collaboration' && c.selectedSub_cat[tab.tmpl].length == 0" >Export to Excel</md-button>
+                                <md-button class="md-raised pull-right md-secondary" ng-if="tab.tmpl != 'u_kb_template_collaboration' && c.selectedSub_cat[tab.tmpl].length > 0" style="background-color: #C6375D;color: white;" ng-click="c.export2Excel(tab.tmpl)">Export to Excel ({{c.selectedSub_cat[tab.tmpl].length}})</md-button>
+                              </div>
+                        
+                              <md-list style="padding: 0px;">
+                                <md-list-item class="md-3-line" ng-repeat="item in tab.list | orderBy:c.data.orderBy_cat[tab.tmpl]:c.reverse_cat[tab.tmpl]:c.compare">
+                                  <div class="md-avatar" style="margin-right:5px;margin-top:30px;">
+                                    <md-checkbox ng-checked="c.exists(item.sub_id, c.selectedSub_cat[tab.tmpl])" ng-click="c.toggle(item.sub_id, c.selectedSub_cat[tab.tmpl])">
+                                    </md-checkbox>
+                                  </div>
+                                  <div class="md-list-item-text">
+
+                                    <h3><i class="glyphicon glyphicon-file"></i> <a class="kb-title ng-binding" ng-click="c.gotoSubmissionDetail(item.sub_id,item.number, tab.tmpl)" role="link">{{item.title}}</a></h3>
+                                    <div class="kb-about" ng-if="tab.tmpl != 'u_kb_template_collaboration'">
+                                      Author: {{item.who}} , Last Modified: {{item.updated}}<br>
+                                      Rank: {{item.priority}}
+                                    </div>
+                                    <div class="kb-about" ng-if="tab.tmpl == 'u_kb_template_collaboration'">
+                                      Author: {{item.who}} , Last Modified: {{item.updated}}
+                                    </div>
+                                  </div>
+                                  <md-divider inset></md-divider>
+                                  
+                                  <!-- for DOC user -->
+                                  <md-button class="md-raised md-secondary" ng-show="item.status == 'DOC Review'" style="background-color: forestgreen;color: white;" ng-click="c.submit2CRS(item.sub_id,$event)">Submit to CRS</md-button>
+                                  <md-button class="md-raised md-secondary" ng-show="item.status == 'DOC Review' && item.other_info.created_by == 'staff'" style="background-color: #C6375D;color: white;" ng-click="c.toDOCReject(item.sub_id,$event)">Return</md-button>
+                                  <md-button class="md-raised md-secondary" ng-show="item.status == 'DOC Review'" style="background-color: #C6375D;color: white;" ng-click="c.gotoSubmissionDetail(item.sub_id,item.number, tab.tmpl)">Edit</md-button>
+                                  <div class="md-secondary" ng-show="item.status == 'Open' && item.other_info.rejectedByDOC" style="font-size: 14px; font-style: italic; font-weight: bold;padding-right: 10px;">
+                                    Returned to Staff Member
+                                  </div>
+                                  <div class="md-secondary" ng-show="item.status == 'CRS Review'" style="font-size: 14px; font-style: italic; font-weight: bold;padding-right: 10px;">
+                                    Under CRS Review
+                                  </div>
+                                  <div class="md-secondary" ng-show="item.status == 'Published'" style="font-size: 14px; font-style: italic; font-weight: bold;padding-right: 10px;">
+                                    Published
+                                  </div>
+                                </md-list-item>
+                              </md-list>
+                            </md-content>
+                          </md-content>
+                        </div>
+                      </uib-accordion>
+                    
                 <md-tabs md-dynamic-height md-border-bottom>
-                  <md-tab label="My Submissions">
+                  <md-tab label="Submissions for Review {{c.allSubs.length > 0 ? '(' +c.allSubs.length + ')' : '' }}" ng-if="c.isSu || c.isCr">
                     <md-content class="md-padding submission-content">
                       <md-content flex>
-                        <md-list>
-                          <md-list-item class="md-3-line" ng-repeat="item in c.mySubs">
-                            <!-- <img ng-src="{{item.face}}" alt="{{item.who}}" class="md-avatar"> -->
-														<div class="md-list-item-text">
-                                
-                              <h3><i class="glyphicon glyphicon-file"></i> <a class="kb-title ng-binding" ng-click="c.gotoSubmissionDetail(item.id)" role="link">{{item.title}}</a></h3>
-                              <div class="kb-about">
-                                {{item.notes}}
-                                <br>
-                                Author: {{item.who}}
-                                <span class="dot-divider" aria-hidden="true"> • </span>
-                                Fiscal Year: {{item.FY}}
-                                <span class="dot-divider" aria-hidden="true"> • </span>
-                                Status: {{item.status}}
-                              </div>
-                            </div>
-                            <md-divider inset></md-divider>
-                            <p class="md-secondary" ng-show="item.status == 'Submitted'">
-                              Submitted
-                            </p>
-                            <md-button class="md-raised md-secondary" ng-show="item.status == 'Draft'" style="background-color: #C6375D;color: white;">Submit</md-button>
-              							<md-button class="md-raised md-secondary" ng-show="item.status == 'Draft'" style="background-color: #C6375D;color: white;">Edit</md-button>
-              						</md-list-item>
+                        <md-list ng-if="c.allSubs.length == 0">
+                          Currently have no submission.
                         </md-list>
-                      </md-content>
-                    </md-content>
-                  </md-tab>
-                  <md-tab label="All Submissions">
-                    <md-content class="md-padding submission-content">
-                      <md-content flex>
+                        
+                        <div style="padding-left:16px;border-bottom: 1px solid rgba(0,0,0,0.12);" ng-if="c.allSubs.length > 0">
+                          <md-checkbox aria-label="Select All"
+                                       ng-checked="c.isChecked()"
+                                       md-indeterminate="c.isIndeterminate()"
+                                       ng-click="c.toggleAll()" style="margin-top:10px;">
+                          </md-checkbox>
+                          
+                          <md-button class="md-raised md-secondary" ng-disabled="true" ng-if="c.selectedSub.length == 0" >Publish All</md-button>
+                          <md-button class="md-raised md-secondary" ng-if="c.selectedSub.length > 0" style="background-color: forestgreen;color: white; " ng-click="c.multiPublish2NERD($event)">Publish All ({{c.selectedSub.length}})</md-button>
+                          <md-button class="md-raised md-secondary" ng-disabled="true" ng-if="c.selectedSub.length == 0" >Return All</md-button>
+                          <md-button class="md-raised md-secondary" ng-if="c.selectedSub.length > 0" style="background-color: #C6375D;color: white;" ng-click="c.multiReturn2DOC($event)">Return All ({{c.selectedSub.length}})</md-button>
+                          
+                          <md-button class="md-raised pull-right md-secondary" ng-disabled="true" ng-if="c.selectedSub.length == 0" >Export to Excel</md-button>
+                          <md-button class="md-raised pull-right md-secondary" ng-if="c.selectedSub.length > 0" style="background-color: #C6375D;color: white;" ng-click="c.export2Excel()">Export to Excel ({{c.selectedSub.length}})</md-button>
+                        </div>
+                        
                         <md-list>
-                          <md-list-item class="md-3-line" ng-repeat="item in c.allSubs">
-                            <!-- <img ng-src="{{item.face}}" alt="{{item.who}}" class="md-avatar"> -->
+                          <md-list-item class="md-3-line" ng-repeat="item in c.allSubs | orderBy:c.data.orderBy:c.reverse:c.compare">
+                            <div class="md-avatar" style="margin-right:5px;margin-top:30px;">
+                              <md-checkbox ng-checked="c.exists(item.sub_id, c.selectedSub)" ng-click="c.toggle(item.sub_id, c.selectedSub)">
+                              </md-checkbox>
+                            </div>
 														<div class="md-list-item-text">
                                 
-                              <h3><i class="glyphicon glyphicon-file"></i>  <a class="kb-title ng-binding" ng-click="c.gotoSubmissionDetail(item.id)" role="link">{{item.title}}</a></h3>
-                              <div class="kb-about">
+                              <h3><i class="glyphicon glyphicon-file"></i>  <a class="kb-title ng-binding" ng-click="c.gotoSubmissionDetail(item.sub_id,item.number, tab.tmpl)" role="link">{{item.title}}</a></h3>
+                              <div class="kb-about" ng-if="item.tmpl != 'u_kb_template_collaboration'">
                                 {{item.notes}}
                                 <br>
-                                Author: {{item.who}}
-                                <span class="dot-divider" aria-hidden="true"> • </span>
-                                Fiscal Year: {{item.FY}}
-                                <span class="dot-divider" aria-hidden="true"> • </span>
-                                Status: {{item.status}}
+                                Author: {{item.who}} , Last Modified: {{item.updated}}<br>
+                                Rank: {{item.priority}}
+                              </div>
+                              <div class="kb-about" ng-if="item.tmpl == 'u_kb_template_collaboration'">
+                                {{item.notes}}
+                                <br>
+                                Author: {{item.who}} , Last Modified: {{item.updated}}
                               </div>
                             </div>
                             <md-divider inset></md-divider>
-                            <p class="md-secondary" ng-show="item.status == 'Published'">
+                            <md-button class="md-raised md-secondary" ng-show="(c.isCr || c.isSu) && item.status == 'CRS Review'" style="background-color: forestgreen;color: white;" ng-click="c.publish2NERD(item.sub_id,$event)">Publish to NERD</md-button>
+                            <md-button class="md-raised md-secondary" ng-show="(c.isCr || c.isSu) && item.status == 'CRS Review'" style="background-color: #C6375D;color: white;" ng-click="c.toCRSReject(item.sub_id,$event)">Return</md-button>
+                            <md-button class="md-raised md-secondary" ng-show="(c.isCr || c.isSu) && item.status == 'CRS Review'" style="background-color: #C6375D;color: white;" ng-click="c.gotoSubmissionDetail(item.sub_id,item.number, tab.tmpl)">Edit</md-button>
+                            <div class="md-secondary" ng-show="(c.isCr || c.isSu) && item.status == 'DOC Review' && item.other_info.rejectedByCRS" style="font-size: 14px; font-style: italic; font-weight: bold;padding-right: 10px;">
+                              Returned to DOC
+                            </div>
+                            <div class="md-secondary" ng-show="(c.isCr || c.isSu) && item.status == 'Open' && item.other_info.rejectedByCRS" style="font-size: 14px; font-style: italic; font-weight: bold;padding-right: 10px;">
+                              Returned to DOC and Staff Member
+                            </div>
+                            <div class="md-secondary" ng-show="item.status == 'Published'" style="font-size: 14px; font-style: italic; font-weight: bold;padding-right: 10px;">
                               Published
-                            </p>
-                            <md-button class="md-raised md-secondary" ng-show="item.status == 'Submitted'" style="background-color: #C6375D;color: white;">Approve</md-button>
-              							<md-button class="md-raised md-secondary" ng-show="item.status == 'Submitted'" style="background-color: #C6375D;color: white;">Publish</md-button>
+                            </div>
               						</md-list-item>
                         </md-list>
                       </md-content>
@@ -172,6 +868,98 @@
           </div>
 
 		</div>
+  </div>
+</div>
+
+<div style="visibility: hidden">
+  <div class="md-dialog-container" id="myDialog">
+    <md-dialog style="width:500px;">
+      <div class="dialog_header">
+        Confirm
+      </div>
+      <div class="dialog_content" style="text-align:center;">
+        <p>
+          {{c.submit_message}}
+        </p>
+      </div>
+      <div class="dialog_footer">
+        <md-button class="md-raised" style="background-color: #C6375D;color: white;" ng-click="c.submitSubmission()">Yes</md-button>
+        <md-button class="md-raised" ng-click="c.cancelDialog()">No</md-button>
+      </div>
+    </md-dialog>
+  </div>
+</div>
+
+<div style="visibility: hidden">
+  <div class="md-dialog-container" id="docRejectDialog">
+    <md-dialog style="width:500px;">
+      <div class="dialog_header">
+        Confirm
+      </div>
+      <div class="dialog_content" style="text-align:center;">
+        <p>
+          Return this entry to Staff Member?
+        </p>
+        <p style="text-align:left;">
+          <i class="fa fa-asterisk" aria-hidden="true" style="font-size:8px;color:#B22222;vertical-align: middle;"></i> Comment:
+        </p>
+        <textarea type="text" placeholder="Enter Comment here" class="form-control" name="doc_comment" id="doc_comment" ng-model="c.data.doc_comment" rows="3"></textarea>
+      </div>
+      <div class="dialog_footer">
+        <md-button class="md-raised" ng-show="c.data.doc_comment && c.data.doc_comment != ''"  style="background-color: #C6375D;color: white;" ng-click="c.rejectDOCSubmission()">Yes</md-button>
+        <md-button class="md-raised md-primary" ng-disabled="true" ng-if="c.data.doc_comment == undefined || c.data.doc_comment == ''" >Yes</md-button>
+        <md-button class="md-raised" ng-click="c.cancelDialog()">No</md-button>
+      </div>
+    </md-dialog>
+  </div>
+</div>
+
+<div style="visibility: hidden">
+  <div class="md-dialog-container" id="multiCRSRejectDialog">
+    <md-dialog style="width:500px;">
+      <div class="dialog_header">
+        Confirm
+      </div>
+      <div class="dialog_content" style="text-align:center;">
+        <p>
+          Ready to return all these selected entries to DOC Planning Contact?
+        </p>
+        <p style="text-align:left;">
+          <i class="fa fa-asterisk" aria-hidden="true" style="font-size:8px;color:#B22222;vertical-align: middle;"></i> Comment:
+        </p>
+        <textarea type="text" placeholder="Enter Comment here" class="form-control" name="multi_crs_comment" id="multi_crs_comment" ng-model="c.data.multi_crs_comment" rows="3"></textarea>
+      </div>
+      <div class="dialog_footer">
+        <md-button class="md-raised" ng-show="c.data.multi_crs_comment && c.data.multi_crs_comment != ''"  style="background-color: #C6375D;color: white;" ng-click="c.multiRejectDOCSubmission()">Yes</md-button>
+        <md-button class="md-raised md-primary" ng-disabled="true" ng-if="c.data.multi_crs_comment == undefined || c.data.multi_crs_comment == ''" >Yes</md-button>
+        <md-button class="md-raised" ng-click="c.cancelDialog()">No</md-button>
+      </div>
+    </md-dialog>
+  </div>
+</div>
+
+<div style="visibility: hidden">
+  <div class="md-dialog-container" id="crsRejectDialog">
+    <md-dialog style="width:500px;">
+      <div class="dialog_header">
+        Confirm
+      </div>
+      <div class="dialog_content" style="text-align:center;">
+        <p>
+          Return this entry to DOC Planning Contact?
+        </p>
+        <p style="text-align:left;">
+          <i class="fa fa-asterisk" aria-hidden="true" style="font-size:8px;color:#B22222;vertical-align: middle;"></i> Comment:
+        </p>
+        <textarea type="text" placeholder="Enter Comment here" class="form-control" name="crs_comment" id="crs_comment" ng-model="c.data.crs_comment" rows="3"></textarea>
+      </div>
+      <div class="dialog_footer">
+        <md-button class="md-raised" ng-show="c.data.crs_comment && c.data.crs_comment != ''" style="background-color: #C6375D;color: white;" ng-click="c.rejectCRSSubmission()">Yes</md-button>
+        <md-button class="md-raised md-primary" ng-disabled="true" ng-if="c.data.crs_comment == undefined || c.data.crs_comment == ''" >Yes</md-button>
+              
+        <md-button class="md-raised" ng-click="c.cancelDialog()">No</md-button>
+      </div>
+    </md-dialog>
   </div>
 </div>]]></template>
     </sp_widget>

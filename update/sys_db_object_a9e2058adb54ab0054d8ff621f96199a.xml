@@ -1,5 +1,4 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<record_update table="sys_db_object">
+<?xml version="1.0" encoding="UTF-8"?><record_update table="sys_db_object">
     <sys_db_object action="INSERT_OR_UPDATE">
         <access>public</access>
         <actions_access>true</actions_access>
@@ -14,7 +13,7 @@
         <label>Top accomplishment</label>
         <live_feed_enabled>false</live_feed_enabled>
         <name>u_kb_template_top_accomplishment</name>
-        <number_ref display_value="NERD-TOP">e7bab268db6c3f00b86770c08c96193f</number_ref>
+        <number_ref display_value="">e7bab268db6c3f00b86770c08c96193f</number_ref>
         <provider_class/>
         <read_access>true</read_access>
         <super_class display_value="Knowledge" name="kb_knowledge">7178cd436f022100250e6bbeae3ee48d</super_class>

@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="UTF-8"?><record_update sys_domain="global" table="sys_embedded_tour_step">
+    <sys_embedded_tour_step action="INSERT_OR_UPDATE">
+        <action>false</action>
+        <action_event>next</action_event>
+        <action_target/>
+        <action_target_ref display_value="xpath">8e5c563edb55845054d8ff621f9619b7</action_target_ref>
+        <active>true</active>
+        <content><![CDATA[To create a new article, click on the &#34;Add new entry&#34; link next to the appropriate category.]]></content>
+        <guide/>
+        <implicit>false</implicit>
+        <link/>
+        <name/>
+        <options>{"url":"/nerd?xpage=kd_search&amp;kb_knowledge_base=f5644dcadb54ab0054d8ff621f9619d7"}</options>
+        <order>2</order>
+        <placement>top</placement>
+        <step_type>step</step_type>
+        <sys_class_name>sys_embedded_tour_step</sys_class_name>
+        <sys_created_by>martincp@nih.gov</sys_created_by>
+        <sys_created_on>2019-11-27 14:43:18</sys_created_on>
+        <sys_customer_update>false</sys_customer_update>
+        <sys_domain>global</sys_domain>
+        <sys_id>ca5c563edb55845054d8ff621f9619b9</sys_id>
+        <sys_mod_count>18</sys_mod_count>
+        <sys_name/>
+        <sys_overrides/>
+        <sys_package display_value="CRS Knowledge Database" source="x_26385_crs_kd">404e613b4f9213007221e321a310c738</sys_package>
+        <sys_policy/>
+        <sys_replace_on_upgrade>false</sys_replace_on_upgrade>
+        <sys_scope display_value="CRS Knowledge Database">404e613b4f9213007221e321a310c738</sys_scope>
+        <sys_update_name>sys_embedded_tour_step_ca5c563edb55845054d8ff621f9619b9</sys_update_name>
+        <sys_updated_by>georgejc@nih.gov</sys_updated_by>
+        <sys_updated_on>2019-11-27 18:08:54</sys_updated_on>
+        <target/>
+        <target_ref display_value="xpath">8e5c563edb55845054d8ff621f9619b7</target_ref>
+        <title/>
+        <ui_version>dynamic</ui_version>
+        <view/>
+        <window>nerd</window>
+    </sys_embedded_tour_step>
+</record_update>

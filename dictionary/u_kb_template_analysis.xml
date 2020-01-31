@@ -1,17 +1,17 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<database>
+<?xml version="1.0" encoding="UTF-8"?><database>
     <element attributes="document_viewer_audit=all,global_search_config_handler=KnowledgeArticle,all_tables.text_index_translations=true,attachment_index=true,text_index_attachment_displayed=true,text_index_enable_idf=true,synch_attachments=true,use_document_viewer=true,text_index_filter_junk=false" audit="true" extends="kb_knowledge" label="Analysis" max_length="40" name="u_kb_template_analysis" text_index="true" type="collection">
         <element label="Analyst(s)" max_length="500" name="x_26385_crs_kd_u_kb_analyst_s" text_index="true" type="string"/>
         <element label="Article Version" max_length="500" name="x_26385_crs_kd_u_kb_article_version" text_index="true" type="string"/>
-        <element label="Caution/Warning" max_length="8000" name="x_26385_crs_kd_u_kb_caution_warning" text_index="true" type="html"/>
+        <element attributes="edge_encryption_enabled=true" label="Caution/Warning" max_length="8000" name="x_26385_crs_kd_u_kb_caution_warning" text_index="true" type="html"/>
         <element label="Date" max_length="500" name="x_26385_crs_kd_u_kb_date" text_index="true" type="string"/>
-        <element label="Major caveats" max_length="8000" name="x_26385_crs_kd_u_kb_major_caveats" text_index="true" type="html"/>
-        <element label="Name(s) of file(s)" max_length="8000" name="x_26385_crs_kd_u_kb_name_s_of_file_s" text_index="true" type="html"/>
+        <element attributes="edge_encryption_enabled=true" label="Major caveats" max_length="8000" name="x_26385_crs_kd_u_kb_major_caveats" text_index="true" type="html"/>
+        <element attributes="edge_encryption_enabled=true" label="Name(s) of file(s)" max_length="8000" name="x_26385_crs_kd_u_kb_name_s_of_file_s" text_index="true" type="html"/>
         <element label="Other Attributes" max_length="500" name="x_26385_crs_kd_u_kb_other_attributes" text_index="true" type="string"/>
-        <element label="Other Notes" max_length="8000" name="x_26385_crs_kd_u_kb_other_notes" text_index="true" type="html"/>
-        <element label="Other tools and sources" max_length="8000" name="x_26385_crs_kd_u_kb_other_tools_and_sources" text_index="true" type="html"/>
-        <element label="Output/Conclusions" max_length="8000" name="x_26385_crs_kd_u_kb_output_conclusions" text_index="true" type="html"/>
+        <element attributes="edge_encryption_enabled=true" label="Other Notes" max_length="8000" name="x_26385_crs_kd_u_kb_other_notes" text_index="true" type="html"/>
+        <element attributes="edge_encryption_enabled=true" label="Other tools and sources" max_length="8000" name="x_26385_crs_kd_u_kb_other_tools_and_sources" text_index="true" type="html"/>
+        <element attributes="edge_encryption_enabled=true" label="Output/Conclusions" max_length="8000" name="x_26385_crs_kd_u_kb_output_conclusions" text_index="true" type="html"/>
         <element label="Reason for analysis/Main question" max_length="500" name="x_26385_crs_kd_u_kb_reason_for_analysis_main_question" text_index="true" type="string"/>
+        <element label="Record Version" max_length="500" name="x_26385_crs_kd_u_kb_record_version" text_index="true" type="string"/>
         <element label="Requested by" max_length="500" name="x_26385_crs_kd_u_kb_requested_by" text_index="true" type="string"/>
         <element label="Tags" max_length="500" name="x_26385_crs_kd_u_kb_tags" text_index="true" type="string"/>
         <element label="Title" max_length="500" name="x_26385_crs_kd_u_kb_title" text_index="true" type="string"/>

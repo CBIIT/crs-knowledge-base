@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8"?><record_update table="sysevent_register">
+    <sysevent_register action="INSERT_OR_UPDATE">
+        <description>Send email to NCI Staff member after rejected by DOC Planning Contact</description>
+        <event_name>x_26385_crs_kd.doc_reject_notify</event_name>
+        <fired_by>RejectByDOC</fired_by>
+        <queue/>
+        <suffix>doc_reject_notify</suffix>
+        <sys_class_name>sysevent_register</sys_class_name>
+        <sys_created_by>yuw5@nih.gov</sys_created_by>
+        <sys_created_on>2019-08-19 20:32:32</sys_created_on>
+        <sys_customer_update>false</sys_customer_update>
+        <sys_id>e6ac247edb9f7f00b86770c08c9619c0</sys_id>
+        <sys_mod_count>1</sys_mod_count>
+        <sys_name>x_26385_crs_kd.doc_reject_notify</sys_name>
+        <sys_package display_value="CRS Knowledge Database" source="x_26385_crs_kd">404e613b4f9213007221e321a310c738</sys_package>
+        <sys_policy/>
+        <sys_replace_on_upgrade>false</sys_replace_on_upgrade>
+        <sys_scope display_value="CRS Knowledge Database">404e613b4f9213007221e321a310c738</sys_scope>
+        <sys_update_name>sysevent_register_e6ac247edb9f7f00b86770c08c9619c0</sys_update_name>
+        <sys_updated_by>yuw5@nih.gov</sys_updated_by>
+        <sys_updated_on>2019-08-29 18:43:33</sys_updated_on>
+        <table/>
+    </sysevent_register>
+</record_update>

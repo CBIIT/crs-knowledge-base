@@ -1,0 +1,270 @@
+<?xml version="1.0" encoding="UTF-8"?><record_update table="sys_ws_operation">
+    <sys_ws_operation action="INSERT_OR_UPDATE">
+        <active>true</active>
+        <consumes>application/json,application/xml,text/xml</consumes>
+        <consumes_customized>false</consumes_customized>
+        <default_operation_uri/>
+        <enforce_acl>cf9d01d3e73003009d6247e603f6a990</enforce_acl>
+        <http_method>GET</http_method>
+        <name>getSubmissionSchema</name>
+        <operation_script><![CDATA[(function process(/*RESTAPIRequest*/ request, /*RESTAPIResponse*/ response) {
+
+	var category = request.queryParams.category;
+	
+	var kc = {'u_kb_template_top_accomplishment':'f5644dcadb54ab0054d8ff621f9619d7',
+			  'u_kb_template_other_accomplishment':'f5644dcadb54ab0054d8ff621f9619d7',
+			  'u_kb_template_collaboration':'f5644dcadb54ab0054d8ff621f9619d7'
+	};
+	
+    var data_columns = {
+		"u_kb_template_top_accomplishment":[{label: "Fiscal Year", type: "checkbox", field: "x_26385_crs_kd_u_kb_fiscal_year",
+											 items: ['2016','2017','2018','2019','2020','2021'], required: "1"},
+			{label: "Title", type: "string", field: "x_26385_crs_kd_u_kb_title", required:"1"},
+											{label: "DOC", type: "dropdown", 
+											 field: "x_26385_crs_kd_u_kb_doc",
+											 items: ["CBIIT","CCCT","CCG","CCR","CCT","CGH","CRCHD","CSSI","DCB","DCCPS","DCEG","DCP","DCTD","Frederick","OCC","OHAM","SBIR"], required:"1"},
+			{label: "Description", type: "html", field: "x_26385_crs_kd_u_kb_description",annotation:"(3 - 4 sentences max) – please define acronyms", required:"1"},
+			{label: "Research Type/Other Programs", type: "dropdown", field: "x_26385_crs_kd_u_kb_research_type",
+											 items: ["Basic", "Cancer Control", "Clinical", "Epidemiological","Health Communication Programs", "Population Science", "Research Workforce Recruitment, Training, and Retention Program", "Science Education and Literacy Programs",  "Translational-Post-Clinical", "Translational-Pre-Clinical", "Other"], annotation:"Please select the most applicable", required:"1"},
+											{label: "Other Topics", type: "checkbox", field: "x_26385_crs_kd_u_kb_special_topic",
+											 items: ['Big data/Data sharing','Metastatic','Minority health/Health disparities',
+															 'Moonshot','Pediatric','Rare','Training/Workforce development','Women\'s health','Technology Development','Research Resources and Infrastructure','Meeting/Workshop/Conference','Report/Guidelines/Policy'], annotation:"Please select the most applicable"},
+			{label: "Cancer Site/Type", type: "checkbox", 
+											 field: "x_26385_crs_kd_u_kb_cancer_site_type",
+											 items: ['Bladder','Brain','Breast','Central nervous system','Cervical','Colon/colorectal',
+											 'Endometrial','Esophageal','Gallbladder','Gastric/Stomach','Glioblastoma','Head and neck',
+											 'Kidney','Leukemia','Liver','Lung','Lymphoma','Melanoma','Multiple myeloma','Neuroblastoma',
+											 'Ovarian','Pancreatic','Prostate','Sarcoma','Skin','Thyroid'],annotation:"Please select all that apply"},
+											{label: "Collaborations", type: "html", field: "x_26385_crs_kd_u_kb_involved_organization", annotation:"Indicate the ICOs / agencies / organizations involved if citing a collaboration, including who was the lead"},
+											{label: "References",type: "customize", field: "x_26385_crs_kd_u_kb_pmid_references",annotation:"Please list PMIDs only, separated by commas"},
+			{label: "Other References", type: "html", field: "x_26385_crs_kd_u_kb_references",annotation:"Please list websites, press release URL etc. To ensure that links are active, please add hyperlinks using the link tool (chain link icon)."},
+											{label: "Point of Contact", type: "string", field: "x_26385_crs_kd_u_kb_doc_contact"},
+											{label: "CRS Contact", type: "string", field: "x_26385_crs_kd_u_kb_crs_contact", byDefault:"Sonia Rosenfield"}],
+		"u_kb_template_other_accomplishment":[{label: "Fiscal Year", type: "checkbox", field: "x_26385_crs_kd_u_kb_fiscal_year",
+											 items: ['2016','2017','2018','2019','2020','2021'], required: "1"},
+			{label: "Title", type: "string", field: "x_26385_crs_kd_u_kb_title", required:"1"},
+											{label: "DOC", type: "dropdown", 
+											 field: "x_26385_crs_kd_u_kb_doc",
+											 items: ["CBIIT","CCCT","CCG","CCR","CCT","CGH","CRCHD","CSSI","DCB","DCCPS","DCEG","DCP","DCTD","Frederick","OCC","OHAM","SBIR"], required:"1"},
+											{label: "Other Accomplishment Type", type: "dropdown", 
+											 field: "x_26385_crs_kd_u_kb_other_accomplishment_type",
+											 items: ["Pediatric","Women's Health","Other"]},
+			{label: "Description", type: "html", field: "x_26385_crs_kd_u_kb_description",annotation:"(3 - 4 sentences max) – please define acronyms", required:"1"},
+			{label: "Research Type/Other Programs", type: "dropdown", field: "x_26385_crs_kd_u_kb_research_type",
+											 items: ["Basic", "Cancer Control", "Clinical", "Epidemiological","Health Communication Programs", "Population Science", "Research Workforce Recruitment, Training, and Retention Program", "Science Education and Literacy Programs",  "Translational-Post-Clinical", "Translational-Pre-Clinical", "Other"], annotation:"Please select the most applicable", required:"1"},
+											{label: "Other Topics", type: "checkbox", field: "x_26385_crs_kd_u_kb_special_topic",
+											 items: ['Big data/Data sharing','Metastatic','Minority health/Health disparities',
+															 'Moonshot','Pediatric','Rare','Training/Workforce development','Women\'s health','Technology Development','Research Resources and Infrastructure','Meeting/Workshop/Conference','Report/Guidelines/Policy'], annotation:"Please select the most applicable"},
+			{label: "Cancer Site/Type", type: "checkbox", 
+											 field: "x_26385_crs_kd_u_kb_cancer_site_type",
+											 items: ['Bladder','Brain','Breast','Central nervous system','Cervical','Colon/colorectal',
+											 'Endometrial','Esophageal','Gallbladder','Gastric/Stomach','Glioblastoma','Head and neck',
+											 'Kidney','Leukemia','Liver','Lung','Lymphoma','Melanoma','Multiple myeloma','Neuroblastoma',
+											 'Ovarian','Pancreatic','Prostate','Sarcoma','Skin','Thyroid'],annotation:"Please select all that apply"},
+											{label: "Collaborations", type: "html", field: "x_26385_crs_kd_u_kb_involved_organization", annotation:"Indicate the ICOs / agencies / organizations involved if citing a collaboration, including who was the lead"},
+											{label: "References",type: "customize", field: "x_26385_crs_kd_u_kb_pmid_references",annotation:"Please list PMIDs only, separated by commas"},
+			{label: "Other References", type: "html", field: "x_26385_crs_kd_u_kb_references",annotation:"Please list websites, press release URL etc. To ensure that links are active, please add hyperlinks using the link tool (chain link icon)."},
+											{label: "Point of Contact", type: "string", field: "x_26385_crs_kd_u_kb_doc_contact"},
+											{label: "CRS Contact", type: "string", field: "x_26385_crs_kd_u_kb_crs_contact", byDefault:"Sonia Rosenfield"}],
+		"u_kb_template_collaboration":[{label: "Title", type: "string", field: "x_26385_crs_kd_u_kb_title", required:"1", alias: "Collaboration Name"},
+									   {label: "For Existing activities, please specify", type: "dropdown", 
+											 field: "x_26385_crs_kd_u_kb_existing_activities_type",
+											 items: ["Edited","No change","Ended", "Not led by NCI"]},
+									   {label: "Acronym", type: "string", field: "x_26385_crs_kd_u_kb_acronym"},
+									   {label: "Fiscal Year", type: "dropdown", field: "x_26385_crs_kd_u_kb_fiscal_year",
+											 items: ['2020','2019','2018','2017','2016'], required:"1"},
+									   {label: "Description", type: "html", field: "x_26385_crs_kd_u_kb_description",
+										annotation:"Please provide 2-5 sentences about the collaboration; include notable products/outputs if applicable, and please define acronyms", required:"1"},
+									   {label: "Website URL(s)", type: "urls", field: "x_26385_crs_kd_u_kb_website_url_s",annotation:"Please list URLs only, separated by commas"},
+									   {label: "FY the Collaborative Activity Originated", type: "dropdown", field: "x_26385_crs_kd_u_kb_fiscal_year_originated",
+											 items: ['2020','2019','2018','2017','2016','2015','2014','2013','2012','2011','2010','2009','2008',
+													 '2007','2006','2005','2004','2003','2002','2001','2000','1999','1998','1997','1996','1995',
+													 '1994','1993','1992','1991','1990','1973','1957'], required:"1"},
+									   {label: "Lead DOC", type: "dropdown", 
+											 field: "x_26385_crs_kd_u_kb_doc",
+											 items: ["CBIIT","CCCT","CCG","CCR","CCT","CGH","CRCHD","CSSI","DCB","DCCPS","DCEG","DCP","DCTD","Frederick","OCC","OHAM","SBIR"], required:"1"},
+									   {label: "Other DOCs", type: "checkbox", 
+											 field: "x_26385_crs_kd_u_kb_other_docs",
+											 items: ["CBIIT","CCCT","CCG","CCR","CCT","CGH","CRCHD","CSSI","DCB","DCCPS","DCEG","DCP","DCTD","Frederick","OCC","OHAM","SBIR"], 
+										annotation: "Please add as many as needed"},
+									   {label: "POC", type: "string", field: "x_26385_crs_kd_u_kb_poc", required:"1"},
+									   {label: "References",type: "customize", field: "x_26385_crs_kd_u_kb_pmid_references",annotation:"Please list PMIDs only, separated by commas"},
+									   
+									   {label: "NIH ICs/OD Collaborators", type: "multi-dropdown", 
+											 field: "x_26385_crs_kd_u_kb_nih_ics_od_collaborators",
+											 items: ["No NIH IC/OD Collaborators","All NIH ICs","CC","CIT","CSR","FIC","NCATS","NCCAM","NCCIH","NCI","NCMHD","NCRR","NEI",
+													 "NHGRI","NHLBI","NIA","NIAAA","NIAID","NIAMS","NIBIB","NICHD","NIDA","NIDCD","NIDCR","NIDDK","NIEHS","NIGMS","NIMH","NIMHD",
+													 "NINDS","NINR","NLM","OD","OD/AO","OD/DPCPSI/OBSSR","OD/DPCPSI","OD/DPCPSI/OAR","ODP","OD/DPCPSI/ODS","OD/DPCPSI/ODSS","OD/DPCPSI/OEPR",
+													 "OD/DPCPSI/OPA","OD/DPCPSI/ORIP","OD/DPCPSI/ORWH","OD/DPCPSI/OSC","OD/DPCPSI/SGMRO","OD/DPCPSI/THRO","OD/OCPL","OD/OER","OD/OER/OPC",
+													 "OD/OIR","OD/OM","OD/OM/NBS","OD/OM/OALM","OD/OM/OB","OD/OM/OHR","OD/OM/ORF","OPASI/OD","OD/OSP","OD/OTT","OD/SASE","Other"],annotation:"Select all that apply, use + sign to add new item", required:"1"},
+									   {label: "IF OTHER IS SELECTED ABOVE, please specify", type: "string", displayWhen: {field:"x_26385_crs_kd_u_kb_nih_ics_od_collaborators", value:"Other"}, 
+										field: "x_26385_crs_kd_u_kb_nih_ics_od_collaborators_other_specify", required:"1"},
+									   
+									   {label: "HHS Agency Collaborators", type: "multi-dropdown", 
+											 field: "x_26385_crs_kd_u_kb_hhs_agency_collaborators",
+											 items: ["NO HHS Agency Collaborators","ACF","ACL","AHRQ","ASA","ASFR","ASPA","ASPE","ASPR","ATSDR","CDC","CMS","FDA",
+													 "GDM","HRSA","IHS","IOS","NIH","OASH","OCIIO","OCR","OGA","OIG","OMHA","ONC","ORAC","PHSSEF","PSC","SAMHSA",
+													 "AoA","OPHS","Other"],annotation:"Select all that apply, use + sign to add new item", required:"1"},
+									   {label: "IF OTHER IS SELECTED ABOVE, please specify", type: "string", displayWhen: {field:"x_26385_crs_kd_u_kb_hhs_agency_collaborators", value:"Other"}, 
+										field: "x_26385_crs_kd_u_kb_hhs_agency_collaborators_other_specify", required:"1"},
+									   
+									   {label: "Other Federal Agency Collaborators", type: "multi-dropdown", 
+											 field: "x_26385_crs_kd_u_kb_other_federal_agency_collaborators",
+											 items: ["No Federal Agency Collaborators","Commerce","Commerce/NOAA","Commerce/NIST","CPSC","DHS","DNI/IARPA","DoD","DoD/DARPA",
+													 "DoD/DDTRA","DoD/ONR","DoE","DoI","DoI/USGS","DoJ","DoJ/BOP","DoJ/DEA","DoJ/FBI","DoL","DoL/OSHA","DoT","Education","EPA",
+													 "GAO","GSA","HUD","NARA","NASA","NSF","ONDCP","OPM","PEPFAR","Smithsonian","State","State/OGC","Treasury","Treasury/IRS","USAID","USDA","VA",
+													 "VA/VHA","WhiteHouse","WhiteHouse/CoEA","WhiteHouse/DPC","WhiteHouse/NSC","WhiteHouse/OSTP","Other"],annotation:"Select all that apply, use + sign to add new item", required:"1"},
+									   {label: "IF OTHER IS SELECTED ABOVE, please specify", type: "string", displayWhen: {field:"x_26385_crs_kd_u_kb_other_federal_agency_collaborators", value:"Other"}, 
+										field: "x_26385_crs_kd_u_kb_federal_collaborators_other_specify", required:"1"},
+									   
+									   {label: "Tribal/State/Local Government Collaborators", type: "dropdown", 
+											 field: "x_26385_crs_kd_u_kb_government_collaborators",
+											 items: ["No Tribal/State/Local/Government Collaborators","Other"], required:"1"},
+									   {label: "IF OTHER IS SELECTED ABOVE, please specify", type: "string", displayWhen: {field:"x_26385_crs_kd_u_kb_government_collaborators", value:"Other"}, 
+										field: "x_26385_crs_kd_u_kb_government_collaborators_other_specify", required:"1"},
+									   
+									   {label: "Foreign Government Collaborators", type: "multi-dropdown", 
+											 field: "x_26385_crs_kd_u_kb_foreign_government_collaborators",
+											 items: ["No Foreign Collaborators","Health Canada","International Development Research Centre (IDRC)","Research Council UK (RCUK)","The United Nations Children's Fund (UNICEF)",
+													 "UK Medical Research Council (MRC)","World Health Organization (WHO)","Other"],annotation:"Select all that apply, use + sign to add new item", required:"1"},
+									   {label: "IF OTHER IS SELECTED ABOVE, please specify", type: "string", displayWhen: {field:"x_26385_crs_kd_u_kb_foreign_government_collaborators", value:"Other"}, 
+										field: "x_26385_crs_kd_u_kb_foreign_collaborators_other_specify", required:"1"},
+									   
+									   {label: "Non-Governmental Collaborators", type: "multi-dropdown", 
+											 field: "x_26385_crs_kd_u_kb_non_governmental_collaborators",
+											 items: ["No Non-Governmental Collaborators","American Association for the Advancement of Science (AAAS)","American Society for Microbiology (ASM)",
+													 "Bill and Melinda Gates Foundation","Foundation for the NIH (FNIH)","The Global Alliance for Clean Cookstoves","GlaxoSmithKline",
+													 "Howard Hughes Medical Institute","Kaiser Family Foundation (KFF)","Merck","Pfizer","Pharmaceutical Research and Manufacturers of America (PhRMA)",
+													 "Research!America","Wellcome Trust","Other"],annotation:"Select all that apply, use + sign to add new item", required:"1"},
+									   {label: "IF OTHER IS SELECTED ABOVE, please specify", type: "string", displayWhen: {field:"x_26385_crs_kd_u_kb_non_governmental_collaborators", value:"Other"}, 
+										field: "x_26385_crs_kd_u_kb_non_gov_collaborators_other_specify", required:"1"},
+									   
+									   {label: "Other Collaborators", type: "string",field: "x_26385_crs_kd_u_kb_other_collaborators"},
+									   {label: "Select type of collaborative activity", type: "checkbox", 
+											 field: "x_26385_crs_kd_u_kb_collaborative_activity_type",
+											 items: ["Committee, Work Group, or Advisory Group","Resource Development","Health Survey","Meeting/Workshop",
+													 "Public Education Campaign","Research Initiative","Training Initiative","Other"], required:"1"},
+									   
+									   {label: "IF OTHER IS SELECTED ABOVE, please specify", type: "string", displayWhen: {field:"x_26385_crs_kd_u_kb_collaborative_activity_type", value:"Other"}, 
+										field: "x_26385_crs_kd_u_kb_collaborative_activity_other_specify", required:"1"},
+									   {label: "IF MEETING IS SELECTED ABOVE, please specify meeting Type", type: "dropdown", displayWhen: {field:"x_26385_crs_kd_u_kb_collaborative_activity_type", value:"Meeting/Workshop"},
+											 field: "x_26385_crs_kd_u_kb_meeting_type",
+											 items: ["One-time","Recurring"], required:"1"},
+									   {label: "IF One-time IS SELECTED ABOVE, Specify date", type: "date", 
+										displayWhen: {field:"x_26385_crs_kd_u_kb_meeting_type", value:"One-time", precondition: {field:"x_26385_crs_kd_u_kb_collaborative_activity_type", value:"Meeting/Workshop"}}, 
+											 field: "x_26385_crs_kd_u_kb_meeting_type_one_time_specify_date", required:"1"},
+									   {label: "IF Recurring IS SELECTED ABOVE, Specify start and end date", type: "date_range", 
+										displayWhen: {field:"x_26385_crs_kd_u_kb_meeting_type", value:"Recurring", precondition: {field:"x_26385_crs_kd_u_kb_collaborative_activity_type", value:"Meeting/Workshop"}}, 
+											 field: "x_26385_crs_kd_u_kb_meeting_type_recurring_specify_start_end", required:"1"},
+									   {label: "IF COMMITTEE IS SELECTED ABOVE, Is this a FACA committee", type: "dropdown", displayWhen: {field:"x_26385_crs_kd_u_kb_collaborative_activity_type", value:"Committee, Work Group, or Advisory Group"}, 
+											 field: "x_26385_crs_kd_u_kb_faca_committee",
+											 items: ["Yes","No"], required:"1"},
+									   
+									   {label: "Is this collaboration related to a regulatory activity?", type: "dropdown", 
+											 field: "x_26385_crs_kd_u_kb_related_to_regulatory_activity",
+											 items: ["Yes","No","Not known"], annotation: "If one of the purposes or outcomes of this activity is to review or develop Federal rules or regulations, please choose Yes.", required:"1"},
+									   {label: "Was NIH funding provided for this activity?", type: "dropdown", 
+											 field: "x_26385_crs_kd_u_kb_nih_funding",
+											 items: ["Yes","No"], required:"1"},
+									   
+									   {label: "Products/Outputs", type: "checkbox", 
+											 field: "x_26385_crs_kd_u_kb_products_outputs",
+											 items: ["Research Tool Development","Clinical Tool Development","Best Practices Document","Guidance, Guidelines, or Standards",
+													 "Journal Article (e.g., review paper, workshop report)","White Paper/Policy Recommendations","Regulation or Rule-<Making",
+													 "Informational Website or Print Materials","Research Resource (e.g., Database, Biorepository, Disease Registry)","Strategic Plan","Other"],
+										annotation: "Provide information on any relevant work products or outputs stemming from this collaborative activity during the reporting fiscal year. Choose all that apply from the following options", required:"1"},
+									   {label: "IF OTHER IS SELECTED ABOVE, please specify", type: "string", displayWhen: {field:"x_26385_crs_kd_u_kb_products_outputs", value:"Other"}, 
+										field: "x_26385_crs_kd_products_outputs_other_specify", required:"1"},
+									   {label: "IF RESEARCH RESOURCE IS SELECTED ABOVE, Specify Type", type: "dropdown", displayWhen: {field:"x_26385_crs_kd_u_kb_products_outputs", value:"Research Resource (e.g., Database, Biorepository, Disease Registry)"}, 
+											 field: "x_26385_crs_kd_u_kb_research_resource_type",
+											 items: ["Database","Disease/Patient Registry","Information Clearinghouse","Biorepository","Other"], required:"1"},
+									   {label: "IF OTHER IS SELECTED ABOVE, please specify", type: "string", 
+										displayWhen: {field:"x_26385_crs_kd_u_kb_research_resource_type", value:"Other", precondition: {field:"x_26385_crs_kd_u_kb_products_outputs", value:"Research Resource (e.g., Database, Biorepository, Disease Registry)"}}, 
+										field: "x_26385_crs_kd_u_kb_research_resource_type_other_specify", required:"1"},
+
+									   
+									   {label: "NIH strategic alignment (Primary)", type: "dropdown", 
+											 field: "x_26385_crs_kd_u_kb_nih_strategic_alignment_primary",
+											 items: ["1.1 Fundamental Science","1.2 Treatment and Cures","1.3 Health Promotion and Disease Prevention","2.1 Enhance Nimbleness","2.2 Consider Burden of Disease",
+													 "2.3 Advance Research Opportunities Presented by Rare Diseases","2.4 Consider the Value of Permanently Eradicating a Disease","3.1 Recruit and Retain an Outstanding Biomedical Research Workforce",
+													 "3.2 Enhance Workforce Diversity","3.3 Ensure Rigor and Reproducibility","3.4 Optimize Approaches to Inform Funding Decisions","3.5 Encourage Innovation",
+													 "4.1 Develop the \"Science of Science\"","4.2 Balance Outputs with Outcomes","4.3 Conduct Workforce Analyses","4.4 Continuous Review of Peer Review",
+													 "4.5 Evaluate Steps to Enhance Rigor and Reproducibility","4.6 Reduce Administrative Burden","4.7 Track Effectiveness of Risk Management in Decision Making"], required:"1"},
+									   
+									   {label: "NIH strategic alignment (Secondary Optional)", type: "dropdown", 
+											 field: "x_26385_crs_kd_u_kb_nih_strategic_alignment_other",
+											 items: ["1.1 Fundamental Science","1.2 Treatment and Cures","1.3 Health Promotion and Disease Prevention","2.1 Enhance Nimbleness","2.2 Consider Burden of Disease",
+													 "2.3 Advance Research Opportunities Presented by Rare Diseases","2.4 Consider the Value of Permanently Eradicating a Disease","3.1 Recruit and Retain an Outstanding Biomedical Research Workforce",
+													 "3.2 Enhance Workforce Diversity","3.3 Ensure Rigor and Reproducibility","3.4 Optimize Approaches to Inform Funding Decisions","3.5 Encourage Innovation",
+													 "4.1 Develop the \"Science of Science\"","4.2 Balance Outputs with Outcomes","4.3 Conduct Workforce Analyses","4.4 Continuous Review of Peer Review",
+													 "4.5 Evaluate Steps to Enhance Rigor and Reproducibility","4.6 Reduce Administrative Burden","4.7 Track Effectiveness of Risk Management in Decision Making"]},
+									   
+									   {label: "HHS Strategic Plan Alignment (Primary)", type: "dropdown", 
+											 field: "x_26385_crs_kd_u_kb_hhs_strategic_plan_alignment_primary",
+											 items: ["1.1: Promote affordable healthcare, while balancing spending on premiums, deductibles, and out-of-pocket costs","1.2: Expand safe, high-quality healthcare options, and encourage innovation and competition",
+													 "1.3: Improve Americans' access to healthcare and expand choices of care and service options","1.4: Strengthen and expand the healthcare workforce to meet America's diverse needs",
+													 "2.1: Empower people to make informed choices for healthier living","2.2: Prevent, treat, and control communicable diseases and chronic conditions",
+													 "2.3: Reduce the impact of mental and substance use disorders through prevention, early intervention, treatment, and recovery support","2.4: Prepare for and respond to public health emergencies",
+													 "3.1: Encourage self-sufficiency and personal responsibility, and eliminate barriers to economic opportunity","3.2: Safeguard the public against preventable injuries and violence or their results",
+													 "3.3: Support strong families and healthy marriage, and prepare children and youth for healthy, productive lives",
+													 "3.4: Maximize the independence, well-being, and health of older adults, people with disabilities, and their families and caregivers",
+													 "4.1: Improve surveillance, epidemiology, and laboratory services","4.2: Expand the capacity of the scientific workforce and infrastructure to support innovative research",
+													 "4.3: Advance basic science knowledge and conduct applied prevention and treatment research to improve health and development",
+													 "4.4: Leverage translational research, dissemination and implementation science, and evaluation investments to support adoption of evidence-informed practices",
+													 "5.1: Ensure responsible financial management","5.2: Manage human capital to achieve the HHS mission",
+													 "5.3: Optimize information technology investments to improve process efficiency and enable innovation to advance program mission goals",
+													 "5.4: Protect the safety and integrity of our human, physical, and digital assets"], required:"1"},
+									   
+									   {label: "HHS Strategic Plan Alignment (Secondary Optional)", type: "dropdown", 
+											 field: "x_26385_crs_kd_u_kb_hhs_strategic_plan_alignment_other",
+											 items: ["1.1: Promote affordable healthcare, while balancing spending on premiums, deductibles, and out-of-pocket costs","1.2: Expand safe, high-quality healthcare options, and encourage innovation and competition",
+													 "1.3: Improve Americans' access to healthcare and expand choices of care and service options","1.4: Strengthen and expand the healthcare workforce to meet America's diverse needs",
+													 "2.1: Empower people to make informed choices for healthier living","2.2: Prevent, treat, and control communicable diseases and chronic conditions",
+													 "2.3: Reduce the impact of mental and substance use disorders through prevention, early intervention, treatment, and recovery support","2.4: Prepare for and respond to public health emergencies",
+													 "3.1: Encourage self-sufficiency and personal responsibility, and eliminate barriers to economic opportunity","3.2: Safeguard the public against preventable injuries and violence or their results",
+													 "3.3: Support strong families and healthy marriage, and prepare children and youth for healthy, productive lives",
+													 "3.4: Maximize the independence, well-being, and health of older adults, people with disabilities, and their families and caregivers",
+													 "4.1: Improve surveillance, epidemiology, and laboratory services","4.2: Expand the capacity of the scientific workforce and infrastructure to support innovative research",
+													 "4.3: Advance basic science knowledge and conduct applied prevention and treatment research to improve health and development",
+													 "4.4: Leverage translational research, dissemination and implementation science, and evaluation investments to support adoption of evidence-informed practices",
+													 "5.1: Ensure responsible financial management","5.2: Manage human capital to achieve the HHS mission",
+													 "5.3: Optimize information technology investments to improve process efficiency and enable innovation to advance program mission goals",
+													 "5.4: Protect the safety and integrity of our human, physical, and digital assets"]},
+									   
+										{label: "Attachment", type: "file"}
+										   ]
+	};
+	var result = {};
+	result.kb = kc[category];
+	result.schema = data_columns[category];
+	
+	return result;
+
+})(request, response);]]></operation_script>
+        <operation_uri>/api/x_26385_crs_kd/export/getSubmissionSchema</operation_uri>
+        <produces>application/json,application/xml,text/xml</produces>
+        <produces_customized>false</produces_customized>
+        <relative_path>/getSubmissionSchema</relative_path>
+        <request_example/>
+        <requires_acl_authorization>false</requires_acl_authorization>
+        <requires_authentication>true</requires_authentication>
+        <requires_snc_internal_role>true</requires_snc_internal_role>
+        <short_description/>
+        <sys_class_name>sys_ws_operation</sys_class_name>
+        <sys_created_by>yuw5@nih.gov</sys_created_by>
+        <sys_created_on>2019-08-15 17:07:57</sys_created_on>
+        <sys_customer_update>false</sys_customer_update>
+        <sys_id>97e75799db9ff700b86770c08c9619a6</sys_id>
+        <sys_mod_count>61</sys_mod_count>
+        <sys_name>getSubmissionSchema</sys_name>
+        <sys_package display_value="CRS Knowledge Database" source="x_26385_crs_kd">404e613b4f9213007221e321a310c738</sys_package>
+        <sys_policy/>
+        <sys_replace_on_upgrade>false</sys_replace_on_upgrade>
+        <sys_scope display_value="CRS Knowledge Database">404e613b4f9213007221e321a310c738</sys_scope>
+        <sys_update_name>sys_ws_operation_97e75799db9ff700b86770c08c9619a6</sys_update_name>
+        <sys_updated_by>yuw5@nih.gov</sys_updated_by>
+        <sys_updated_on>2020-01-24 15:39:47</sys_updated_on>
+        <web_service_definition display_value="export">01e1bbe7db6a53005358dc50cf961994</web_service_definition>
+        <web_service_version/>
+    </sys_ws_operation>
+</record_update>

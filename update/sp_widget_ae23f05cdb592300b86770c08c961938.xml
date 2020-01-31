@@ -1,5 +1,4 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<record_update table="sp_widget">
+<?xml version="1.0" encoding="UTF-8"?><record_update table="sp_widget">
     <sp_widget action="INSERT_OR_UPDATE">
         <category>custom</category>
         <client_script><![CDATA[function($scope,$rootScope, $mdDialog, $sce, $location, NERDArticle, NERDComment, NERDTag, NERDFile) {
@@ -8,6 +7,7 @@
 	var s = $location.search();
 	//callback for deletion
 	var cb = null;
+	
 	
 	c.save_warning_text = "Post";
 	c.versionsHidden  = true;
@@ -22,15 +22,71 @@
 	
 	
 	var template = {"u_kb_template_top_accomplishment":
-									['Cancer Site/Type',
+									['DOC',
+									 'Description',
+									 'Cancer Site/Type',
 									 'Research Type',
 									 'Special Topic',
-									 'Description',
 									 'References',
 									 'Other References',
-									 'Involved organization', 
-									 'DOC', 
-									 'Fiscal Year'],
+									 'Collaborations',
+									 'Fiscal Year',
+									 'Point of Contact',
+									 'CRS Contact'],
+									"u_kb_template_other_accomplishment":
+									['DOC',
+									 'Other Accomplishment Type',
+									 'Description',
+									 'Cancer Site/Type',
+									 'Research Type',
+									 'Special Topic',
+									 'References',
+									 'Other References',
+									 'Collaborations',
+									 'Fiscal Year',
+									 'Point of Contact',
+									 'CRS Contact'],
+									"u_kb_template_collaboration":[
+											"For Existing activities, please specify",	
+											"Acronym",
+											"Fiscal Year",
+											"Description",
+											"Website URL(s)",
+											"FY the Collaborative Activity Originated",
+											"Lead DOC",
+											"Other DOCs",
+											"POC",
+											"References",
+											"NIH ICs/OD Collaborators",
+											"Specify the OTHER NIH ICs/OD Collaborators",
+											"HHS Agency Collaborators",
+											"Specify the OTHER HHS Agency Collaborators",
+											"Other Federal Agency Collaborators",
+											"Specify the OTHER Federal Agency Collaborators",
+											"Tribal/State/Local Government Collaborators",
+											"Specify the OTHER Tribal/State/Local Government Collaborators",
+											"Foreign Government Collaborators",
+											"Specify the OTHER Foreign Government Collaborators",
+											"Non-Governmental Collaborators",
+											"Specify the OTHER Non-Governmental Collaborators",
+											"Other Collaborators",
+											"Select type of collaborative activity",
+											"Specify the OTHER Collaborative Activity",
+											"IF MEETING IS SELECTED ABOVE, please specify meeting Type",
+											"Specify One-time date",
+											"Specify Recurring start and end date",
+											"IF COMMITTEE IS SELECTED ABOVE, Is this a FACA committee",
+											"Is this collaboration related to a regulatory activity?",
+											"Was NIH funding provided for this activity?",
+											"Products/Outputs",
+											"Specify the OTHER Products/Outputs",
+											"IF RESEARCH RESOURCE IS SELECTED ABOVE, Specify Type",
+											"Specify the OTHER RESEARCH RESOURCE",
+											"NIH strategic alignment (primary)",
+											"NIH strategic alignment (Secondary Optional)",
+											"HHS Strategic Plan Alignment (Primary)",
+											"HHS Strategic Plan Alignment (Secondary Optional)"
+									],
 									"u_kb_template_gpra": 
 									[
 									 'Measure ID',
@@ -100,7 +156,7 @@
 										'Tools and Data Source(s)',
 										'Other tools and sources',
 										'Other Attributes',
-										'Name(s) of file(s)',
+										'Name and description of file(s)*',
 										'Other Notes'],
 									"u_kb_template_presentations": 
 									[
@@ -196,6 +252,8 @@
 		
 		if(c.knowledge_id == 'f5644dcadb54ab0054d8ff621f9619d7'){
 			c.kc.push({id:'u_kb_template_top_accomplishment',label:'Top Accomplishments'});
+			c.kc.push({id:'u_kb_template_other_accomplishment',label:'Other Accomplishments'});
+			c.kc.push({id:'u_kb_template_collaboration',label:'Collaborations'});
 			c.kc.push({id:'u_kb_template_gpra',label:'GPRA'});
 			c.kc.push({id:'u_kb_template_significant_items',label:'Significant Items'});
 			c.kc.push({id:'u_kb_template_final_reports',label:'Final Reports'});
@@ -220,6 +278,8 @@
 		}
 		$scope.annotation = $scope.data.annotation;
 		$scope.latest = $scope.data.latest;
+		$scope.last_editor = $scope.data.editor;
+		$scope.last_edit_time = $scope.data.edit_time;
 		$scope.editable = $scope.data.editable;
 		$scope.warning = $scope.data.warning;
 		c.warning = $scope.warning;
@@ -275,6 +335,107 @@
 					$scope.columns.splice(idx, 3);
 				}
 			}
+		}
+		if(c.cat == 'Collaborations'){
+			var idx = 0;
+     	var urls = $scope.data["Website URL(s)"];
+			if(urls != "N/A"){
+				var links = [];
+				urls.split(",").forEach(function(u){
+					links.push("<p><a href='"+u+"' target='_blank'>"+u+"</a></p>");
+				});
+				$scope.data["Website URL(s)"] = links.join("");
+			}
+			var pmids = $scope.data.References;
+			if(pmids != "N/A"){
+				var links = [];
+				pmids.split(",").forEach(function(pd){
+					links.push("<p><a href='https://www.ncbi.nlm.nih.gov/pubmed/"+pd+"' target='_blank'>PMID: "+pd+"</a></p>");
+				});
+				$scope.data.References = links.join("");
+			}
+			if($scope.data['NIH ICs/OD Collaborators'].indexOf('Other') > -1){
+				$scope.data['NIH ICs/OD Collaborators'] = $scope.data['NIH ICs/OD Collaborators'].replace("Other","Other: "+$scope.data['Specify the OTHER NIH ICs/OD Collaborators']);
+			}
+			idx = $scope.columns.indexOf('Specify the OTHER NIH ICs/OD Collaborators');
+			$scope.columns.splice(idx, 1);
+
+			if($scope.data['HHS Agency Collaborators'].indexOf('Other') > -1){
+				$scope.data['HHS Agency Collaborators'] = $scope.data['HHS Agency Collaborators'].replace("Other","Other: "+$scope.data['Specify the OTHER HHS Agency Collaborators']);
+			}
+			idx = $scope.columns.indexOf('Specify the OTHER HHS Agency Collaborators');
+			$scope.columns.splice(idx, 1);
+			
+			if($scope.data['Other Federal Agency Collaborators'].indexOf('Other') > -1){
+				$scope.data['Other Federal Agency Collaborators'] = $scope.data['Other Federal Agency Collaborators'].replace("Other","Other: "+$scope.data['Specify the OTHER Federal Agency Collaborators']);
+			}
+			idx = $scope.columns.indexOf('Specify the OTHER Federal Agency Collaborators');
+			$scope.columns.splice(idx, 1);
+			
+			if($scope.data['Tribal/State/Local Government Collaborators'].indexOf('Other') > -1){
+				$scope.data['Tribal/State/Local Government Collaborators'] = $scope.data['Tribal/State/Local Government Collaborators'].replace("Other","Other: "+$scope.data['Specify the OTHER Tribal/State/Local Government Collaborators']);
+			}
+			idx = $scope.columns.indexOf('Specify the OTHER Tribal/State/Local Government Collaborators');
+			$scope.columns.splice(idx, 1);
+			
+			if($scope.data['Foreign Government Collaborators'].indexOf('Other') > -1){
+				$scope.data['Foreign Government Collaborators'] = $scope.data['Foreign Government Collaborators'].replace("Other","Other: "+$scope.data['Specify the OTHER Foreign Government Collaborators']);
+			}
+			idx = $scope.columns.indexOf('Specify the OTHER Foreign Government Collaborators');
+			$scope.columns.splice(idx, 1);
+			
+			if($scope.data['Non-Governmental Collaborators'].indexOf('Other') > -1){
+				$scope.data['Non-Governmental Collaborators'] = $scope.data['Non-Governmental Collaborators'].replace("Other","Other: "+$scope.data['Specify the OTHER Non-Governmental Collaborators']);
+			}
+			idx = $scope.columns.indexOf('Specify the OTHER Non-Governmental Collaborators');
+			$scope.columns.splice(idx, 1);
+			
+			if($scope.data['Select type of collaborative activity'].indexOf('Other') > -1){
+				$scope.data['Select type of collaborative activity'] = $scope.data['Select type of collaborative activity'].replace("Other","Other: "+$scope.data['Specify the OTHER Collaborative Activity']);
+			}
+			idx = $scope.columns.indexOf('Specify the OTHER Collaborative Activity');
+			$scope.columns.splice(idx, 1);
+			
+			if($scope.data['Select type of collaborative activity'].indexOf('Meeting/Workshop') > -1) {
+				if($scope.data['IF MEETING IS SELECTED ABOVE, please specify meeting Type'].indexOf('One-time') > -1){
+					$scope.data['IF MEETING IS SELECTED ABOVE, please specify meeting Type'] = $scope.data['IF MEETING IS SELECTED ABOVE, please specify meeting Type'].replace("One-time","One-time: "+$scope.data['Specify One-time date']);
+				}
+				else if($scope.data['IF MEETING IS SELECTED ABOVE, please specify meeting Type'].indexOf('Recurring') > -1){
+					$scope.data['IF MEETING IS SELECTED ABOVE, please specify meeting Type'] = $scope.data['IF MEETING IS SELECTED ABOVE, please specify meeting Type'].replace("Recurring","Recurring: from " +$scope.data['Specify Recurring start and end date'].replace('\,'," to "));
+				}
+			}
+			else{
+				idx = $scope.columns.indexOf('IF MEETING IS SELECTED ABOVE, please specify meeting Type');
+				$scope.columns.splice(idx, 1);
+			}
+			
+			idx = $scope.columns.indexOf('Specify One-time date');
+			$scope.columns.splice(idx, 1);
+			idx = $scope.columns.indexOf('Specify Recurring start and end date');
+			$scope.columns.splice(idx, 1);
+			
+			if($scope.data['Select type of collaborative activity'].indexOf('Committee, Work Group, or Advisory Group') == -1){
+				idx = $scope.columns.indexOf('IF COMMITTEE IS SELECTED ABOVE, Is this a FACA committee');
+				$scope.columns.splice(idx, 1);
+			}
+			if($scope.data['Products/Outputs'].indexOf('Research Resource (e.g., Database, Biorepository, Disease Registry)') == -1){
+				idx = $scope.columns.indexOf('IF RESEARCH RESOURCE IS SELECTED ABOVE, Specify Type');
+				$scope.columns.splice(idx, 1);
+				idx = $scope.columns.indexOf('Specify the OTHER RESEARCH RESOURCE');
+				$scope.columns.splice(idx, 1);
+			}
+			
+			if($scope.data['Products/Outputs'].indexOf('Other') > -1){
+				$scope.data['Products/Outputs'] = $scope.data['Products/Outputs'].replace("Other","Other: "+$scope.data['Specify the OTHER Products/Outputs']);
+			}
+			idx = $scope.columns.indexOf('Specify the OTHER Products/Outputs');
+			$scope.columns.splice(idx, 1);
+			
+			if($scope.data['IF RESEARCH RESOURCE IS SELECTED ABOVE, Specify Type'].indexOf('Other') > -1){
+				$scope.data['IF RESEARCH RESOURCE IS SELECTED ABOVE, Specify Type'] = $scope.data['IF RESEARCH RESOURCE IS SELECTED ABOVE, Specify Type'].replace("Other","Other: "+$scope.data['Specify the OTHER RESEARCH RESOURCE']);
+			}
+			idx = $scope.columns.indexOf('Specify the OTHER RESEARCH RESOURCE');
+			$scope.columns.splice(idx, 1);
 		}
 		c.tags = c.parseTags($scope.data.tags);
 		
@@ -412,6 +573,7 @@
 				tags.forEach(function(elem){
 					c.your_tags.push(elem.substring(1, elem.length - 1));
 				});
+				c.tag2add = "";
 				$scope.$apply();
 			}, function(error){
 				console.log(error);
@@ -568,7 +730,7 @@
 								{text: 'Transition Planning'},
 								{text: 'Triple Negative Breast Cancer'},
 								{text: 'USPSTF'},
-								{text: 'Women’s Health '},
+								{text: 'Women\'s Health '},
 								{text: 'SCLC'}
 							 ];
 
@@ -716,7 +878,7 @@
 	data.info = {
 		sessionId: session_id
 	};
-
+	
 })();]]></script>
         <servicenow>false</servicenow>
         <sys_class_name>sp_widget</sys_class_name>
@@ -724,7 +886,7 @@
         <sys_created_on>2018-10-17 20:16:40</sys_created_on>
         <sys_customer_update>false</sys_customer_update>
         <sys_id>ae23f05cdb592300b86770c08c961938</sys_id>
-        <sys_mod_count>795</sys_mod_count>
+        <sys_mod_count>870</sys_mod_count>
         <sys_name>[crs] KD Article</sys_name>
         <sys_package display_value="CRS Knowledge Database" source="x_26385_crs_kd">404e613b4f9213007221e321a310c738</sys_package>
         <sys_policy/>
@@ -732,7 +894,7 @@
         <sys_scope display_value="CRS Knowledge Database">404e613b4f9213007221e321a310c738</sys_scope>
         <sys_update_name>sp_widget_ae23f05cdb592300b86770c08c961938</sys_update_name>
         <sys_updated_by>yuw5@nih.gov</sys_updated_by>
-        <sys_updated_on>2019-06-21 20:45:42</sys_updated_on>
+        <sys_updated_on>2020-01-27 23:44:25</sys_updated_on>
         <template><![CDATA[<div id="crs-article">
   <div class="container">
     <div class="row row-space">
@@ -743,26 +905,30 @@
     <div class="row row-space">
           <div class="col-md-9 article-block">
 						<div class="block-header">
-                <h4  class="modal-title">{{title}}</h4>
+                <h4 class="modal-title">{{title}}</h4>
             </div>
             <div class="block-info">
               <div ng-show="c.versionsHidden" style="width:70%;">
-                <a href="#" ng-click="c.switchVersions()"><i class="fa fa-caret-right" style="width:10px;"></i> Version {{version}} - {{annotation}}</a>
+                <a ng-click="c.switchVersions()"><i class="fa fa-caret-right" style="width:10px;"></i> Version {{version}} - {{annotation}}</a>
+                <span style="font-size: 12px;font-style: italic;margin-left: 10px;">Last edited by {{last_editor}} on {{last_edit_time}}</span>
               </div>
               <div ng-show="!c.versionsHidden" style="width:70%;">
-                <a href="#" ng-click="c.switchVersions()"><i class="fa fa-caret-down" style="width:10px;"></i> Version {{version}} - {{annotation}}</a>
+                <a ng-click="c.switchVersions()"><i class="fa fa-caret-down" style="width:10px;"></i> Version {{version}} - {{annotation}}</a>
+                <span style="font-size: 12px;font-style: italic;margin-left: 10px;">Last edited by {{last_editor}} on {{last_edit_time}}</span>
               </div>
-              <div style="width:30%;text-align:right;" ng-if="c.isSu || c.author_id == c.currentUserID">
-                  <a href="#" ng-click="c.gotoEdit(version)" ng-if="editable">+ Edit this Article</a>
+              <!-- div style="width:30%;text-align:right;" ng-if="c.isSu || c.author_id == c.currentUserID" -->
+              <div style="width:30%;text-align:right;">
+                  <a ng-click="c.gotoEdit(version)" ng-if="editable">+ Edit this Article</a>
               </div>
             </div>
             <div id='grow' style="border-bottom: 1px solid lightgray;">
-              <div class="block-versions" ng-class="version == article.version? 'active' : ''" ng-repeat="article in c.versions">
-                <a href="#" ng-click="c.switchtoVersion(article.version)" ng-if="version != article.version">v{{article.version}} - {{article.annotation}}</a>
+              <div class="block-versions" ng-class="version == article.version? 'active' : ''" ng-repeat="article in c.versions" style="position:relative;">
+                <a ng-click="c.switchtoVersion(article.version)" ng-if="version != article.version">v{{article.version}} - {{article.annotation}}</a>
                 <span ng-if="version == article.version">v{{article.version}} - {{article.annotation}}</span>
+                <span style="font-size: 12px;font-weight: initial;font-style: italic;margin-left: 10px;position: absolute;top: 0px;right: 0px;margin-right: 15px;margin-top: 4px;">Edited by {{article.editor}} on {{article.edit_time}}</span>
               </div>
               <div class="block-versions" style="text-align:center;">
-                <a href="#" ng-click="c.loadMoreVersions(number)" ng-if="c.hasMore">Load More</a>
+                <a ng-click="c.loadMoreVersions(number)" ng-if="c.hasMore">Load More</a>
               </div>
             </div>
             
@@ -776,8 +942,8 @@
               </div> 
               <div ng-repeat="item in columns track by $index">
                 <h4 style="font-weight:bold;">{{item}}</h4> 
-                <div ng-bind-html="c.trustAsHtml(data[item])" style="font-size:14px;" class="tinymce_table_scope"></div>
-                <span style="color:darkgray; font-weight:bold;font-size: 14px;" ng-if="data[item] !=='N/A' && item == 'Name(s) of file(s)'">* Files have been saved in this <a target='_blank' href="https://nih.sharepoint.com/:f:/r/sites/GRP-NCI-CRS/Shared%20Documents/Analysis?csf=1&e=5Rp6CS">Analysis folder</a> (CRS Sharepoint).</span>
+                <div ng-bind-html="c.trustAsHtml(data[item])" style="word-break: break-word; font-size: 14px;" class="tinymce_table_scope"></div>
+                <span style="color:darkgray; font-weight:bold;font-size: 14px;" ng-if="data[item] !=='N/A' && item == 'Name and description of file(s)*'">* Files have been saved in the <a target='_blank' href="https://nih.sharepoint.com/:f:/r/sites/GRP-NCI-CRS/Shared%20Documents/Analysis?csf=1&e=5Rp6CS">Analysis folder</a> (CRS Sharepoint. Please log in using username@nih.gov).</span>
               </div>
               <div>
                 <h4 style="font-weight:bold;">Author</h4> 
@@ -785,8 +951,8 @@
               </div>
             </div>
             <div class="block-footer">
-              <div class="tag-label">
-                Tags:
+              <div class="tag-label" style="display:inline-flex;">
+                Tags&nbsp;<span class="tooltip-icon" uib-tooltip="Please refer to the user guide for a suggested list of tags." tooltip-placement="right" tooltip-class="tooltipClass"><i class="fa fa-question-circle" aria-hidden="true"></i></span>
               </div>
               <div class="tag-area">
                 <!--
@@ -802,7 +968,7 @@
                 <md-chips ng-model="c.tags" readonly="true" md-removable="c.isSu || c.author_id == c.currentUserID" md-on-remove="c.tagRemoving($chip)">
     						</md-chips>
               </div>
-              <md-list>
+              <md-list style="margin: 0px -15px;">
                 <div style="display:flex;background-color:rgb(250,250,250); height: 40px;">
                   <div class="col-md-8" style="line-height: 40px;">My Tags ({{c.your_tags.length}})</div>
                   <div  class="col-md-4" style="display:flex;">
@@ -811,7 +977,7 @@
               			<md-button ng-disabled="true" class="md-raised md-primary" style="margin: 3px 0px 0px 10px;min-height:34px; line-height:34px;min-width: 50px;"  ng-show="c.tag2add == undefined || c.tag2add == ''">Add</md-button>
                   </div>
                 </div>
-                <md-list-item class="" ng-repeat="tag in c.your_tags">
+                <md-list-item style="margin: 0px 15px;padding: 0px 0px 0px 15px;" ng-repeat="tag in c.your_tags">
                   <div class="md-list-item-text">
                     <h5>
                       {{tag}}

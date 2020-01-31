@@ -1,5 +1,4 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<record_update table="sys_ws_operation">
+<?xml version="1.0" encoding="UTF-8"?><record_update table="sys_ws_operation">
     <sys_ws_operation action="INSERT_OR_UPDATE">
         <active>true</active>
         <consumes>application/json,application/xml,text/xml</consumes>
@@ -10,24 +9,85 @@
         <name>getVersions</name>
         <operation_script><![CDATA[(function process(/*RESTAPIRequest*/ request, /*RESTAPIResponse*/ response) {
 
+	var compare = function(v_a, v_b){
+		var pos_a = v_a.indexOf('.');
+		var pos_b = v_b.indexOf('.');
+		var v_a_l = parseInt(v_a.substring(0,pos_a));
+		var v_b_l = parseInt(v_b.substring(0,pos_b));
+		if(v_a_l < v_b_l){
+			return 1;
+		}
+		else if(v_a_l == v_b_l){
+			v_a_l = parseInt(v_a.substring(pos_a+1));
+			v_b_l = parseInt(v_b.substring(pos_b+1));
+			if(v_a_l < v_b_l){
+				return 1;
+			}
+			else if(v_a_l == v_b_l){
+				return 0;
+			}
+			else{
+				return -1;
+			}
+		}
+		else{
+			return -1;
+		}
+	}
 	var startVersion = request.queryParams.version.toString();
 	var number = request.queryParams.number.toString();
 	
     var v = new GlideRecord('x_26385_crs_kd_versions');
 	v.addQuery('article_number', number);
 	v.addQuery('article_field', 'annotation');
+	/*
 	if(startVersion && startVersion !== ""){
 		v.addQuery('article_version', '<' ,startVersion);
 	}
 	v.orderByDesc('article_version');
 	v.setLimit(5);
+	*/
 	v.query();
+	var tmp = "";
+	var uids = [];
+	var dict = {};
+	var vs = [];
 	var versions = [];
 	while(v.next()){
-		versions.push({version: v.article_version.toString(),
+		var idx = v.record_version.toString();
+		if(!startVersion || startVersion == "" || compare(startVersion,idx) < 0){
+			tmp = v.sys_created_by.toString();
+			dict[idx] = {version: idx,
 					   annotation: v.article_field_value.toString(),
-					   number: number
-					  });
+					   number: number,
+					   editor: tmp,
+					   edit_time: v.sys_created_on.toString().substring(0,10)
+					  };
+			vs.push(idx);
+			if(uids.indexOf(tmp) == -1){
+				uids.push(tmp);
+			}
+		}
+	}
+	
+	//get User Name by User IDs
+	var users = {};
+	var user = new GlideRecord('sys_user');
+	user.addQuery('user_name', 'IN', uids);
+	user.query();
+	 //var index = 0;
+     while(user.next()){
+		 var value = user.getDisplayValue('first_name') + " " + user.getDisplayValue('last_name');
+		 users[user.getDisplayValue('user_name')] = value;
+     }
+	
+	//get top 5 records
+	vs.sort(compare);
+	for(var i = 0; i< 5 & i < vs.length; i++){
+		dict[vs[i]].editor = users[dict[vs[i]].editor];
+		var date = dict[vs[i]].edit_time.replace(/-/g, '/');
+		dict[vs[i]].edit_time = date.substring(5) + '/' + date.substring(0,4);
+		versions.push(dict[vs[i]]);
 	}
 	
 	return versions;
@@ -40,13 +100,14 @@
         <request_example/>
         <requires_acl_authorization>false</requires_acl_authorization>
         <requires_authentication>true</requires_authentication>
+        <requires_snc_internal_role>false</requires_snc_internal_role>
         <short_description/>
         <sys_class_name>sys_ws_operation</sys_class_name>
         <sys_created_by>yuw5@nih.gov</sys_created_by>
         <sys_created_on>2019-04-23 19:59:52</sys_created_on>
         <sys_customer_update>false</sys_customer_update>
         <sys_id>108778fcdb89770054d8ff621f961913</sys_id>
-        <sys_mod_count>10</sys_mod_count>
+        <sys_mod_count>24</sys_mod_count>
         <sys_name>getVersions</sys_name>
         <sys_package display_value="CRS Knowledge Database" source="x_26385_crs_kd">404e613b4f9213007221e321a310c738</sys_package>
         <sys_policy/>
@@ -54,7 +115,7 @@
         <sys_scope display_value="CRS Knowledge Database">404e613b4f9213007221e321a310c738</sys_scope>
         <sys_update_name>sys_ws_operation_108778fcdb89770054d8ff621f961913</sys_update_name>
         <sys_updated_by>yuw5@nih.gov</sys_updated_by>
-        <sys_updated_on>2019-05-01 15:37:03</sys_updated_on>
+        <sys_updated_on>2020-01-15 18:41:37</sys_updated_on>
         <web_service_definition display_value="export">01e1bbe7db6a53005358dc50cf961994</web_service_definition>
         <web_service_version/>
     </sys_ws_operation>

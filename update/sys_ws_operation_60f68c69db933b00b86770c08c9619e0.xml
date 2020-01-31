@@ -1,0 +1,171 @@
+<?xml version="1.0" encoding="UTF-8"?><record_update table="sys_ws_operation">
+    <sys_ws_operation action="INSERT_OR_UPDATE">
+        <active>true</active>
+        <consumes>application/json,application/xml,text/xml</consumes>
+        <consumes_customized>false</consumes_customized>
+        <default_operation_uri/>
+        <enforce_acl>cf9d01d3e73003009d6247e603f6a990</enforce_acl>
+        <http_method>GET</http_method>
+        <name>getSubmissionList</name>
+        <operation_script><![CDATA[(function process(/*RESTAPIRequest*/ request, /*RESTAPIResponse*/ response) {
+
+	
+	var kc = {'u_kb_template_top_accomplishment':{id: 'bef4810edb54ab0054d8ff621f9619e8', name: 'Top Accomplishments'},
+			  'u_kb_template_other_accomplishment':{id: '26f88bccdb09c41054d8ff621f96193d', name: 'Other Accomplishments'},
+			  'u_kb_template_collaboration':{id: 'a260b1efdb110850b86770c08c96199b', name: 'Collaborations'}
+	};
+	
+	var type = request.queryParams.type;
+	var doc = request.queryParams.doc;
+	var category = request.queryParams.category;
+	var userid = gs.getUserID();
+	var result = {};
+	
+	if(type == 'my'){
+		result.mySubs = [];
+		for(var category in kc){
+			var section = {};
+			section.name = kc[category].name,
+			section.tmpl = category,
+			section.show = true,
+			section.isOpen = false,
+			section.list = [];
+			var t = new GlideRecord('x_26385_crs_kd_submissions');
+			t.addQuery('submission_author', userid);
+			t.addQuery('submission_category', kc[category].id);
+			t.orderByDesc('sys_created_on');
+			t.query();
+			if(t.getRowCount() > 0){
+				while(t.next()){
+					var tmp = {};
+					tmp.sub_id = t.sys_id.toString();
+					tmp.title = t.submission_title.toString();
+					tmp.notes = t.getDisplayValue("submission_knowledge_base") +' > '+ t.getDisplayValue("submission_category");
+					tmp.number = t.submission_number.toString();
+					tmp.status = t.submission_stage.toString();
+					tmp.priority = t.submission_priority.toString();
+					tmp.doc_comment = t.doc_comment.toString();
+					tmp.other_info = JSON.parse(t.submission_other_info.toString());
+					section.list.push(tmp);
+				}
+			}
+			result.mySubs.push(section);
+		}
+		
+	}
+	else if(type == 'doc'){
+		result.docSubs = [];
+		for(var category in kc){
+			var section = {};
+			section.name = kc[category].name,
+			section.tmpl = category,
+			section.show = true,
+			section.isOpen = false,
+			section.list = [];
+			var doc_sub = new GlideRecord('x_26385_crs_kd_submissions');
+			doc_sub.addQuery('submission_doc', "{"+doc+"}");
+			doc_sub.addQuery('submission_category', kc[category].id);
+			doc_sub.orderByDesc('sys_created_on');
+			doc_sub.query();
+			if(doc_sub.getRowCount() > 0){
+				while(doc_sub.next()){
+					var other_info = JSON.parse(doc_sub.submission_other_info.toString());
+					var status = doc_sub.submission_stage.toString();
+					if(status != 'Open' || (status == 'Open' && other_info.rejectedByDOC)){
+						var doc_tmp = {};
+						doc_tmp.sub_id = doc_sub.sys_id.toString();
+						doc_tmp.doc = doc_sub.submission_doc.toString();
+						doc_tmp.who = doc_sub.getDisplayValue("submission_author");
+						doc_tmp.title = doc_sub.submission_title.toString();
+						doc_tmp.notes = doc_sub.getDisplayValue("submission_knowledge_base") +' > '+ doc_sub.getDisplayValue("submission_category");
+						doc_tmp.number = doc_sub.submission_number.toString();
+						doc_tmp.status = doc_sub.submission_stage.toString();
+						doc_tmp.priority = doc_sub.submission_priority.toString();
+						doc_tmp.other_info = JSON.parse(doc_sub.submission_other_info.toString());
+						doc_tmp.updated = doc_sub.sys_updated_on.toString().substring(0,10);
+						section.list.push(doc_tmp);
+					}
+				}
+			}
+			result.docSubs.push(section);
+		}
+	}
+	else if(type == 'all'){
+		var id_tmpl = {};
+		result.cats = [];
+		for(var cat in kc){
+			var tmp = {};
+			tmp.id = kc[cat].id;
+			tmp.tmpl = cat;
+			tmp.label = kc[cat].name;
+			result.cats.push(tmp);
+			id_tmpl[tmp.id] = cat;
+		}
+		result.allSubs = [];
+		var all_sub = new GlideRecord('x_26385_crs_kd_submissions');
+		
+		if(doc && doc != ""){
+			all_sub.addQuery('submission_doc', '{'+doc+'}');
+		}
+		if(category && category != ""){
+			all_sub.addQuery('submission_category', category);
+		}
+		
+		//all_sub.addQuery('submission_stage','NOT IN',"Open,DOC Review");
+		all_sub.orderByDesc('sys_created_on');
+		all_sub.query();
+		if(all_sub.getRowCount() > 0){
+			while(all_sub.next()){
+				var info = JSON.parse(all_sub.submission_other_info.toString());
+				var sts = all_sub.submission_stage.toString();
+				if(sts == 'CRS Review' || sts == 'Published' || ((sts == 'Open' || sts == 'DOC Review') && info.rejectedByCRS)){
+					var all_tmp = {};
+					all_tmp.sub_id = all_sub.sys_id.toString();
+					all_tmp.tmpl = id_tmpl[all_sub.submission_category.toString()];
+					all_tmp.doc = all_sub.submission_doc.toString();
+					all_tmp.who = all_sub.getDisplayValue("submission_author");
+					all_tmp.title = all_sub.submission_title.toString();
+					all_tmp.notes = all_sub.getDisplayValue("submission_knowledge_base") +' > '+ all_sub.getDisplayValue("submission_category");
+					all_tmp.number = all_sub.submission_number.toString();
+					all_tmp.status = all_sub.submission_stage.toString();
+					all_tmp.priority = all_sub.submission_priority.toString();
+					all_tmp.other_info = JSON.parse(all_sub.submission_other_info.toString());
+					all_tmp.updated = all_sub.sys_updated_on.toString().substring(0,10);
+					result.allSubs.push(all_tmp);
+				}
+			}
+			
+		}
+		
+	}
+	
+	return result;
+
+})(request, response);]]></operation_script>
+        <operation_uri>/api/x_26385_crs_kd/export/getSubmissionList</operation_uri>
+        <produces>application/json,application/xml,text/xml</produces>
+        <produces_customized>false</produces_customized>
+        <relative_path>/getSubmissionList</relative_path>
+        <request_example/>
+        <requires_acl_authorization>false</requires_acl_authorization>
+        <requires_authentication>true</requires_authentication>
+        <requires_snc_internal_role>true</requires_snc_internal_role>
+        <short_description/>
+        <sys_class_name>sys_ws_operation</sys_class_name>
+        <sys_created_by>yuw5@nih.gov</sys_created_by>
+        <sys_created_on>2019-08-15 21:06:06</sys_created_on>
+        <sys_customer_update>false</sys_customer_update>
+        <sys_id>60f68c69db933b00b86770c08c9619e0</sys_id>
+        <sys_mod_count>29</sys_mod_count>
+        <sys_name>getSubmissionList</sys_name>
+        <sys_package display_value="CRS Knowledge Database" source="x_26385_crs_kd">404e613b4f9213007221e321a310c738</sys_package>
+        <sys_policy/>
+        <sys_replace_on_upgrade>false</sys_replace_on_upgrade>
+        <sys_scope display_value="CRS Knowledge Database">404e613b4f9213007221e321a310c738</sys_scope>
+        <sys_update_name>sys_ws_operation_60f68c69db933b00b86770c08c9619e0</sys_update_name>
+        <sys_updated_by>yuw5@nih.gov</sys_updated_by>
+        <sys_updated_on>2019-12-10 17:18:39</sys_updated_on>
+        <web_service_definition display_value="export">01e1bbe7db6a53005358dc50cf961994</web_service_definition>
+        <web_service_version/>
+    </sys_ws_operation>
+</record_update>

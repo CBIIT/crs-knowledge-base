@@ -1,9 +1,9 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<database>
+<?xml version="1.0" encoding="UTF-8"?><database>
     <element label="Versions" max_length="40" name="x_26385_crs_kd_versions" type="collection">
         <element label="Article field" max_length="100" name="article_field" type="string"/>
-        <element label="Article Field Value" max_length="5000" name="article_field_value" type="html"/>
+        <element attributes="edge_encryption_enabled=true" label="Article Field Value" max_length="5000" name="article_field_value" type="html"/>
         <element label="Article Number" max_length="100" name="article_number" type="string"/>
-        <element label="Article Version" max_length="20" name="article_version" type="decimal"/>
+        <element attributes="edge_encryption_enabled=true" label="Article Version" max_length="20" name="article_version" type="decimal"/>
+        <element label="Record Version" max_length="100" name="record_version" type="string"/>
     </element>
 </database>

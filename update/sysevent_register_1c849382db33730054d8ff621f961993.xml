@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8"?><record_update table="sysevent_register">
+    <sysevent_register action="INSERT_OR_UPDATE">
+        <description>Send mail to notify CRS Reviewer if resubmission</description>
+        <event_name>x_26385_crs_kd.resubmit2CRS</event_name>
+        <fired_by>resubmit2CRS</fired_by>
+        <queue/>
+        <suffix>resubmit2CRS</suffix>
+        <sys_class_name>sysevent_register</sys_class_name>
+        <sys_created_by>yuw5@nih.gov</sys_created_by>
+        <sys_created_on>2019-09-11 21:19:54</sys_created_on>
+        <sys_customer_update>false</sys_customer_update>
+        <sys_id>1c849382db33730054d8ff621f961993</sys_id>
+        <sys_mod_count>0</sys_mod_count>
+        <sys_name>x_26385_crs_kd.resubmit2CRS</sys_name>
+        <sys_package display_value="CRS Knowledge Database" source="x_26385_crs_kd">404e613b4f9213007221e321a310c738</sys_package>
+        <sys_policy/>
+        <sys_replace_on_upgrade>false</sys_replace_on_upgrade>
+        <sys_scope display_value="CRS Knowledge Database">404e613b4f9213007221e321a310c738</sys_scope>
+        <sys_update_name>sysevent_register_1c849382db33730054d8ff621f961993</sys_update_name>
+        <sys_updated_by>yuw5@nih.gov</sys_updated_by>
+        <sys_updated_on>2019-09-11 21:19:54</sys_updated_on>
+        <table/>
+    </sysevent_register>
+</record_update>

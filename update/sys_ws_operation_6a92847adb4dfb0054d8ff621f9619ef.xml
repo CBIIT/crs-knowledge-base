@@ -1,5 +1,4 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<record_update table="sys_ws_operation">
+<?xml version="1.0" encoding="UTF-8"?><record_update table="sys_ws_operation">
     <sys_ws_operation action="INSERT_OR_UPDATE">
         <active>true</active>
         <consumes>application/json,application/xml,text/xml</consumes>
@@ -15,8 +14,59 @@
 						cat:"bef4810edb54ab0054d8ff621f9619e8",
 						schema:["x_26385_crs_kd_u_kb_title","x_26385_crs_kd_u_kb_cancer_site_type","x_26385_crs_kd_u_kb_doc","x_26385_crs_kd_u_kb_fiscal_year",
 								"x_26385_crs_kd_u_kb_involved_organization","x_26385_crs_kd_u_kb_description","x_26385_crs_kd_u_kb_pmid_references","x_26385_crs_kd_u_kb_references",
-								"x_26385_crs_kd_u_kb_research_type","x_26385_crs_kd_u_kb_special_topic"]
+								"x_26385_crs_kd_u_kb_research_type","x_26385_crs_kd_u_kb_special_topic","x_26385_crs_kd_u_kb_doc_contact","x_26385_crs_kd_u_kb_crs_contact"]
 					},
+		"u_kb_template_other_accomplishment":{
+						kb:"f5644dcadb54ab0054d8ff621f9619d7",
+						cat:"26f88bccdb09c41054d8ff621f96193d",
+						schema:["x_26385_crs_kd_u_kb_title","x_26385_crs_kd_u_kb_other_accomplishment_type","x_26385_crs_kd_u_kb_cancer_site_type","x_26385_crs_kd_u_kb_doc","x_26385_crs_kd_u_kb_fiscal_year",
+								"x_26385_crs_kd_u_kb_involved_organization","x_26385_crs_kd_u_kb_description","x_26385_crs_kd_u_kb_pmid_references","x_26385_crs_kd_u_kb_references",
+								"x_26385_crs_kd_u_kb_research_type","x_26385_crs_kd_u_kb_special_topic","x_26385_crs_kd_u_kb_doc_contact","x_26385_crs_kd_u_kb_crs_contact"]
+					},
+		"u_kb_template_collaboration":{
+						kb:"f5644dcadb54ab0054d8ff621f9619d7",
+						cat:"a260b1efdb110850b86770c08c96199b",
+						schema:["x_26385_crs_kd_u_kb_title",
+								 "x_26385_crs_kd_u_kb_acronym",
+										"x_26385_crs_kd_u_kb_fiscal_year",
+										"x_26385_crs_kd_u_kb_description",
+										"x_26385_crs_kd_u_kb_website_url_s",
+										"x_26385_crs_kd_u_kb_fiscal_year_originated",
+										"x_26385_crs_kd_u_kb_doc",
+										"x_26385_crs_kd_u_kb_other_docs",
+										"x_26385_crs_kd_u_kb_poc",
+										"x_26385_crs_kd_u_kb_pmid_references",
+										"x_26385_crs_kd_u_kb_nih_ics_od_collaborators",
+										"x_26385_crs_kd_u_kb_nih_ics_od_collaborators_other_specify",
+										"x_26385_crs_kd_u_kb_hhs_agency_collaborators",
+										"x_26385_crs_kd_u_kb_hhs_agency_collaborators_other_specify",
+										"x_26385_crs_kd_u_kb_other_federal_agency_collaborators",
+										"x_26385_crs_kd_u_kb_federal_collaborators_other_specify",
+										"x_26385_crs_kd_u_kb_government_collaborators",
+										"x_26385_crs_kd_u_kb_government_collaborators_other_specify",
+										"x_26385_crs_kd_u_kb_foreign_government_collaborators",
+										"x_26385_crs_kd_u_kb_foreign_collaborators_other_specify",
+										"x_26385_crs_kd_u_kb_non_governmental_collaborators",
+										"x_26385_crs_kd_u_kb_non_gov_collaborators_other_specify",
+										"x_26385_crs_kd_u_kb_other_collaborators",
+										"x_26385_crs_kd_u_kb_collaborative_activity_type",
+										"x_26385_crs_kd_u_kb_collaborative_activity_other_specify",
+										"x_26385_crs_kd_u_kb_meeting_type",
+										"x_26385_crs_kd_u_kb_meeting_type_one_time_specify_date",
+										"x_26385_crs_kd_u_kb_meeting_type_recurring_specify_start_end",
+										"x_26385_crs_kd_u_kb_faca_committee",
+										"x_26385_crs_kd_u_kb_related_to_regulatory_activity",
+										"x_26385_crs_kd_u_kb_nih_funding",
+										"x_26385_crs_kd_u_kb_products_outputs",
+										"x_26385_crs_kd_products_outputs_other_specify",
+										"x_26385_crs_kd_u_kb_research_resource_type",
+										"x_26385_crs_kd_u_kb_research_resource_type_other_specify",
+										"x_26385_crs_kd_u_kb_existing_activities_type",
+										"x_26385_crs_kd_u_kb_nih_strategic_alignment_primary",
+										"x_26385_crs_kd_u_kb_nih_strategic_alignment_other",
+										"x_26385_crs_kd_u_kb_hhs_strategic_plan_alignment_primary",
+										"x_26385_crs_kd_u_kb_hhs_strategic_plan_alignment_other"]
+		},
 		"u_kb_template_gpra":{
 						kb:"f5644dcadb54ab0054d8ff621f9619d7",
 						cat:"1989ff10dba92f00b86770c08c9619ba",
@@ -82,6 +132,9 @@
 	var template = request.body.data.template;
 	var params = request.body.data.params;
 	var version = params.version; //editing version
+	if(version != "" && version.indexOf('.') == -1){
+		version += '.0';
+	}
 	var isMainVersion = params.isMainVersion;
 	//var specifyVersion = params.specifyVersion; //targeting version
 	var annotation = params.annotation; // targeting annotation
@@ -93,29 +146,51 @@
 	item.addQuery('number',number);
 	item.query();
 	item.next();
-	var top_version = item.x_26385_crs_kd_u_kb_article_version.toString();
+	var top_version = item.x_26385_crs_kd_u_kb_record_version.toString();
 	var sys_id = item.sys_id.toString();
 	if(isMainVersion){
-		var new_top_version = Math.floor(parseFloat(top_version)) + 1;
+		var pos = top_version.indexOf('.');
+		var new_top_version = ""+ (parseInt(top_version.substring(0, pos)) + 1) + ".0";
 		//replace the top version with this version
 		var v = new GlideRecord('x_26385_crs_kd_versions');
 
 		metadata[template].schema.forEach(function(field){
 			v.initialize(); 
 			v.article_field = field;
-			v.article_version = top_version;
+			v.record_version = top_version;
 			v.article_number = number;
 			v.article_field_value = item[field];
 			v.insert();
 		});
 		//also save this version to main table for search purpose
 		metadata[template].schema.forEach(function(field){
-			item[field] = params[field];
+			var str = params[field];
+			if(str != undefined){
+				var pos = str.indexOf('data:image/gif;base64,');
+				if(pos > -1){
+					var pos_end = 0;
+					var gr = new GlideRecord(template);
+					var record = gr.get(sys_id);
+					while(pos != -1){
+						idx_start = pos;
+						var part = str.slice(pos + 22);
+						pos_end = part.indexOf('"');
+						var b64 = part.slice(0, pos_end);
+						var attachement = new GlideSysAttachment();
+						var attachment_sys_id = attachement.writeBase64(gr, "img_" + Date.now() , "image/png", b64);
+						var new_str = str.slice(0, pos) + "sys_attachment.do?sys_id=" + attachment_sys_id + part.slice(pos_end);
+						str = new_str;
+						pos = str.indexOf('data:image/gif;base64,');
+					}
+
+				}
+			}
+			item[field] = str;
 			if(field == 'x_26385_crs_kd_u_kb_funding' && params[field].split('|')[0] == 'Yes'){
-				submission.x_26385_crs_kd_u_kb_caution_warning = "No NCI Funding.";
+				item.x_26385_crs_kd_u_kb_caution_warning = "No NCI Funding.";
 			}
 		});
-		item.x_26385_crs_kd_u_kb_article_version = new_top_version;
+		item.x_26385_crs_kd_u_kb_record_version = new_top_version;
 		item.update();
 		
 		if(annotation == undefined || annotation == ""){
@@ -126,7 +201,7 @@
 		var a = new GlideRecord('x_26385_crs_kd_versions');
 		a.initialize(); 
 		a.article_field = "annotation";
-		a.article_version = new_top_version;
+		a.record_version = new_top_version;
 		a.article_number = number;
 		a.article_field_value = annotation;
 		a.insert();
@@ -144,45 +219,86 @@
 			newVersion_main = version.substring(0, idx);
 		}
 		var vn = new GlideRecord('x_26385_crs_kd_versions');
-			vn.addQuery('article_version','<', parseFloat(newVersion_main) + 1);
-			vn.addQuery('article_version','>=', parseFloat(newVersion_main));
-		    vn.addQuery('article_number', number);
+			vn.addQuery('record_version','STARTSWITH', newVersion_main + ".");
+			vn.addQuery('article_number', number);
 			vn.addQuery('article_field', 'annotation');
-		    vn.orderByDesc('article_version');
+		    //vn.orderByDesc('article_version');
 		    vn.query();
-			vn.next();
-			var latestVersion = vn.article_version.toString();
-			idx = latestVersion.indexOf('.');
-			var tmp = "";
-			if(idx > -1){
-				tmp = parseInt(latestVersion.substring(idx+1)) + 1;
+		    var max_sub_version = parseInt(version.substring(idx + 1));
+		    while(vn.next()){
+				var tmp = parseInt(vn.record_version.toString().substring(idx + 1));
+				if(tmp > max_sub_version){
+					max_sub_version = tmp;
+				}
+			}
+			
+			newVersion = newVersion_main + "." + (max_sub_version + 1) ;
+			annotation = vn.article_field_value.toString();
+		
+		    var isTopVersion = true;
+		    var pos_a = top_version.indexOf('.');
+			var pos_b = idx;
+			var v_a_l = parseInt(top_version.substring(0,pos_a));
+			var v_b_l = parseInt(newVersion.substring(0,pos_b));
+			if(v_a_l > v_b_l){
+				isTopVersion = false;
+			}
+			else if(v_a_l == v_b_l){
+				v_a_l = parseInt(top_version.substring(pos_a+1));
+				v_b_l = parseInt(newVersion.substring(pos_b+1));
+				if(v_a_l > v_b_l){
+					isTopVersion = false;
+				}
+				else{
+					isTopVersion = true;
+				}
 			}
 			else{
-				tmp = 1;
+				isTopVersion = true;
 			}
-			newVersion = newVersion_main + "." + tmp;
-			annotation = vn.article_field_value.toString();
 			
-		if(parseFloat(top_version) <= parseFloat(newVersion)){
+		if(isTopVersion){
 			//if top version is less than this version, replace the top version with this version
 			var vk = new GlideRecord('x_26385_crs_kd_versions');
 			
 			metadata[template].schema.forEach(function(field){
 				vk.initialize(); 
 				vk.article_field = field;
-				vk.article_version = top_version;
+				vk.record_version = top_version;
 				vk.article_number = number;
 				vk.article_field_value = item[field];
 				vk.insert();
 			});
 			//also save this version to main table for search purpose
 			metadata[template].schema.forEach(function(field){
-				item[field] = params[field];
+				var str = params[field];
+				if(str != undefined){
+					var pos = str.indexOf('data:image/gif;base64,');
+					if(pos > -1){
+						var pos_end = 0;
+						var gr = new GlideRecord(template);
+						var record = gr.get(sys_id);
+						while(pos != -1){
+							idx_start = pos;
+							var part = str.slice(pos + 22);
+							pos_end = part.indexOf('"');
+							var b64 = part.slice(0, pos_end);
+							var attachement = new GlideSysAttachment();
+							var attachment_sys_id = attachement.writeBase64(gr, "img_" + Date.now() , "image/png", b64);
+							var new_str = str.slice(0, pos) + "sys_attachment.do?sys_id=" + attachment_sys_id + part.slice(pos_end);
+							str = new_str;
+							pos = str.indexOf('data:image/gif;base64,');
+						}
+
+					}
+				}
+				item[field] = str;
+				
 				if(field == 'x_26385_crs_kd_u_kb_funding' && params[field].split('|')[0] == 'Yes'){
-					submission.x_26385_crs_kd_u_kb_caution_warning = "No NCI Funding.";
+					item.x_26385_crs_kd_u_kb_caution_warning = "No NCI Funding.";
 				}
 			});
-			item.x_26385_crs_kd_u_kb_article_version = newVersion;
+			item.x_26385_crs_kd_u_kb_record_version = newVersion;
 			item.update();
 		}
 		else{
@@ -190,11 +306,40 @@
 			var vm = new GlideRecord('x_26385_crs_kd_versions');
 			
 			metadata[template].schema.forEach(function(field){
+				
+				
+				
+				
+				
+				
+				
 				vm.initialize(); 
 				vm.article_field = field;
-				vm.article_version = newVersion;
+				vm.record_version = newVersion;
 				vm.article_number = number;
-				vm.article_field_value = params[field];
+				
+				var str = params[field];
+				if(str != undefined){
+					var pos = str.indexOf('data:image/gif;base64,');
+					if(pos > -1){
+						var pos_end = 0;
+						var gr = new GlideRecord(template);
+						var record = gr.get(sys_id);
+						while(pos != -1){
+							idx_start = pos;
+							var part = str.slice(pos + 22);
+							pos_end = part.indexOf('"');
+							var b64 = part.slice(0, pos_end);
+							var attachement = new GlideSysAttachment();
+							var attachment_sys_id = attachement.writeBase64(gr, "img_" + Date.now() , "image/png", b64);
+							var new_str = str.slice(0, pos) + "sys_attachment.do?sys_id=" + attachment_sys_id + part.slice(pos_end);
+							str = new_str;
+							pos = str.indexOf('data:image/gif;base64,');
+						}
+
+					}
+				}
+				vm.article_field_value = str;
 				vm.insert();
 			});
 		}
@@ -203,7 +348,7 @@
 		var a = new GlideRecord('x_26385_crs_kd_versions');
 		a.initialize(); 
 		a.article_field = "annotation";
-		a.article_version = newVersion;
+		a.record_version = newVersion;
 		a.article_number = number;
 		a.article_field_value = annotation;
 		a.insert();
@@ -216,7 +361,7 @@
 		var att = new GlideRecord('x_26385_crs_kd_versions');
 		att.initialize(); 
 		att.article_field = "attachments";
-		att.article_version = result.version;
+		att.record_version = result.version;
 		att.article_number = number;
 		att.article_field_value = attachments;
 		att.insert();
@@ -234,13 +379,14 @@
         <request_example/>
         <requires_acl_authorization>false</requires_acl_authorization>
         <requires_authentication>true</requires_authentication>
+        <requires_snc_internal_role>true</requires_snc_internal_role>
         <short_description/>
         <sys_class_name>sys_ws_operation</sys_class_name>
         <sys_created_by>yuw5@nih.gov</sys_created_by>
         <sys_created_on>2019-04-29 21:36:12</sys_created_on>
         <sys_customer_update>false</sys_customer_update>
         <sys_id>6a92847adb4dfb0054d8ff621f9619ef</sys_id>
-        <sys_mod_count>20</sys_mod_count>
+        <sys_mod_count>33</sys_mod_count>
         <sys_name>saveVersion</sys_name>
         <sys_package display_value="CRS Knowledge Database" source="x_26385_crs_kd">404e613b4f9213007221e321a310c738</sys_package>
         <sys_policy/>
@@ -248,7 +394,7 @@
         <sys_scope display_value="CRS Knowledge Database">404e613b4f9213007221e321a310c738</sys_scope>
         <sys_update_name>sys_ws_operation_6a92847adb4dfb0054d8ff621f9619ef</sys_update_name>
         <sys_updated_by>yuw5@nih.gov</sys_updated_by>
-        <sys_updated_on>2019-06-20 16:03:40</sys_updated_on>
+        <sys_updated_on>2020-01-23 23:14:35</sys_updated_on>
         <web_service_definition display_value="export">01e1bbe7db6a53005358dc50cf961994</web_service_definition>
         <web_service_version/>
     </sys_ws_operation>

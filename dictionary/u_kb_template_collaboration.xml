@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="UTF-8"?><database>
+    <element attributes="document_viewer_audit=all,global_search_config_handler=KnowledgeArticle,all_tables.text_index_translations=true,attachment_index=true,text_index_attachment_displayed=true,text_index_enable_idf=true,synch_attachments=true,use_document_viewer=true,text_index_filter_junk=false" audit="true" extends="kb_knowledge" label="Collaboration" max_length="40" name="u_kb_template_collaboration" text_index="true" type="collection">
+        <element label="Products/Outputs Other Specify" max_length="500" name="x_26385_crs_kd_products_outputs_other_specify" type="string"/>
+        <element label="Acronym" max_length="500" name="x_26385_crs_kd_u_kb_acronym" text_index="true" type="string"/>
+        <element label="Caution/Warning" max_length="8000" name="x_26385_crs_kd_u_kb_caution_warning" text_index="true" type="html"/>
+        <element label="Collaboration Type" max_length="500" name="x_26385_crs_kd_u_kb_collaboration_type" text_index="true" type="string"/>
+        <element attributes="no_text_index=true" label="Collaborative Activeity tYPE" max_length="500" name="x_26385_crs_kd_u_kb_collaborative_activeity_type" type="string"/>
+        <element label="Collaborative Activity Other Specify" max_length="500" name="x_26385_crs_kd_u_kb_collaborative_activity_other_specify" text_index="true" type="string"/>
+        <element label="Collaborative Activity Type" max_length="500" name="x_26385_crs_kd_u_kb_collaborative_activity_type" text_index="true" type="string"/>
+        <element label="Comments" max_length="500" name="x_26385_crs_kd_u_kb_comments" text_index="true" type="string"/>
+        <element label="Description" max_length="8000" name="x_26385_crs_kd_u_kb_description" text_index="true" type="html"/>
+        <element label="DOC" max_length="500" name="x_26385_crs_kd_u_kb_doc" text_index="true" type="string"/>
+        <element label="Existing Activities Type" max_length="500" name="x_26385_crs_kd_u_kb_existing_activities_type" text_index="true" type="string"/>
+        <element label="FACA committee" max_length="500" name="x_26385_crs_kd_u_kb_faca_committee" text_index="true" type="string"/>
+        <element label="Federal Collaborators Other Specify" max_length="500" name="x_26385_crs_kd_u_kb_federal_collaborators_other_specify" text_index="true" type="string"/>
+        <element label="Fiscal Year" max_length="500" name="x_26385_crs_kd_u_kb_fiscal_year" text_index="true" type="string"/>
+        <element label="FY the Collaborative Activity Originated" max_length="500" name="x_26385_crs_kd_u_kb_fiscal_year_originated" text_index="true" type="string"/>
+        <element label="Foreign Collaborators Other Specify" max_length="500" name="x_26385_crs_kd_u_kb_foreign_collaborators_other_specify" text_index="true" type="string"/>
+        <element label="Foreign Government Collaborators" max_length="500" name="x_26385_crs_kd_u_kb_foreign_government_collaborators" text_index="true" type="string"/>
+        <element label="Government Collaborators" max_length="500" name="x_26385_crs_kd_u_kb_government_collaborators" text_index="true" type="string"/>
+        <element label="Government Collaborators Other Specify" max_length="500" name="x_26385_crs_kd_u_kb_government_collaborators_other_specify" text_index="true" type="string"/>
+        <element label="HHS Agency Collaborators" max_length="500" name="x_26385_crs_kd_u_kb_hhs_agency_collaborators" text_index="true" type="string"/>
+        <element label="HHS Agency Collaborators Other Specify" max_length="500" name="x_26385_crs_kd_u_kb_hhs_agency_collaborators_other_specify" text_index="true" type="string"/>
+        <element label="HHS Strategic Plan Alignment (Other)" max_length="500" name="x_26385_crs_kd_u_kb_hhs_strategic_plan_alignment_other" text_index="true" type="string"/>
+        <element label="HHS Strategic Plan Alignment (Primary)" max_length="500" name="x_26385_crs_kd_u_kb_hhs_strategic_plan_alignment_primary" text_index="true" type="string"/>
+        <element label="Meeting Type" max_length="500" name="x_26385_crs_kd_u_kb_meeting_type" text_index="true" type="string"/>
+        <element label="Meeting Type One Time Specify Date" max_length="500" name="x_26385_crs_kd_u_kb_meeting_type_one_time_specify_date" text_index="true" type="string"/>
+        <element label="Meeting Type Recurring Specify Start End" max_length="500" name="x_26385_crs_kd_u_kb_meeting_type_recurring_specify_start_end" text_index="true" type="string"/>
+        <element label="NIH Funding" max_length="500" name="x_26385_crs_kd_u_kb_nih_funding" text_index="true" type="string"/>
+        <element label="NIH ICs/OD Collaborators" max_length="500" name="x_26385_crs_kd_u_kb_nih_ics_od_collaborators" text_index="true" type="string"/>
+        <element label="NIH ICs/OD Collaborators Other Specify" max_length="500" name="x_26385_crs_kd_u_kb_nih_ics_od_collaborators_other_specify" text_index="true" type="string"/>
+        <element label="NIH strategic alignment (Other)" max_length="500" name="x_26385_crs_kd_u_kb_nih_strategic_alignment_other" text_index="true" type="string"/>
+        <element label="NIH strategic alignment (primary)" max_length="500" name="x_26385_crs_kd_u_kb_nih_strategic_alignment_primary" text_index="true" type="string"/>
+        <element label="Non-Governmental Collaborators" max_length="500" name="x_26385_crs_kd_u_kb_non_governmental_collaborators" text_index="true" type="string"/>
+        <element label="Non-Gov Collaborators Other Specify" max_length="500" name="x_26385_crs_kd_u_kb_non_gov_collaborators_other_specify" text_index="true" type="string"/>
+        <element label="Other Collaborators" max_length="500" name="x_26385_crs_kd_u_kb_other_collaborators" text_index="true" type="string"/>
+        <element label="Other DOCs" max_length="500" name="x_26385_crs_kd_u_kb_other_docs" text_index="true" type="string"/>
+        <element label="Other Federal Agency Collaborators" max_length="500" name="x_26385_crs_kd_u_kb_other_federal_agency_collaborators" text_index="true" type="string"/>
+        <element label="PMID References" max_length="500" name="x_26385_crs_kd_u_kb_pmid_references" text_index="true" type="string"/>
+        <element label="POC" max_length="500" name="x_26385_crs_kd_u_kb_poc" text_index="true" type="string"/>
+        <element label="Products/Outputs" max_length="500" name="x_26385_crs_kd_u_kb_products_outputs" text_index="true" type="string"/>
+        <element label="Record Version" max_length="500" name="x_26385_crs_kd_u_kb_record_version" text_index="true" type="string"/>
+        <element label="Related to Regulatory Activity" max_length="500" name="x_26385_crs_kd_u_kb_related_to_regulatory_activity" text_index="true" type="string"/>
+        <element label="Research Resource Type" max_length="500" name="x_26385_crs_kd_u_kb_research_resource_type" text_index="true" type="string"/>
+        <element label="Research Resource Type Other Specify" max_length="500" name="x_26385_crs_kd_u_kb_research_resource_type_other_specify" text_index="true" type="string"/>
+        <element label="Tags" max_length="500" name="x_26385_crs_kd_u_kb_tags" text_index="true" type="string"/>
+        <element label="Title" max_length="500" name="x_26385_crs_kd_u_kb_title" text_index="true" type="string"/>
+        <element label="Website URL(s)" max_length="8000" name="x_26385_crs_kd_u_kb_website_url_s" text_index="true" type="html"/>
+    </element>
+</database>

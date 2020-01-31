@@ -1,11 +1,11 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<record_update sys_domain="global" table="kb_article_template">
+<?xml version="1.0" encoding="UTF-8"?><record_update sys_domain="global" table="kb_article_template">
     <kb_article_template action="INSERT_OR_UPDATE">
         <active>true</active>
         <answer_ref display_value="GPRA">83a784a8dba92f00b86770c08c9619e4</answer_ref>
         <article_template>GPRA</article_template>
         <child_table>u_kb_template_gpra</child_table>
         <description>Template for GPRA</description>
+        <meta_description_field/>
         <sys_class_name>kb_article_template</sys_class_name>
         <sys_created_by>yuw5@nih.gov</sys_created_by>
         <sys_created_on>2018-10-30 22:00:48</sys_created_on>

@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="UTF-8"?><record_update sys_domain="global" table="kb_article_template_definition">
+    <kb_article_template_definition action="INSERT_OR_UPDATE">
+        <active>true</active>
+        <article_template display_value="Miscellaneous_INT">6dcf6e79db71b30054d8ff621f96199a</article_template>
+        <column_label>Record Version</column_label>
+        <column_type>string</column_type>
+        <mandatory>false</mandatory>
+        <order>10</order>
+        <sys_class_name>kb_article_template_definition</sys_class_name>
+        <sys_created_by>yuw5@nih.gov</sys_created_by>
+        <sys_created_on>2019-10-30 17:24:07</sys_created_on>
+        <sys_customer_update>false</sys_customer_update>
+        <sys_domain>global</sys_domain>
+        <sys_id>6d943671db7cc45054d8ff621f96193e</sys_id>
+        <sys_mod_count>0</sys_mod_count>
+        <sys_name>Record Version</sys_name>
+        <sys_package display_value="CRS Knowledge Database" source="x_26385_crs_kd">404e613b4f9213007221e321a310c738</sys_package>
+        <sys_policy/>
+        <sys_replace_on_upgrade>false</sys_replace_on_upgrade>
+        <sys_scope display_value="CRS Knowledge Database">404e613b4f9213007221e321a310c738</sys_scope>
+        <sys_update_name>kb_article_template_definition_6d943671db7cc45054d8ff621f96193e</sys_update_name>
+        <sys_updated_by>yuw5@nih.gov</sys_updated_by>
+        <sys_updated_on>2019-10-30 17:24:07</sys_updated_on>
+        <table_column>x_26385_crs_kd_u_kb_record_version</table_column>
+    </kb_article_template_definition>
+</record_update>

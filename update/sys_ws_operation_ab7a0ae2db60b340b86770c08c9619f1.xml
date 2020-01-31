@@ -1,5 +1,4 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<record_update table="sys_ws_operation">
+<?xml version="1.0" encoding="UTF-8"?><record_update table="sys_ws_operation">
     <sys_ws_operation action="INSERT_OR_UPDATE">
         <active>true</active>
         <consumes>application/json,application/xml,text/xml</consumes>
@@ -20,7 +19,7 @@
 	var cache = {};
 	
 	if(knowledgeBaseID == "ff315a9edba47340b86770c08c961999"){
-		//CRS Internal
+		//ROCK
 		result.filters = ['project','tags','my_tags'];
 		result.filters.forEach(function(item){
 			result.count[item] = {};
@@ -65,14 +64,15 @@
 				for(var k in schema){
 						var v = articleResult[schema[k]];
 						if(v != ''){
-							v.split(",").forEach(function(elem){
-								if(cache[k].indexOf(elem) == -1){
-									cache[k].push(elem);
-									result.tmp[k].push(elem);
-									result.count[k][elem] = 1;
+							v.split("},{").forEach(function(elem){
+								var t = '{' + elem.replace(/}/g,'').replace(/{/g,'') + '}';
+								if(cache[k].indexOf(t) == -1){
+									cache[k].push(t);
+									result.tmp[k].push(t);
+									result.count[k][t] = 1;
 								}
 								else{
-									result.count[k][elem] ++;
+									result.count[k][t] ++;
 								}
 							});
 
@@ -165,14 +165,15 @@
 				for(var k in schema){
 						var v = articleResult[schema[k]];
 						if(v != ''){
-							v.split(",").forEach(function(elem){
-								if(cache[k].indexOf(elem) == -1){
-									cache[k].push(elem);
-									result.tmp[k].push(elem);
-									result.count[k][elem] = 1;
+							v.split("},{").forEach(function(elem){
+								var t = '{' + elem.replace(/}/g,'').replace(/{/g,'') + '}';
+								if(cache[k].indexOf(t) == -1){
+									cache[k].push(t);
+									result.tmp[k].push(t);
+									result.count[k][t] = 1;
 								}
 								else{
-									result.count[k][elem] ++;
+									result.count[k][t] ++;
 								}
 							});
 
@@ -214,15 +215,29 @@
 		});
 
 		var infos_category = {'Top Accomplishments':'u_kb_template_top_accomplishment',
+							  'Other Accomplishments':'u_kb_template_other_accomplishment',
+							  'Collaborations':'u_kb_template_collaboration',
 								 'GPRA': 'u_kb_template_gpra',
 							  'Literature Summary': 'u_kb_template_literature_summary',
 							 "Miscellaneous":"u_kb_template_miscellaneous",
 							  "Final Reports":"u_kb_template_final_reports",
 							  "Significant Items":"u_kb_template_significant_items"};
 
-		var info_schema = {'Top Accomplishments': {"cancerSite":"x_26385_crs_kd_u_kb_cancer_site_type",																																											"researchType":"x_26385_crs_kd_u_kb_research_type",
-													"specialTopic":"x_26385_crs_kd_u_kb_special_topic",																																											"doc":"x_26385_crs_kd_u_kb_doc",																																															"fiscalYear":"x_26385_crs_kd_u_kb_fiscal_year",
-										  "tags":"x_26385_crs_kd_u_kb_tags"},
+		var info_schema = {'Top Accomplishments': {"cancerSite":"x_26385_crs_kd_u_kb_cancer_site_type",
+												   "researchType":"x_26385_crs_kd_u_kb_research_type",
+													"specialTopic":"x_26385_crs_kd_u_kb_special_topic",
+												   "doc":"x_26385_crs_kd_u_kb_doc",
+												   "fiscalYear":"x_26385_crs_kd_u_kb_fiscal_year",
+												   "tags":"x_26385_crs_kd_u_kb_tags"},
+						   'Other Accomplishments': {"cancerSite":"x_26385_crs_kd_u_kb_cancer_site_type",
+													 "researchType":"x_26385_crs_kd_u_kb_research_type",
+													"specialTopic":"x_26385_crs_kd_u_kb_special_topic",
+													 "doc":"x_26385_crs_kd_u_kb_doc",
+													 "fiscalYear":"x_26385_crs_kd_u_kb_fiscal_year",
+													 "tags":"x_26385_crs_kd_u_kb_tags"},
+						   'Collaborations': {"doc":"x_26385_crs_kd_u_kb_doc",
+													 "fiscalYear":"x_26385_crs_kd_u_kb_fiscal_year",
+													 "tags":"x_26385_crs_kd_u_kb_tags"},
 					 'GPRA': {"researchType":"x_26385_crs_kd_u_kb_research_type",
 								"specialTopic":"x_26385_crs_kd_u_kb_special_topic",																																											"doc":"x_26385_crs_kd_u_kb_doc",																																															"fiscalYear":"x_26385_crs_kd_u_kb_fiscal_year",
 										  "tags":"x_26385_crs_kd_u_kb_tags"},
@@ -289,45 +304,54 @@
 					articleResult.x_26385_crs_kd_u_kb_tags = gr.x_26385_crs_kd_u_kb_tags.toString();
 				}
 				
+				
 				for(var k in schema){
 						var v = articleResult[schema[k]];
 						if(v != ''){
-							if(k == 'researchType' || k == 'doc'){
-								v.split(",").forEach(function(elem){
-									var idx = elem.indexOf('-');
+							if(k == 'researchType' || k == 'doc' || k == 'specialTopic'){
+								var have = [];
+								v.split("},{").forEach(function(elem){
+									var m = '{' + elem.replace(/}/g,'').replace(/{/g,'') + '}';
+									var idx = m.indexOf('-');
 									if(idx == -1){
-										if(cache[k].indexOf(elem) == -1){
-											cache[k].push(elem);
-											result.tmp[k].push(elem);
-											result.count[k][elem] = 1;
+										if(cache[k].indexOf(m) == -1){
+											cache[k].push(m);
+											result.tmp[k].push(m);
+											result.count[k][m] = 1;
 										}
 										else{
-											result.count[k][elem] ++;
+											result.count[k][m] ++;
 										}
 									}
 									else{
-										var em = elem.substring(0,idx) + '}';
+										var em = m.substring(0,idx) + '}';
 										if(cache[k].indexOf(em) == -1){
 											cache[k].push(em);
 											result.tmp[k].push(em);
 											result.count[k][em] = 1;
 										}
 										else{
-											result.count[k][em] ++;
+											if(have.indexOf(em) == -1){
+												result.count[k][em] ++;
+											}
+										}
+										if(have.indexOf(em) == -1){
+											have.push(em);
 										}
 									}
 
 								});
 							}
 							else{
-								v.split(",").forEach(function(elem){
-									if(cache[k].indexOf(elem) == -1){
-										cache[k].push(elem);
-										result.tmp[k].push(elem);
-										result.count[k][elem] = 1;
+								v.split("},{").forEach(function(elem){
+									var t = '{' + elem.replace(/}/g,'').replace(/{/g,'') + '}';
+									if(cache[k].indexOf(t) == -1){
+										cache[k].push(t);
+										result.tmp[k].push(t);
+										result.count[k][t] = 1;
 									}
 									else{
-										result.count[k][elem] ++;
+										result.count[k][t] ++;
 									}
 								});
 							}
@@ -370,13 +394,14 @@
         <request_example/>
         <requires_acl_authorization>false</requires_acl_authorization>
         <requires_authentication>true</requires_authentication>
+        <requires_snc_internal_role>true</requires_snc_internal_role>
         <short_description/>
         <sys_class_name>sys_ws_operation</sys_class_name>
         <sys_created_by>yuw5@nih.gov</sys_created_by>
         <sys_created_on>2019-04-04 16:11:52</sys_created_on>
         <sys_customer_update>false</sys_customer_update>
         <sys_id>ab7a0ae2db60b340b86770c08c9619f1</sys_id>
-        <sys_mod_count>13</sys_mod_count>
+        <sys_mod_count>24</sys_mod_count>
         <sys_name>getFilters</sys_name>
         <sys_package display_value="CRS Knowledge Database" source="x_26385_crs_kd">404e613b4f9213007221e321a310c738</sys_package>
         <sys_policy/>
@@ -384,7 +409,7 @@
         <sys_scope display_value="CRS Knowledge Database">404e613b4f9213007221e321a310c738</sys_scope>
         <sys_update_name>sys_ws_operation_ab7a0ae2db60b340b86770c08c9619f1</sys_update_name>
         <sys_updated_by>yuw5@nih.gov</sys_updated_by>
-        <sys_updated_on>2019-06-20 19:43:02</sys_updated_on>
+        <sys_updated_on>2020-01-16 15:14:39</sys_updated_on>
         <web_service_definition display_value="export">01e1bbe7db6a53005358dc50cf961994</web_service_definition>
         <web_service_version/>
     </sys_ws_operation>

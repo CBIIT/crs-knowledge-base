@@ -1,14 +1,30 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<record_update table="sp_widget">
+<?xml version="1.0" encoding="UTF-8"?><record_update table="sp_widget">
     <sp_widget action="INSERT_OR_UPDATE">
         <category>custom</category>
         <client_script><![CDATA[function($scope,spModal, $rootScope, $location) {
   var c = this;
   var s = $location.search();
   var redirect = false;
+	
+	c.isSu = $rootScope.user.role.indexOf('su') > -1;
+	c.isCu = $rootScope.user.role.indexOf('cu') > -1;
+	c.isRu = $rootScope.user.role.indexOf('ru') > -1;
+	c.isCr = $rootScope.user.role.indexOf('cr') > -1;
+	c.isDpc = $rootScope.user.role.indexOf('dpc') > -1;
+	c.isSm = $rootScope.user.role.indexOf('sm') > -1;
+	c.currentUserID = $rootScope.user.id;
 
-	if($rootScope.user && $rootScope.user.role.length == 0){
-		  c.xpage = "permission";
+	if($rootScope.user && (c.isSm || c.isDpc)){
+		if(s.xpage && s.xpage == 'kd_new_submission'){
+			c.xpage = "new_submission";
+		}
+		else if(s.xpage && s.xpage == 'kd_submission_edit'){
+			c.xpage = "submission_edit";
+			c.number = s.number;
+		}
+		else{
+			c.xpage = "submissions";
+		}
 	}
 	else if (s.xpage && s.xpage == 'kd_search') {
 			c.xpage = "main";
@@ -21,11 +37,18 @@
 			c.kb_knowledge_base = 'f5644dcadb54ab0054d8ff621f9619d7';
 		}
 	}
-	else if(s.xpage && s.xpage == 'kd_submissions'){
-		c.xpage = "submissions";
-	}
 	else if(s.xpage && s.xpage == 'kd_new_submission'){
-		c.xpage = "new_submission";
+			c.xpage = "new_submission";
+		}
+	else if(s.xpage && s.xpage == 'kd_submissions'){
+			c.xpage = "submissions";
+	}
+	else if(s.xpage && s.xpage == 'kd_submission_edit'){
+			c.xpage = "submission_edit";
+			c.number = s.number;
+	}
+	else if(s.xpage && s.xpage == 'kd_new_entry'){
+		c.xpage = "new_entry";
 	}
 	else if(s.xpage && s.xpage == 'kd_settings'){
 		c.xpage = "settings";
@@ -127,7 +150,7 @@
         <script><![CDATA[(function() {  /* populate the 'data' object */  /* e.g., data.table = $sp.getValue('table'); */
 	data.kbs = {
 		'f5644dcadb54ab0054d8ff621f9619d7': "NERD",
-		'ff315a9edba47340b86770c08c961999': "CRS Internal",
+		'ff315a9edba47340b86770c08c961999': "ROCK",
 		'2c42d2dedba47340b86770c08c9619a9': "Moonshot Evaluation"
 	};
 
@@ -138,7 +161,7 @@
         <sys_created_on>2018-07-18 21:58:33</sys_created_on>
         <sys_customer_update>false</sys_customer_update>
         <sys_id>44d1ec83dbd397009b0a74131f9619b1</sys_id>
-        <sys_mod_count>207</sys_mod_count>
+        <sys_mod_count>245</sys_mod_count>
         <sys_name>[crs] KD Home</sys_name>
         <sys_package display_value="CRS Knowledge Database" source="x_26385_crs_kd">404e613b4f9213007221e321a310c738</sys_package>
         <sys_policy/>
@@ -146,7 +169,7 @@
         <sys_scope display_value="CRS Knowledge Database">404e613b4f9213007221e321a310c738</sys_scope>
         <sys_update_name>sp_widget_44d1ec83dbd397009b0a74131f9619b1</sys_update_name>
         <sys_updated_by>yuw5@nih.gov</sys_updated_by>
-        <sys_updated_on>2019-06-05 15:56:51</sys_updated_on>
+        <sys_updated_on>2020-01-16 15:44:52</sys_updated_on>
         <template><![CDATA[<div id="crs-kd-home">
   <div id="crs-kd-summary" class="container"  ng-if="c.xpage == 'home'">
     <div class="home-logo">
@@ -253,6 +276,30 @@
       </div>
     </div>
   </div>
+  <div id="crs-main" ng-if="c.xpage == 'submission_edit'">
+    <div class="bread-bar">
+      <div class="container">
+        <ul class="nav nav-pills nav-sm"> 
+         <li ng-if="c.isSu || c.isCr"><a ng-href="nerd" role="link" href="nerd">Home</a></li> 
+         <li ng-if="c.isSu || c.isCr"><i class="fa fa-chevron-right"></i></li>
+         <li><a ng-href="nerd?xpage=kd_submissions" role="link" href="nerd?xpage=kd_submissions">Submissions</a></li>
+         <li><i class="fa fa-chevron-right"></i></li> 
+         <li><a ng-href="#" class="ng-binding" role="link" href="#">Edit: {{c.number}}</a></li>
+        </ul>
+      </div>
+    </div>
+    <div class="main-content">
+    	<widget id="crs-kd-submission-edit"></widget>
+      <div class="proclaim">
+        <p>
+          NERD is managed by CRS. For questions, contact <a href="mailto:NCINERDWebAdmin@mail.nih.gov ?subject=NERD Contact Us">NCINERDWebAdmin@mail.nih.gov</a>
+        </p>
+        <p>
+          For internal NCI use only. Not for distribution.
+        </p>
+      </div>
+    </div>
+  </div>
   <div id="crs-main" ng-if="c.xpage == 'article_edit'">
     <div class="bread-bar">
       <div class="container">
@@ -311,8 +358,8 @@
     <div class="bread-bar">
       <div class="container">
         <ul class="nav nav-pills nav-sm"> 
-         <li><a ng-href="nerd" role="link" href="nerd">Home</a></li> 
-         <li><i class="fa fa-chevron-right"></i></li> 
+         <li ng-if="c.isSu || c.isCr"><a ng-href="nerd" role="link" href="nerd">Home</a></li> 
+         <li ng-if="c.isSu || c.isCr"><i class="fa fa-chevron-right"></i></li>
          <li><a ng-href="nerd?xpage=kd_submissions" class="ng-binding" role="link" href="nerd?xpage=kd_submissions">Submissions</a></li>
         </ul>
       </div>
@@ -333,18 +380,45 @@
     <div class="bread-bar">
       <div class="container">
         <ul class="nav nav-pills nav-sm"> 
-         <li><a ng-href="nerd" role="link" href="nerd">Home</a></li> 
-         <li><i class="fa fa-chevron-right"></i></li> 
-         <!--
-						<li><a ng-href="nerd?xpage=kd_submissions" class="ng-binding" role="link" href="nerd?xpage=kd_submissions">Submissions</a></li>
-         		<li><i class="fa fa-chevron-right"></i></li>
-					-->
+         <li ng-if="c.isSu || c.isCr"><a ng-href="nerd" role="link" href="nerd">Home</a></li> 
+         <li ng-if="c.isSu || c.isCr"><i class="fa fa-chevron-right"></i></li>
+         <li><a ng-href="nerd" role="link" href="nerd?xpage=kd_submissions">Submissions</a></li> 
+         <li><i class="fa fa-chevron-right"></i></li>
          <li><a class="ng-binding" role="link" href="#">Create New Submission</a></li>
         </ul>
       </div>
     </div>
     <div class="main-content">
     	<widget id="crs-kd-new-submission"></widget>
+      <div class="proclaim">
+        <p>
+          NERD is managed by CRS. For questions, contact <a href="mailto:NCINERDWebAdmin@mail.nih.gov ?subject=NERD Contact Us">NCINERDWebAdmin@mail.nih.gov</a>
+        </p>
+        <p>
+          For internal NCI use only. Not for distribution.
+        </p>
+      </div>
+    </div>
+  </div>
+  <div id="crs-main" ng-if="c.xpage == 'new_entry'">
+    <div class="bread-bar">
+      <div class="container">
+        <ul class="nav nav-pills nav-sm"> 
+         <!--
+						<li><a ng-href="nerd?xpage=kd_submissions" class="ng-binding" role="link" href="nerd?xpage=kd_submissions">Submissions</a></li>
+					-->
+         <li><a ng-href="nerd" role="link" href="nerd">Home</a></li> 
+          <li><i class="fa fa-chevron-right"></i></li> 
+         <!--
+						<li><a ng-href="nerd?xpage=kd_submissions" class="ng-binding" role="link" href="nerd?xpage=kd_submissions">Submissions</a></li>
+         		<li><i class="fa fa-chevron-right"></i></li>
+					-->
+         <li><a class="ng-binding" role="link" href="#">Add New Entry</a></li>
+        </ul>
+      </div>
+    </div>
+    <div class="main-content">
+    	<widget id="crs-kd-new-entry"></widget>
       <div class="proclaim">
         <p>
           NERD is managed by CRS. For questions, contact <a href="mailto:NCINERDWebAdmin@mail.nih.gov ?subject=NERD Contact Us">NCINERDWebAdmin@mail.nih.gov</a>

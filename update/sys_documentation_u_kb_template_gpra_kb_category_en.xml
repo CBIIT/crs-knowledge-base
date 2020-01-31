@@ -1,5 +1,4 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<record_update>
+<?xml version="1.0" encoding="UTF-8"?><record_update>
     <sys_documentation element="kb_category" label="Category(kb_category)" language="en" table="u_kb_template_gpra">
         <sys_documentation action="INSERT_OR_UPDATE">
             <element>kb_category</element>
